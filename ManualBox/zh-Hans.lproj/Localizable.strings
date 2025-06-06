@@ -1,0 +1,99 @@
+/* 主界面 */
+"ManualBox" = "ManualBox";
+"Settings" = "设置";
+"Notification & Reminders" = "通知与提醒";
+"Appearance & Theme" = "外观与主题";
+"Data & Defaults" = "数据与默认";
+"About & Support" = "关于与支持";
+"Follow System" = "跟随系统";
+"Chinese" = "中文";
+"English" = "英文";
+"Language" = "语言";
+"Export Data" = "导出数据";
+"Import Data" = "导入数据";
+"Data Backup & Restore" = "数据备份与恢复";
+"Reset App Data" = "重置应用数据";
+"Privacy Policy" = "隐私政策";
+"User Agreement" = "用户协议";
+"Check for Updates" = "检查更新";
+"System Notification" = "系统通知";
+"Email" = "邮件";
+"Calendar Event" = "日历事件";
+"Start" = "开始";
+"End" = "结束";
+"Silent Period" = "静默时段";
+"Warranty Advance Reminder" = "保修到期提前提醒";
+"Maintenance Progress Push" = "维修进度推送";
+"Asset Inspection/Maintenance" = "资产定期巡检/保养";
+"Notification Channel" = "通知方式";
+
+/* 维修记录 */
+"Repair Records" = "维修记录";
+"Add Repair Record" = "添加维修记录";
+"Edit Repair Record" = "编辑维修记录";
+"Repair Details" = "维修详情";
+"Repair Date" = "维修日期";
+"Repair Cost" = "维修费用";
+"Delete Repair Record" = "删除此维修记录";
+"Confirm Delete" = "确认删除";
+"This action cannot be undone" = "此操作无法撤销";
+"Save Changes" = "保存修改";
+"Cancel" = "取消";
+"Related Product" = "关联产品";
+"No Repair Records" = "暂无维修记录";
+"Search Repair Records" = "搜索维修记录";
+"Enter repair details..." = "请输入维修详情...";
+
+/* 主题设置 */
+"Theme Mode" = "主题模式";
+"Theme Color" = "主题色";
+"System" = "系统";
+"Light" = "浅色";
+"Dark" = "深色";
+"系统" = "系统";
+"蓝色" = "蓝色";
+"绿色" = "绿色";
+"橙色" = "橙色";
+"粉色" = "粉色";
+"紫色" = "紫色";
+"红色" = "红色";
+
+/* 数据与默认设置 */
+"Default Settings" = "默认设置";
+"Data Management" = "数据管理";
+"Export products, categories, and tags" = "导出商品、分类、标签等数据";
+"Import products, categories, and tags" = "导入商品、分类、标签等数据";
+"Local or iCloud backup/restore" = "本地或iCloud备份/恢复";
+"Clear all local data, cannot be recovered" = "清除所有本地数据，无法恢复";
+
+/* 关于与支持 */
+"Legal & Policies" = "法律与政策";
+"Updates & Support" = "更新与支持";
+"View app privacy policy" = "查看应用隐私政策";
+"View app user agreement" = "查看应用用户协议";
+"Go to the latest version download page" = "前往最新版本下载页";
+"Warranty Information Assistant" = "保修信息管理助手";
+
+/* 搜索筛选 */
+"Advanced Search" = "高级搜索";
+"Search Scope" = "搜索范围";
+"Category Filter" = "分类筛选";
+"Tag Filter" = "标签筛选";
+"Warranty Status" = "保修状态";
+"Purchase Date" = "购买日期";
+"Enable Category Filter" = "启用分类筛选";
+"Enable Tag Filter" = "启用标签筛选";
+"Enable Warranty Status Filter" = "启用保修状态筛选";
+"Enable Date Filter" = "启用日期筛选";
+"Select Category" = "选择分类";
+"All Categories" = "所有分类";
+"All Statuses" = "所有状态";
+"In Warranty" = "在保修期内";
+"Expiring Soon" = "即将过期";
+"Expired" = "已过期";
+"Start Date" = "开始日期";
+"End Date" = "结束日期";
+"Apply Filters" = "应用筛选";
+"Reset All Filters" = "重置所有筛选";
+"Filter Conditions:" = "筛选条件:";
+"Clear" = "清除";

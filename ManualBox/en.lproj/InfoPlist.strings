@@ -1,0 +1,4 @@
+"NSUserNotificationsUsageDescription" = "We need notification permission to remind you of product warranty expiration.";
+"NSPhotoLibraryUsageDescription" = "Access to your photos is required for uploading product images and manuals.";
+"NSCameraUsageDescription" = "Camera access is needed to take product and invoice photos.";
+"NSMicrophoneUsageDescription" = "Microphone access is required for recording features.";

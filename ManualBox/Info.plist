@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 通用设置 -->
+    <key>CFBundleDisplayName</key>
+    <string>ManualBox</string>
+    <key>CFBundleName</key>
+    <string>ManualBox</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>15.4</string>
+
+    <!-- App Transport Security（建议仅开发阶段允许全部，正式请细化域名） -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+    <!-- 通知权限描述（iOS/macOS） -->
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>我们需要通知权限来提醒您商品保修期的到期时间。</string>
+    <key>NSUserNotificationAlertStyle</key>
+    <string>alert</string>
+
+    <!-- macOS 专用 -->
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSUserNotificationCenterDelegate</key>
+    <string>$(PRODUCT_MODULE_NAME).NotificationDelegate</string>
+
+    <!-- iOS 专用：后台推送 -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+    </array>
+
+    <!-- 权限描述（如用到相册/相机/麦克风等） -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>需要访问您的照片用于商品图片和说明书上传。</string>
+    <key>NSCameraUsageDescription</key>
+    <string>需要使用相机拍摄商品图片和发票。</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>如需录音功能，请授权麦克风访问。</string>
+
+    <!-- 字体路径（如无自定义字体可移除） -->
+    <!-- <key>ATSApplicationFontsPath</key>
+    <string>.</string> -->
+
+    <!-- 本地化设置 -->
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>zh-Hans</string>
+        <string>en</string>
+    </array>
+</dict>
+</plist>
