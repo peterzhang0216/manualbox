@@ -40,6 +40,7 @@ extension Category {
     }
     
     // MARK: - 预览数据
+    @MainActor
     static var example: Category {
         let context = PersistenceController.preview.container.viewContext
         let category = createCategory(in: context, name: "示例分类", icon: "folder.fill")

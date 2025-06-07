@@ -30,7 +30,7 @@ struct ProductRow: View {
             .frame(width: 60, height: 60)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(product.productName ?? "")
+                Text(product.productName)
                     .font(.headline)
                 
                 if let order = product.order {
@@ -58,4 +58,4 @@ struct ProductRow: View {
         }
         .padding(.vertical, 4)
     }
-} 
+}

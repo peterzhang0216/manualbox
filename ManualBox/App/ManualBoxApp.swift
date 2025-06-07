@@ -14,11 +14,17 @@ struct ManualBoxApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject private var notificationManager = AppNotificationManager()
 
+    init() {
+        // 配置依赖注入服务
+        ServiceRegistrationManager.configureServices()
+    }
+
     var body: some Scene {
         WindowGroup {
             MainTabView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(notificationManager)
+                .serviceContainer(ServiceContainer.shared)
                 .onAppear {
                     // 初始化默认数据
                     persistenceController.initializeDefaultData()

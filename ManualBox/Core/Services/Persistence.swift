@@ -245,3 +245,76 @@ class PersistenceController {
         }
     }
 }
+
+// MARK: - 平台特定的数据同步策略
+extension PersistenceController {
+    
+    // 平台特定的容器配置
+    static func platformOptimizedContainer() -> NSPersistentCloudKitContainer {
+        let container = NSPersistentCloudKitContainer(name: "ManualBox")
+        
+        // 配置CloudKit选项
+        guard let description = container.persistentStoreDescriptions.first else {
+            fatalError("无法获取持久化存储描述")
+        }
+        
+        // 基础 CloudKit 配置（适用于所有平台）
+        description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+        description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+        
+        #if os(macOS)
+        // macOS 特定配置
+        // 移除了不存在的 NSPersistentCloudKitContainerApplicationBundleIdentifierKey
+        // CloudKit 会自动使用应用的 Bundle Identifier
+        
+        // 移除了不存在的 NSPersistentCloudKitContainerBatchSizeKey
+        // 使用 CloudKit 默认的批处理策略
+        description.setOption("macOS" as NSString, forKey: "CloudKitContainerEnvironment")
+        #else
+        // iOS 特定配置
+        description.setOption("iOS" as NSString, forKey: "CloudKitContainerEnvironment")
+        #endif
+        
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Core Data 加载失败: \(error)")
+            }
+        }
+        
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        
+        return container
+    }
+    
+    // 平台特定的文件存储路径
+    static var platformDocumentsDirectory: URL {
+        #if os(macOS)
+        return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("ManualBox")
+        #else
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        #endif
+    }
+    
+    // 平台特定的缓存策略
+    func configurePlatformSpecificCaching() {
+        #if os(macOS)
+        // macOS 可以使用更多内存进行缓存
+        container.viewContext.stalenessInterval = 0
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        #else
+        // iOS 需要更保守的内存使用
+        container.viewContext.stalenessInterval = 300 // 5分钟
+        container.viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+        
+        // 在收到内存警告时清理缓存
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            self.container.viewContext.refreshAllObjects()
+        }
+        #endif
+    }
+}

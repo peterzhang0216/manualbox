@@ -36,6 +36,7 @@ extension Tag {
     }
     
     // MARK: - 预览数据
+    @MainActor
     static var example: Tag {
         let context = PersistenceController.preview.container.viewContext
         let tag = Tag(context: context)

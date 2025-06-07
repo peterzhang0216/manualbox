@@ -1,8 +1,11 @@
 import SwiftUI
 #if os(iOS)
 import UIKit
-import CoreData
+#elseif os(macOS)
+import AppKit
 #endif
+import CoreData
+import WebKit
 
 
 // 导入自定义组件
@@ -594,6 +597,12 @@ private struct LanguagePickerView: View {
                                     )
                                 }
                             }
+                            #elseif os(macOS)
+                            // macOS 平台的界面刷新
+                            for window in NSApp.windows {
+                                window.contentView?.needsLayout = true
+                                window.contentView?.needsDisplay = true
+                            }
                             #endif
                         }
                     }
@@ -645,11 +654,37 @@ private struct LanguageRow: View {
 private func setAppLanguage(_ code: String) {
     guard code != "system" else {
         UserDefaults.standard.removeObject(forKey: "AppleLanguages")
-        NSApp.windows.forEach { $0.contentView?.needsLayout = true; $0.contentView?.setNeedsDisplay($0.contentView?.bounds ?? .zero) }
+        #if os(iOS)
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            windowScene.windows.forEach { 
+                $0.rootViewController = UIHostingController(
+                    rootView: MainTabView().environmentObject(AppNotificationManager())
+                )
+            }
+        }
+        #elseif os(macOS)
+        for window in NSApp.windows {
+            window.contentView?.needsLayout = true
+            window.contentView?.needsDisplay = true
+        }
+        #endif
         return
     }
     UserDefaults.standard.set([code], forKey: "AppleLanguages")
-    NSApp.windows.forEach { $0.contentView?.needsLayout = true; $0.contentView?.setNeedsDisplay($0.contentView?.bounds ?? .zero) }
+    #if os(iOS)
+    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+        windowScene.windows.forEach { 
+            $0.rootViewController = UIHostingController(
+                rootView: MainTabView().environmentObject(AppNotificationManager())
+            )
+        }
+    }
+    #elseif os(macOS)
+    for window in NSApp.windows {
+        window.contentView?.needsLayout = true
+        window.contentView?.needsDisplay = true
+    }
+    #endif
 }
 #else
 private func setAppLanguage(_ code: String) {
