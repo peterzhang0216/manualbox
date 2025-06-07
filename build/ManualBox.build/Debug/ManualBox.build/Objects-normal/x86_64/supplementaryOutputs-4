@@ -1,0 +1,42 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/ServiceProtocol.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddRepairRecordView.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.d"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AppInfoView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppInfoView.d"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppInfoView.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppInfoView.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppInfoView.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppInfoView.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataImportView.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataImportView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataImportView.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataImportView.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataImportView.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataImportView.d"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationManager.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationManager.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationManager.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationManager.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationManager.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationManager.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/EntityRepositories.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/EntityRepositories.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/EntityRepositories.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/EntityRepositories.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/EntityRepositories.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/EntityRepositories.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationSettingsView.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.dia"

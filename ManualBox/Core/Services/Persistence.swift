@@ -10,6 +10,27 @@ import CoreData
 class PersistenceController {
     static let shared = PersistenceController()
 
+    // MARK: - Repository 实例
+    private(set) lazy var productRepository: ProductRepository = {
+        ProductRepository(context: container.viewContext)
+    }()
+    
+    private(set) lazy var categoryRepository: CategoryRepository = {
+        CategoryRepository(context: container.viewContext)
+    }()
+    
+    private(set) lazy var tagRepository: TagRepository = {
+        TagRepository(context: container.viewContext)
+    }()
+    
+    private(set) lazy var orderRepository: OrderRepository = {
+        OrderRepository(context: container.viewContext)
+    }()
+    
+    private(set) lazy var repairRecordRepository: RepairRecordRepository = {
+        RepairRecordRepository(context: container.viewContext)
+    }()
+
     @MainActor
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
@@ -93,27 +114,42 @@ class PersistenceController {
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         } else {
-            // 确保应用数据目录存在
-            let fileManager = FileManager.default
-            let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-            let appDataURL = appSupportURL.appendingPathComponent("ManualBox")
-            
-            // 如果目录不存在，创建它
-            if !fileManager.fileExists(atPath: appDataURL.path) {
-                do {
-                    try fileManager.createDirectory(at: appDataURL, withIntermediateDirectories: true, attributes: nil)
-                } catch {
-                    print("创建应用数据目录失败: \(error.localizedDescription)")
-                }
-            }
-            
-            // 确保存储URL指向正确的位置
-            if let storeDescription = container.persistentStoreDescriptions.first {
-                let storeURL = appDataURL.appendingPathComponent("ManualBox.sqlite")
-                storeDescription.url = storeURL
+            configureProductionStore()
+        }
+        
+        configureContainer()
+        loadPersistentStores()
+        configureContext()
+        
+        // 注册自动保存通知
+        registerAutosaveNotification()
+    }
+    
+    // MARK: - 配置方法
+    
+    private func configureProductionStore() {
+        // 确保应用数据目录存在
+        let fileManager = FileManager.default
+        let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let appDataURL = appSupportURL.appendingPathComponent("ManualBox")
+        
+        // 如果目录不存在，创建它
+        if !fileManager.fileExists(atPath: appDataURL.path) {
+            do {
+                try fileManager.createDirectory(at: appDataURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print("创建应用数据目录失败: \(error.localizedDescription)")
             }
         }
         
+        // 确保存储URL指向正确的位置
+        if let storeDescription = container.persistentStoreDescriptions.first {
+            let storeURL = appDataURL.appendingPathComponent("ManualBox.sqlite")
+            storeDescription.url = storeURL
+        }
+    }
+    
+    private func configureContainer() {
         // 配置持久化存储
         guard let description = container.persistentStoreDescriptions.first else {
             fatalError("No persistent store description found")
@@ -131,14 +167,18 @@ class PersistenceController {
             description.setOption(true as NSNumber,
                                 forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
         }
-        
+    }
+    
+    private func loadPersistentStores() {
         // 加载持久化存储
         container.loadPersistentStores { description, error in
             if let error = error as NSError? {
                 fatalError("持久化存储加载失败: \(error), \(error.userInfo)")
             }
         }
-        
+    }
+    
+    private func configureContext() {
         // 配置视图上下文
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         container.viewContext.automaticallyMergesChangesFromParent = true
@@ -150,15 +190,45 @@ class PersistenceController {
         container.viewContext.transactionAuthor = "main"
         container.viewContext.name = "viewContext"
         
-        // 设置自动保存
-        NotificationCenter.default.addObserver(
-            forName: .NSManagedObjectContextObjectsDidChange,
-            object: container.viewContext,
-            queue: .main) { [weak self] _ in
-                Task { @MainActor in
-                    await self?.saveContext()
-                }
-            }
+        // 配置平台特定的缓存策略
+        configurePlatformSpecificCaching()
+    }
+    
+    // MARK: - Repository 工厂方法
+    
+    /// 创建后台上下文的 Repository 实例
+    func createBackgroundRepositories() -> (
+        products: ProductRepository,
+        categories: CategoryRepository,
+        tags: TagRepository,
+        orders: OrderRepository,
+        repairRecords: RepairRecordRepository
+    ) {
+        let backgroundContext = newBackgroundContext()
+        return (
+            products: ProductRepository(context: backgroundContext),
+            categories: CategoryRepository(context: backgroundContext),
+            tags: TagRepository(context: backgroundContext),
+            orders: OrderRepository(context: backgroundContext),
+            repairRecords: RepairRecordRepository(context: backgroundContext)
+        )
+    }
+    
+    /// 为特定上下文创建 Repository
+    func repositories(for context: NSManagedObjectContext) -> (
+        products: ProductRepository,
+        categories: CategoryRepository,
+        tags: TagRepository,
+        orders: OrderRepository,
+        repairRecords: RepairRecordRepository
+    ) {
+        return (
+            products: ProductRepository(context: context),
+            categories: CategoryRepository(context: context),
+            tags: TagRepository(context: context),
+            orders: OrderRepository(context: context),
+            repairRecords: RepairRecordRepository(context: context)
+        )
     }
     
     // 初始化默认数据
@@ -180,6 +250,8 @@ class PersistenceController {
         }
     }
     
+    // MARK: - 上下文管理
+    
     // 保存上下文
     @MainActor
     func saveContext() async {
@@ -187,23 +259,46 @@ class PersistenceController {
         if context.hasChanges {
             do {
                 try context.save()
-            } catch {
-                let nsError = error as NSError
-                // 处理具体的错误类型
-                if nsError.domain == NSCocoaErrorDomain {
-                    switch nsError.code {
-                    case 133: // NSValidationErrorMinimum
-                        print("数据验证失败: \(nsError.localizedDescription)")
-                    case 134...2047: // 其他验证错误
-                        print("数据验证错误: \(nsError.localizedDescription)")
-                    case 134020: // 合并错误
-                        context.rollback()
-                        print("合并冲突，已回滚更改")
-                    default:
-                        print("保存上下文失败: \(nsError), \(nsError.userInfo)")
-                    }
+                
+                // 通知性能监控器
+                if let performanceMonitor: PlatformPerformanceManager = ServiceContainer.shared.resolve(PlatformPerformanceManager.self) {
+                    performanceMonitor.recordMetric(
+                        name: "persistence.context.save",
+                        value: 1,
+                        type: .counter
+                    )
                 }
+            } catch {
+                await handleSaveError(error as NSError)
             }
+        }
+    }
+    
+    // 错误处理
+    @MainActor
+    private func handleSaveError(_ nsError: NSError) async {
+        // 处理具体的错误类型
+        if nsError.domain == NSCocoaErrorDomain {
+            switch nsError.code {
+            case 133: // NSValidationErrorMinimum
+                print("数据验证失败: \(nsError.localizedDescription)")
+            case 134...2047: // 其他验证错误
+                print("数据验证错误: \(nsError.localizedDescription)")
+            case 134020: // 合并错误
+                container.viewContext.rollback()
+                print("合并冲突，已回滚更改")
+            default:
+                print("保存上下文失败: \(nsError), \(nsError.userInfo)")
+            }
+        }
+        
+        // 记录错误到性能监控
+        if let performanceMonitor: PlatformPerformanceManager = ServiceContainer.shared.resolve(PlatformPerformanceManager.self) {
+            performanceMonitor.recordMetric(
+                name: "persistence.context.save.error",
+                value: 1,
+                type: .counter
+            )
         }
     }
     
@@ -212,12 +307,14 @@ class PersistenceController {
         let context = container.newBackgroundContext()
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         context.automaticallyMergesChangesFromParent = true
+        context.name = "background-\(UUID().uuidString.prefix(8))"
         return context
     }
     
     // 执行后台任务
     func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
         container.performBackgroundTask { context in
+            context.name = "task-\(UUID().uuidString.prefix(8))"
             block(context)
             if context.hasChanges {
                 do {
@@ -264,11 +361,6 @@ extension PersistenceController {
         
         #if os(macOS)
         // macOS 特定配置
-        // 移除了不存在的 NSPersistentCloudKitContainerApplicationBundleIdentifierKey
-        // CloudKit 会自动使用应用的 Bundle Identifier
-        
-        // 移除了不存在的 NSPersistentCloudKitContainerBatchSizeKey
-        // 使用 CloudKit 默认的批处理策略
         description.setOption("macOS" as NSString, forKey: "CloudKitContainerEnvironment")
         #else
         // iOS 特定配置
@@ -316,5 +408,57 @@ extension PersistenceController {
             self.container.viewContext.refreshAllObjects()
         }
         #endif
+    }
+}
+
+// MARK: - 数据迁移和维护
+extension PersistenceController {
+    
+    /// 执行数据库维护操作
+    func performMaintenance() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            performBackgroundTask { context in
+                do {
+                    // 清理孤立的数据
+                    try self.cleanupOrphanedData(in: context)
+                    
+                    // 优化数据库
+                    try self.optimizeDatabase(in: context)
+                    
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    private func cleanupOrphanedData(in context: NSManagedObjectContext) throws {
+        // 清理没有关联产品的标签
+        let orphanedTagsRequest = NSFetchRequest<Tag>(entityName: "Tag")
+        orphanedTagsRequest.predicate = NSPredicate(format: "products.@count == 0")
+        
+        let orphanedTags = try context.fetch(orphanedTagsRequest)
+        orphanedTags.forEach { context.delete($0) }
+        
+        // 清理没有关联产品的分类（保留默认分类）
+        let orphanedCategoriesRequest = NSFetchRequest<Category>(entityName: "Category")
+        orphanedCategoriesRequest.predicate = NSPredicate(
+            format: "products.@count == 0 AND NOT (name IN %@)",
+            Category.defaultCategories.keys.map { $0 }
+        )
+        
+        let orphanedCategories = try context.fetch(orphanedCategoriesRequest)
+        orphanedCategories.forEach { context.delete($0) }
+        
+        try context.save()
+    }
+    
+    private func optimizeDatabase(in context: NSManagedObjectContext) throws {
+        // 刷新所有对象以释放内存
+        context.refreshAllObjects()
+        
+        // 强制保存以确保所有更改都写入磁盘
+        try context.save()
     }
 }

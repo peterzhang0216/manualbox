@@ -1,0 +1,36 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceRegistration.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.d"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.dia"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.swiftdeps"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/PlatformImage.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformImage.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformImage.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformImage.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformImage.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformImage.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordsView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecordsView.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecordsView.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecordsView.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecordsView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecordsView.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Tag+Extensions.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SearchFilterView.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SearchFilterView.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SearchFilterView.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SearchFilterView.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SearchFilterView.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SearchFilterView.d"

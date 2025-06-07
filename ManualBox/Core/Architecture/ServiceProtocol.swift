@@ -72,6 +72,7 @@ protocol NotificationServiceProtocol: ServiceProtocol {
 }
 
 // MARK: - 同步服务协议
+@MainActor
 protocol SyncServiceProtocol: ServiceProtocol {
     func syncToCloud() async throws
     func syncFromCloud() async throws
@@ -79,11 +80,22 @@ protocol SyncServiceProtocol: ServiceProtocol {
     var syncStatus: SyncStatus { get }
 }
 
-enum SyncStatus {
+enum SyncStatus: Equatable {
     case idle
     case syncing
-    case error(Error)
-    case success
+    case completed
+    case failed(Error)
+    
+    static func == (lhs: SyncStatus, rhs: SyncStatus) -> Bool {
+        switch (lhs, rhs) {
+        case (.idle, .idle), (.syncing, .syncing), (.completed, .completed):
+            return true
+        case (.failed(let lhsError), .failed(let rhsError)):
+            return lhsError.localizedDescription == rhsError.localizedDescription
+        default:
+            return false
+        }
+    }
 }
 
 // MARK: - 搜索服务协议

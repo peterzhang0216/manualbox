@@ -2,24 +2,13 @@ import Foundation
 import CoreData
 import PDFKit
 import UniformTypeIdentifiers
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 
-// 用于JSON导出的数据结构
-struct ProductExportData: Codable {
-    var name: String
-    var brand: String
-    var model: String
-    var notes: String
-    var categoryName: String?
-    var order: OrderExportData?
-}
-
-struct OrderExportData: Codable {
-    var orderNumber: String?
-    var platform: String?
-    var orderDate: String
-    var warrantyPeriod: Int?
-}
-
+// MARK: - ExportService
 class ExportService {
     // 导出为CSV格式
     static func exportToCSV(products: [Product]) -> Data? {
@@ -44,7 +33,7 @@ class ExportService {
                 product.order?.displayDate.formatted() ?? "",
                 product.order?.displayPlatform ?? "",
                 product.order?.displayOrderNumber ?? "",
-                product.order?.warrantyStatus.description ?? "",
+                product.hasActiveWarranty ? "保修中" : "已过保",
                 warrantyMonths,
                 product.productNotes
             ]
@@ -64,42 +53,12 @@ class ExportService {
     
     // 导出为JSON格式
     static func exportToJSON(products: [Product]) -> Data? {
-        var exportData: [ProductExportData] = []
-        
-        for product in products {
-            var productData = ProductExportData(
-                name: product.productName,
-                brand: product.productBrand,
-                model: product.productModel,
-                notes: product.productNotes,
-                categoryName: product.category?.categoryName
-            )
-            
-            // 添加订单信息
-            if let order = product.order,
-               let orderDate = order.orderDate {
-                let formatter = ISO8601DateFormatter()
-                
-                // 计算保修期月数
-                var warrantyMonths: Int?
-                if let warrantyEndDate = order.warrantyEndDate {
-                    warrantyMonths = Calendar.current.dateComponents([.month], from: orderDate, to: warrantyEndDate).month
-                }
-                
-                productData.order = OrderExportData(
-                    orderNumber: order.orderNumber,
-                    platform: order.platform,
-                    orderDate: formatter.string(from: orderDate),
-                    warrantyPeriod: warrantyMonths
-                )
-            }
-            
-            exportData.append(productData)
-        }
+        let exportData = products.map { ProductExportData(from: $0) }
         
         // 编码为JSON
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
         
         do {
             return try encoder.encode(exportData)
@@ -131,23 +90,28 @@ class ExportService {
             return nil
         }
         
+        context.beginPDFPage(nil)
+        
+        // 绘制商品信息
+        let attributes = [
+            NSAttributedString.Key.font: NSFont.systemFont(ofSize: 12)
+        ]
+        
+        var y: CGFloat = pageHeight - 50
+        let leftMargin: CGFloat = 50
+        
+        // 标题
+        let titleAttributes = [
+            NSAttributedString.Key.font: NSFont.boldSystemFont(ofSize: 16)
+        ]
+        
         for (index, product) in products.enumerated() {
-            if index > 0 {
-                context.beginPage(mediaBox: &mediaBox)
+            if index > 0 && y < 100 {
+                context.endPDFPage()
+                context.beginPDFPage(nil)
+                y = pageHeight - 50
             }
             
-            // 绘制商品信息
-            let attributes = [
-                NSAttributedString.Key.font: NSFont.systemFont(ofSize: 12)
-            ]
-            
-            var y: CGFloat = pageHeight - 50
-            let leftMargin: CGFloat = 50
-            
-            // 标题
-            let titleAttributes = [
-                NSAttributedString.Key.font: NSFont.boldSystemFont(ofSize: 16)
-            ]
             NSAttributedString(string: product.productName,
                              attributes: titleAttributes).draw(at: NSPoint(x: leftMargin, y: y))
             y -= 30
@@ -160,7 +124,7 @@ class ExportService {
                 "购买日期": product.order?.displayDate.formatted() ?? "",
                 "购买平台": product.order?.displayPlatform ?? "",
                 "订单号": product.order?.displayOrderNumber ?? "",
-                "保修状态": product.order?.warrantyStatus.description ?? ""
+                "保修状态": product.hasActiveWarranty ? "保修中" : "已过保"
             ]
             
             for (key, value) in info {
@@ -170,32 +134,10 @@ class ExportService {
                 y -= 20
             }
             
-            // 如果有图片，绘制图片
-            if let imageData = product.imageData,
-               let image = PlatformImage(data: imageData) {
-                let maxWidth: CGFloat = 200
-                let maxHeight: CGFloat = 200
-                let aspectRatio = image.size.width / image.size.height
-                
-                var drawWidth = maxWidth
-                var drawHeight = maxWidth / aspectRatio
-                
-                if drawHeight > maxHeight {
-                    drawHeight = maxHeight
-                    drawWidth = maxHeight * aspectRatio
-                }
-                
-                if let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) {
-                    context.draw(cgImage, in: CGRect(
-                        x: leftMargin,
-                        y: y - drawHeight,
-                        width: drawWidth,
-                        height: drawHeight
-                    ))
-                }
-            }
+            y -= 20 // 产品间距
         }
         
+        context.endPDFPage()
         context.closePDF()
         return data as Data
         
@@ -209,21 +151,27 @@ class ExportService {
         )
         
         return renderer.pdfData { context in
+            context.beginPage()
+            
+            // 绘制商品信息
+            let attributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)
+            ]
+            
+            var y: CGFloat = pageHeight - 50
+            let leftMargin: CGFloat = 50
+            
+            // 标题
+            let titleAttributes = [
+                NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)
+            ]
+            
             for (index, product) in products.enumerated() {
-                context.beginPage()
+                if index > 0 && y < 100 {
+                    context.beginPage()
+                    y = pageHeight - 50
+                }
                 
-                // 绘制商品信息
-                let attributes = [
-                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)
-                ]
-                
-                var y: CGFloat = pageHeight - 50
-                let leftMargin: CGFloat = 50
-                
-                // 标题
-                let titleAttributes = [
-                    NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)
-                ]
                 NSString(string: product.productName).draw(
                     at: CGPoint(x: leftMargin, y: y),
                     withAttributes: titleAttributes
@@ -238,7 +186,7 @@ class ExportService {
                     "购买日期": product.order?.displayDate.formatted() ?? "",
                     "购买平台": product.order?.displayPlatform ?? "",
                     "订单号": product.order?.displayOrderNumber ?? "",
-                    "保修状态": product.order?.warrantyStatus.description ?? ""
+                    "保修状态": product.hasActiveWarranty ? "保修中" : "已过保"
                 ]
                 
                 for (key, value) in info {
@@ -250,28 +198,7 @@ class ExportService {
                     y -= 20
                 }
                 
-                // 如果有图片，绘制图片
-                if let imageData = product.imageData,
-                   let image = PlatformImage(data: imageData) {
-                    let maxWidth: CGFloat = 200
-                    let maxHeight: CGFloat = 200
-                    let aspectRatio = image.size.width / image.size.height
-                    
-                    var drawWidth = maxWidth
-                    var drawHeight = maxWidth / aspectRatio
-                    
-                    if drawHeight > maxHeight {
-                        drawHeight = maxHeight
-                        drawWidth = maxHeight * aspectRatio
-                    }
-                    
-                    image.draw(in: CGRect(
-                        x: leftMargin,
-                        y: y - drawHeight,
-                        width: drawWidth,
-                        height: drawHeight
-                    ))
-                }
+                y -= 20 // 产品间距
             }
         }
         #endif
@@ -291,3 +218,5 @@ class ExportService {
         }
     }
 }
+
+// MARK: - Supporting Types已移至DataExportService.swift中

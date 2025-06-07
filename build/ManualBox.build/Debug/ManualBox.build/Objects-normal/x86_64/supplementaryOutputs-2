@@ -1,0 +1,42 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemePickerView.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ThemePickerView.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ThemePickerView.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ThemePickerView.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ThemePickerView.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ThemePickerView.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/ProductRow.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRow.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRow.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRow.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRow.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRow.swiftdeps"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/MainTabView.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/MainTabView.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/MainTabView.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/MainTabView.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/MainTabView.swiftdeps"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/MainTabView.d"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/Calendar+Extension.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.swiftdeps"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Category+Extensions.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Category+Extensions.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Category+Extensions.dia"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Category+Extensions.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Category+Extensions.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Category+Extensions.d"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListContentView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListContentView.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListContentView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListContentView.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListContentView.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListContentView.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingRow.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SettingRow.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SettingRow.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SettingRow.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SettingRow.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SettingRow.o"

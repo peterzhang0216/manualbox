@@ -1,0 +1,168 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationSettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "通知设置",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "通知权限状态",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "刷新状态",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "通知权限已被拒绝",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "您需要在系统设置中手动开启通知权限：",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "1. 打开系统设置",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "2. 点击\"通知与焦点\"",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 48
+        }
+      },
+      {
+        "comment": "",
+        "key": "3. 在应用列表中找到\"ManualBox\"",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "4. 开启\"允许通知\"选项",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "打开系统设置",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "请求通知权限",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "保修提醒功能需要通知权限来提醒您产品保修期即将到期。",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "请求通知权限",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "启用保修到期提醒",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "提前 %lld 天提醒",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "已授权",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "已拒绝",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "未设置",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "临时授权",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 132
+        }
+      },
+      {
+        "comment": "",
+        "key": "未知状态",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 137
+        }
+      }
+    ]
+  },
+  "version": 1
+}

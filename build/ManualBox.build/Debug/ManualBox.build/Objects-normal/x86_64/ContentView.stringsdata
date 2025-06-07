@@ -1,0 +1,80 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/Features/Products/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "产品详情",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 166
+        }
+      },
+      {
+        "comment": "",
+        "key": "请选择一个产品",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 157
+        }
+      },
+      {
+        "comment": "",
+        "key": "在左侧选择或新建一个产品以查看详情",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "搜索产品...",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 299
+        }
+      },
+      {
+        "comment": "",
+        "key": "筛选条件:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 327
+        }
+      },
+      {
+        "comment": "",
+        "key": "清除",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 337
+        }
+      },
+      {
+        "comment": "",
+        "key": "・%@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 448
+        }
+      },
+      {
+        "comment": "",
+        "key": "还剩 %lld 天",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 460
+        }
+      },
+      {
+        "comment": "",
+        "key": "已过保",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 463
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,36 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/SearchFilters.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SearchFilters.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SearchFilters.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SearchFilters.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SearchFilters.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/SearchFilters.swiftdeps"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Order+Extensions.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Order+Extensions.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Order+Extensions.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Order+Extensions.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Order+Extensions.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/Order+Extensions.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ManualPreviewView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductRowView.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRowView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRowView.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRowView.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRowView.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductRowView.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformPerformance.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/RepairRecord+Extensions.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.swiftconstvalues"

@@ -1,0 +1,36 @@
+"/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/ManualBox+CoreDataModel.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox+CoreDataModel.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox+CoreDataModel.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox+CoreDataModel.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox+CoreDataModel.swiftdeps"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox+CoreDataModel.d"
+"/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataProperties.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataProperties.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataProperties.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataProperties.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataProperties.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataProperties.d"
+"/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataProperties.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataProperties.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataProperties.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataProperties.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataProperties.dia"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataProperties.swiftdeps"
+"/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataClass.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataClass.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataClass.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataClass.swiftdeps"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataClass.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+CoreDataClass.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataClass.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataClass.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataClass.dia"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataClass.swiftdeps"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataClass.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/RepairRecord+CoreDataClass.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/GeneratedAssetSymbols.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/GeneratedAssetSymbols.dia"

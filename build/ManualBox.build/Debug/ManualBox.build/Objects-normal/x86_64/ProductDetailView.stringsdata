@@ -1,0 +1,152 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "编辑",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "型号: %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "未记录保修信息",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "保修有效",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "保修过期",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "基本信息",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 135
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 141
+        }
+      },
+      {
+        "comment": "",
+        "key": "标签:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "订单信息",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 167
+        }
+      },
+      {
+        "comment": "",
+        "key": "订单号:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "购买平台:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 180
+        }
+      },
+      {
+        "comment": "",
+        "key": "购买日期:",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 187
+        }
+      },
+      {
+        "comment": "",
+        "key": "保修期至:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 194
+        }
+      },
+      {
+        "comment": "",
+        "key": "发票:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 205
+        }
+      },
+      {
+        "comment": "",
+        "key": "暂无维修记录",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 240
+        }
+      },
+      {
+        "comment": "",
+        "key": "维修记录",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 221
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 228
+        }
+      },
+      {
+        "comment": "",
+        "key": "说明书",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 258
+        }
+      }
+    ]
+  },
+  "version": 1
+}

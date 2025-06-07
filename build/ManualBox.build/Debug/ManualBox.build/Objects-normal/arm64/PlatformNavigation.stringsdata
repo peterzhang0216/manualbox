@@ -1,0 +1,88 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformNavigation.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "ManualBox",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "标签",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "维修管理",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "所有商品",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 80
+        }
+      },
+      {
+        "comment": "",
+        "key": "全部分类",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "全部标签",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "维修记录",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置与偏好",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 120
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,36 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataExportView.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataExportView.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataExportView.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataExportView.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataExportView.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/DataExportView.swiftdeps"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformInput.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformInput.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformInput.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformInput.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformInput.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/PlatformInput.swiftdeps"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/ImportService.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ImportService.swiftdeps"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ImportService.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ImportService.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ImportService.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ImportService.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/AppNotification.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppNotification.d"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppNotification.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppNotification.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppNotification.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/AppNotification.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListViewModel.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordDetailView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Debug/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.swiftdeps"

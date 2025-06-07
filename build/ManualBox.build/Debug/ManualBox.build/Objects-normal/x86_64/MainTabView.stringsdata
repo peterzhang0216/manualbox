@@ -1,0 +1,112 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/MainTabView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "暂无选中商品",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 216
+        }
+      },
+      {
+        "comment": "",
+        "key": "请从列表中选择一个商品查看详情",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 218
+        }
+      },
+      {
+        "comment": "",
+        "key": "暂无选中内容",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 257
+        }
+      },
+      {
+        "comment": "",
+        "key": "请从左侧选择要查看的内容",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 259
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 346
+        }
+      },
+      {
+        "comment": "",
+        "key": "标签",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 359
+        }
+      },
+      {
+        "comment": "",
+        "key": "维修管理",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 377
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 382
+        }
+      },
+      {
+        "comment": "",
+        "key": "所有商品",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 343
+        }
+      },
+      {
+        "comment": "",
+        "key": "全部分类",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 347
+        }
+      },
+      {
+        "comment": "",
+        "key": "全部标签",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 360
+        }
+      },
+      {
+        "comment": "",
+        "key": "维修记录",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 378
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置与偏好",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 383
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,6 +1,13 @@
 import SwiftUI
 import Combine
 
+// MARK: - 性能指标类型
+enum MetricType: String {
+    case timing = "timing"
+    case counter = "counter"
+    case gauge = "gauge"
+}
+
 // MARK: - 平台性能管理器
 class PlatformPerformanceManager: ObservableObject {
     static let shared = PlatformPerformanceManager()
@@ -9,9 +16,34 @@ class PlatformPerformanceManager: ObservableObject {
     @Published var isLowMemoryMode: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
+    private var metrics: [String: Double] = [:]
     
     init() {
         setupMemoryMonitoring()
+    }
+    
+    // MARK: - 性能指标记录方法
+    
+    func recordDatabaseOperation(operation: String, entityName: String, duration: TimeInterval) {
+        let metricName = "db.\(operation).\(entityName)"
+        recordMetric(name: metricName, value: duration, type: .timing)
+    }
+    
+    func recordMetric(name: String, value: Double, type: MetricType) {
+        DispatchQueue.main.async {
+            let key = "\(name).\(type.rawValue)"
+            self.metrics[key] = value
+            
+            // 如果是性能关键指标，进行日志记录
+            if type == .timing && value > 1.0 {
+                print("⚠️ 性能警告: \(name) 耗时 \(String(format: "%.2f", value))秒")
+            }
+        }
+    }
+    
+    func getMetric(name: String, type: MetricType) -> Double? {
+        let key = "\(name).\(type.rawValue)"
+        return metrics[key]
     }
     
     private func setupMemoryMonitoring() {
