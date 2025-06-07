@@ -3,6 +3,8 @@ import PhotosUI
 import CoreData
 import UniformTypeIdentifiers
 
+
+
 struct AddProductView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss

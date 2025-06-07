@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreData
 
+
 struct SearchFilterView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext

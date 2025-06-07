@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreData
 
+
 struct RepairRecordDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss

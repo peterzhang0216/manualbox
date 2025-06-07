@@ -1,5 +1,5 @@
 import SwiftUI
-import CoreData
+
 
 struct ProductRowView: View {
     let product: Product

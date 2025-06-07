@@ -1,6 +1,8 @@
 import SwiftUI
 import CoreData
 
+
+
 struct AddCategorySheet: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Binding var isPresented: Bool

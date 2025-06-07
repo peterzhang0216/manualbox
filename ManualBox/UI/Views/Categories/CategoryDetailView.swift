@@ -1,6 +1,8 @@
 import SwiftUI
 import CoreData
 
+
+
 struct CategoryDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     let category: Category

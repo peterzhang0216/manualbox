@@ -8,6 +8,8 @@
 import SwiftUI
 import CoreData
 
+
+
 // 添加 SelectionValue 枚举来统一处理选择类型
 enum SelectionValue: Hashable {
     case main(Int)

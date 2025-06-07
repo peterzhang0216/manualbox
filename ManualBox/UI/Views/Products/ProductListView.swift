@@ -1,6 +1,8 @@
 import SwiftUI
 import CoreData
 
+
+
 struct ProductListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
@@ -84,10 +86,10 @@ struct ProductListView: View {
                         NavigationLink {
                             ProductDetailView(product: product)
                         } label: {
-                            ProductRow(product: product)
+                            ProductListItem(product: product)
                         }
                         #else
-                        ProductRow(product: product)
+                        ProductListItem(product: product)
                             .tag(product)
                         #endif
                     }
@@ -175,7 +177,7 @@ struct ProductListView: View {
     }
 }
 
-struct ProductRow: View {
+struct ProductListItem: View {
     let product: Product
     
     var body: some View {
@@ -196,23 +198,19 @@ struct ProductRow: View {
                         .foregroundColor(.gray)
                         .padding(10)
                         .background(
-                            Group {
-                                #if os(macOS)
-                                Color(nsColor: .windowBackgroundColor)
-                                #else
-                                Color(uiColor: .systemBackground)
-                                #endif
-                            }
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.gray.opacity(0.1))
                         )
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
             }
+            .frame(width: 60, height: 60)
             
-            VStack(alignment: .leading) {
-                Text(product.productName)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(product.productName ?? "")
                     .font(.headline)
-                if !product.productBrand.isEmpty {
-                    Text(product.productBrand)
+                
+                if let order = product.order {
+                    Text("购买日期: \(order.orderDate?.formatted() ?? "")")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -220,9 +218,17 @@ struct ProductRow: View {
             
             Spacer()
             
-            if product.hasActiveWarranty {
-                Image(systemName: "checkmark.shield.fill")
-                    .foregroundColor(.green)
+            if let order = product.order,
+               let warrantyEndDate = order.warrantyEndDate {
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("保修到期")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text(warrantyEndDate.formatted(date: .abbreviated, time: .omitted))
+                        .font(.caption)
+                        .foregroundColor(warrantyEndDate > Date() ? .green : .red)
+                }
             }
         }
         .padding(.vertical, 4)

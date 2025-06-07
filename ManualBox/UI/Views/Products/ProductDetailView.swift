@@ -1,6 +1,8 @@
 import SwiftUI
 import CoreData
 
+
+
 struct ProductDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     let product: Product

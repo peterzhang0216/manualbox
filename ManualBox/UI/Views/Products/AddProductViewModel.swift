@@ -2,6 +2,8 @@ import SwiftUI
 import PhotosUI
 import CoreData
 import Combine
+import Vision
+
 
 @MainActor
 final class AddProductViewModel: ObservableObject {
