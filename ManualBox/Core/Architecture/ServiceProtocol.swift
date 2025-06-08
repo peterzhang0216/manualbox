@@ -90,7 +90,7 @@ enum SyncStatus: Equatable {
         switch (lhs, rhs) {
         case (.idle, .idle), (.syncing, .syncing), (.completed, .completed):
             return true
-        case (.failed(let lhsError), .failed(let rhsError)):
+        case (.failed(let lhsError), (.failed(let rhsError))):
             return lhsError.localizedDescription == rhsError.localizedDescription
         default:
             return false

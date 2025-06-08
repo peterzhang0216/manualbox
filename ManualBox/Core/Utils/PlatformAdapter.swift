@@ -123,6 +123,90 @@ struct PlatformAdapter {
         return true // iOS 11+ 支持
         #endif
     }
+    
+    static var supportsKeyboardShortcuts: Bool {
+        #if os(macOS)
+        return true
+        #else
+        return false
+        #endif
+    }
+    
+    static var supportsMultipleWindows: Bool {
+        #if os(macOS)
+        return true
+        #else
+        return true // iOS 13+ 支持
+        #endif
+    }
+    
+    // MARK: - 平台特定动画
+    static var defaultAnimation: Animation {
+        #if os(macOS)
+        return .easeInOut(duration: 0.25)
+        #else
+        return .spring(response: 0.5, dampingFraction: 0.8)
+        #endif
+    }
+    
+    static var listRowAnimation: Animation {
+        #if os(macOS)
+        return .easeOut(duration: 0.2)
+        #else
+        return .spring(response: 0.4, dampingFraction: 0.9)
+        #endif
+    }
+    
+    // MARK: - 平台特定间距
+    static var sectionSpacing: CGFloat {
+        #if os(macOS)
+        return 20
+        #else
+        return 16
+        #endif
+    }
+    
+    static var groupSpacing: CGFloat {
+        #if os(macOS)
+        return 12
+        #else
+        return 8
+        #endif
+    }
+    
+    // MARK: - 平台特定字体大小
+    static var titleFontSize: CGFloat {
+        #if os(macOS)
+        return 24
+        #else
+        return 28
+        #endif
+    }
+    
+    static var bodyFontSize: CGFloat {
+        #if os(macOS)
+        return 14
+        #else
+        return 16
+        #endif
+    }
+    
+    static var captionFontSize: CGFloat {
+        #if os(macOS)
+        return 11
+        #else
+        return 12
+        #endif
+    }
+    
+    // MARK: - 布局列数
+    static var preferredColumnCount: Int {
+        #if os(macOS)
+        return 3
+        #else
+        return 2
+        #endif
+    }
 }
 
 // MARK: - 导航样式枚举
@@ -159,5 +243,75 @@ extension View {
                 RoundedRectangle(cornerRadius: PlatformAdapter.cardCornerRadius)
                     .fill(PlatformAdapter.secondaryBackgroundColor)
             )
+    }
+    
+    @ViewBuilder
+    func platformListRow() -> some View {
+        #if os(macOS)
+        self
+            .padding(.vertical, 4)
+            .padding(.horizontal, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color.clear)
+            )
+            .contentShape(Rectangle())
+        #else
+        self
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+        #endif
+    }
+    
+    @ViewBuilder
+    func platformHover() -> some View {
+        #if os(macOS)
+        self
+            .onHover { isHovered in
+                withAnimation(PlatformAdapter.defaultAnimation) {
+                    // 悬停效果可以在这里实现
+                }
+            }
+        #else
+        self
+        #endif
+    }
+    
+    @ViewBuilder
+    func platformContextMenu<MenuItems: View>(@ViewBuilder menuItems: () -> MenuItems) -> some View {
+        #if os(macOS)
+        self.contextMenu {
+            menuItems()
+        }
+        #else
+        self.contextMenu {
+            menuItems()
+        }
+        #endif
+    }
+    
+    @ViewBuilder
+    func platformAnimation() -> some View {
+        self.animation(PlatformAdapter.defaultAnimation, value: UUID())
+    }
+    
+    @ViewBuilder
+    func platformSectionSpacing() -> some View {
+        self.padding(.vertical, PlatformAdapter.sectionSpacing / 2)
+    }
+    
+    @ViewBuilder
+    func platformGroupSpacing() -> some View {
+        self.padding(.vertical, PlatformAdapter.groupSpacing / 2)
+    }
+    
+    @ViewBuilder
+    func platformFont(_ style: Font.TextStyle) -> some View {
+        self.font(PlatformAdapter.dynamicFont(style: style))
+    }
+    
+    @ViewBuilder
+    func platformTouchTarget() -> some View {
+        self.frame(minHeight: PlatformAdapter.minimumTouchTarget)
     }
 }

@@ -4,10 +4,60 @@ import CoreData
 import Combine
 import Vision
 
+// MARK: - AddProduct State
+struct AddProductState: StateProtocol {
+    var isLoading: Bool = false
+    var errorMessage: String? = nil
+    
+    // 产品基本信息
+    var name = ""
+    var brand = ""
+    var model = ""
+    var selectedCategory: Category?
+    var selectedTags: Set<Tag> = []
+    var selectedImage: PhotosPickerItem?
+    var productImage: PlatformImage?
+    
+    // 订单信息
+    var orderNumber = ""
+    var platform = ""
+    var orderDate = Date()
+    var warrantyPeriod = 12
+    var invoiceImage: PhotosPickerItem?
+    var invoiceImageData: Data?
+    
+    // 说明书信息
+    var selectedManuals: [PhotosPickerItem] = []
+    var performOCR = true
+    
+    // 保存状态
+    var isSaving = false
+    var saveError: String?
+}
+
+// MARK: - AddProduct Actions
+enum AddProductAction: ActionProtocol {
+    case updateName(String)
+    case updateBrand(String)
+    case updateModel(String)
+    case selectCategory(Category?)
+    case toggleTag(Tag)
+    case selectImage(PhotosPickerItem?)
+    case updateOrderNumber(String)
+    case updatePlatform(String)
+    case updateOrderDate(Date)
+    case updateWarrantyPeriod(Int)
+    case selectInvoiceImage(PhotosPickerItem?)
+    case updateSelectedManuals([PhotosPickerItem])
+    case toggleOCR
+    case startSaving
+    case finishSaving(Result<Void, Error>)
+    case loadImage(PhotosPickerItem?)
+}
 
 @MainActor
-final class AddProductViewModel: ObservableObject {
-    // 产品基本信息
+final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction> {
+    // 为了保持向后兼容，保留Published属性
     @Published var name = ""
     @Published var brand = ""
     @Published var model = ""
@@ -15,43 +65,155 @@ final class AddProductViewModel: ObservableObject {
     @Published var selectedTags: Set<Tag> = []
     @Published var selectedImage: PhotosPickerItem?
     @Published var productImage: PlatformImage?
-    
-    // 订单信息
     @Published var orderNumber = ""
     @Published var platform = ""
     @Published var orderDate = Date()
     @Published var warrantyPeriod = 12
     @Published var invoiceImage: PhotosPickerItem?
     @Published var invoiceImageData: Data?
-    
-    // 说明书信息
     @Published var selectedManuals: [PhotosPickerItem] = []
     @Published var performOCR = true
-    
-    // 保存状态
     @Published var isSaving = false
     @Published var saveError: String?
     
     // 取消订阅存储
     private var cancellables = Set<AnyCancellable>()
     
-    func toggleTag(_ tag: Tag) {
-        if selectedTags.contains(tag) {
-            selectedTags.remove(tag)
-        } else {
-            selectedTags.insert(tag)
+    init() {
+        super.init(initialState: AddProductState())
+    }
+    
+    // MARK: - Action Handler
+    override func handle(_ action: AddProductAction) async {
+        switch action {
+        case .updateName(let newName):
+            name = newName
+            updateState { $0.name = newName }
+            
+        case .updateBrand(let newBrand):
+            brand = newBrand
+            updateState { $0.brand = newBrand }
+            
+        case .updateModel(let newModel):
+            model = newModel
+            updateState { $0.model = newModel }
+            
+        case .selectCategory(let category):
+            selectedCategory = category
+            updateState { $0.selectedCategory = category }
+            
+        case .toggleTag(let tag):
+            if selectedTags.contains(tag) {
+                selectedTags.remove(tag)
+            } else {
+                selectedTags.insert(tag)
+            }
+            updateState { 
+                if $0.selectedTags.contains(tag) {
+                    $0.selectedTags.remove(tag)
+                } else {
+                    $0.selectedTags.insert(tag)
+                }
+            }
+            
+        case .selectImage(let image):
+            selectedImage = image
+            updateState { $0.selectedImage = image }
+            
+        case .updateOrderNumber(let number):
+            orderNumber = number
+            updateState { $0.orderNumber = number }
+            
+        case .updatePlatform(let newPlatform):
+            platform = newPlatform
+            updateState { $0.platform = newPlatform }
+            
+        case .updateOrderDate(let date):
+            orderDate = date
+            updateState { $0.orderDate = date }
+            
+        case .updateWarrantyPeriod(let period):
+            warrantyPeriod = period
+            updateState { $0.warrantyPeriod = period }
+            
+        case .selectInvoiceImage(let image):
+            invoiceImage = image
+            updateState { $0.invoiceImage = image }
+            
+        case .updateSelectedManuals(let manuals):
+            selectedManuals = manuals
+            updateState { $0.selectedManuals = manuals }
+            
+        case .toggleOCR:
+            performOCR.toggle()
+            updateState { $0.performOCR.toggle() }
+            
+        case .startSaving:
+            isSaving = true
+            saveError = nil
+            updateState { 
+                $0.isSaving = true
+                $0.saveError = nil
+            }
+            
+        case .finishSaving(let result):
+            isSaving = false
+            switch result {
+            case .success:
+                saveError = nil
+            case .failure(let error):
+                saveError = error.localizedDescription
+            }
+            updateState {
+                $0.isSaving = false
+                switch result {
+                case .success:
+                    $0.saveError = nil
+                case .failure(let error):
+                    $0.saveError = error.localizedDescription
+                }
+            }
+            
+        case .loadImage(let item):
+            await loadImageFromItem(item)
         }
     }
     
+    // MARK: - 业务方法
+    
+    func toggleTag(_ tag: Tag) {
+        send(.toggleTag(tag))
+    }
+    
     func loadImage(from item: PhotosPickerItem?) {
+        send(.loadImage(item))
+    }
+    
+    private func loadImageFromItem(_ item: PhotosPickerItem?) async {
         guard let item = item else { return }
         
-        Task { 
-            if let data = try? await item.loadTransferable(type: Data.self) {
-                // 使用 MainActor.run 确保在主线程上更新 UI
-                await MainActor.run {
-                    self.productImage = PlatformImage(data: data)
+        do {
+            if let data = try await item.loadTransferable(type: Data.self) {
+                #if os(macOS)
+                if let image = NSImage(data: data) {
+                    await MainActor.run {
+                        self.productImage = image
+                        self.updateState { $0.productImage = image }
+                    }
                 }
+                #else
+                if let image = UIImage(data: data) {
+                    await MainActor.run {
+                        self.productImage = image
+                        self.updateState { $0.productImage = image }
+                    }
+                }
+                #endif
+            }
+        } catch {
+            await MainActor.run {
+                self.saveError = "加载图片失败: \(error.localizedDescription)"
+                self.updateState { $0.saveError = "加载图片失败: \(error.localizedDescription)" }
             }
         }
     }
