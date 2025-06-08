@@ -23,7 +23,7 @@ struct ProductListContentView: View {
             return Binding(
                 get: { viewModel._selectedProduct },
                 set: { 
-                    viewModel._selectedProduct = $0
+                    viewModel.send(.setSelectedProduct($0))
                     environmentSelectedProduct.wrappedValue = $0
                 }
             )
@@ -33,7 +33,7 @@ struct ProductListContentView: View {
     private var selectedProduct: Binding<Product?> {
         return Binding(
             get: { viewModel._selectedProduct },
-            set: { viewModel._selectedProduct = $0 }
+            set: { viewModel.send(.setSelectedProduct($0)) }
         )
     }
     #endif
@@ -51,7 +51,22 @@ struct ProductListContentView: View {
     private var productListView: some View {
         Group {
             if viewModel.isSelectMode {
-                List(selection: $viewModel.selectedProducts) {
+                List(selection: Binding(
+                    get: { viewModel.selectedProducts },
+                    set: { newSelection in
+                        // 处理选择变化
+                        let currentSelection = viewModel.selectedProducts
+                        let added = newSelection.subtracting(currentSelection)
+                        let removed = currentSelection.subtracting(newSelection)
+                        
+                        for product in added {
+                            viewModel.send(.selectProduct(product))
+                        }
+                        for product in removed {
+                            viewModel.send(.deselectProduct(product))
+                        }
+                    }
+                )) {
                     ForEach(products, id: \.objectID) { product in
                         ProductListItem(product: product)
                             .tag(product)

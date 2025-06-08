@@ -69,8 +69,8 @@ struct AddProductView: View {
             }
         }
         .onAppear {
-            viewModel.warrantyPeriod = defaultWarrantyPeriod
-            viewModel.performOCR = enableOCRByDefault
+            viewModel.send(.updateWarrantyPeriod(defaultWarrantyPeriod))
+            viewModel.send(.updatePerformOCR(enableOCRByDefault))
         }
         .onChange(of: viewModel.selectedImage) { oldValue, newValue in
             viewModel.loadImage(from: newValue)
@@ -79,18 +79,33 @@ struct AddProductView: View {
     
     private var productInfoSection: some View {
         Section {
-            TextField("名称", text: $viewModel.name)
-            TextField("品牌", text: $viewModel.brand)
-            TextField("型号", text: $viewModel.model)
+            TextField("名称", text: Binding(
+                get: { viewModel.name },
+                set: { viewModel.send(.updateName($0)) }
+            ))
+            TextField("品牌", text: Binding(
+                get: { viewModel.brand },
+                set: { viewModel.send(.updateBrand($0)) }
+            ))
+            TextField("型号", text: Binding(
+                get: { viewModel.model },
+                set: { viewModel.send(.updateModel($0)) }
+            ))
             
-            Picker("分类", selection: $viewModel.selectedCategory) {
+            Picker("分类", selection: Binding(
+                get: { viewModel.selectedCategory },
+                set: { viewModel.send(.updateSelectedCategory($0)) }
+            )) {
                 Text("未分类").tag(nil as Category?)
                 ForEach(categories) { category in
                     Text(category.categoryName).tag(category as Category?)
                 }
             }
             
-            PhotosPicker(selection: $viewModel.selectedImage,
+            PhotosPicker(selection: Binding(
+                get: { viewModel.selectedImage },
+                set: { viewModel.send(.updateSelectedImage($0)) }
+            ),
                         matching: .images,
                         photoLibrary: .shared()) {
                 ProductImagePreview(image: viewModel.productImage)
@@ -119,14 +134,29 @@ struct AddProductView: View {
     
     private var orderInfoSection: some View {
         Section {
-            TextField("订单号", text: $viewModel.orderNumber)
-            TextField("购买平台", text: $viewModel.platform)
-            DatePicker("购买日期", selection: $viewModel.orderDate, displayedComponents: .date)
+            TextField("订单号", text: Binding(
+                get: { viewModel.orderNumber },
+                set: { viewModel.send(.updateOrderNumber($0)) }
+            ))
+            TextField("购买平台", text: Binding(
+                get: { viewModel.platform },
+                set: { viewModel.send(.updatePlatform($0)) }
+            ))
+            DatePicker("购买日期", selection: Binding(
+                get: { viewModel.orderDate },
+                set: { viewModel.send(.updateOrderDate($0)) }
+            ), displayedComponents: .date)
             Stepper("保修期：\(viewModel.warrantyPeriod) 个月",
-                    value: $viewModel.warrantyPeriod,
+                    value: Binding(
+                        get: { viewModel.warrantyPeriod },
+                        set: { viewModel.send(.updateWarrantyPeriod($0)) }
+                    ),
                     in: 0...60)
             
-            PhotosPicker(selection: $viewModel.invoiceImage,
+            PhotosPicker(selection: Binding(
+                get: { viewModel.invoiceImage },
+                set: { viewModel.send(.updateInvoiceImage($0)) }
+            ),
                         matching: .images,
                         photoLibrary: .shared()) {
                 Label("上传发票", systemImage: "doc.text.image")
@@ -138,14 +168,20 @@ struct AddProductView: View {
     
     private var manualSection: some View {
         Section {
-            PhotosPicker(selection: $viewModel.selectedManuals,
+            PhotosPicker(selection: Binding(
+                get: { viewModel.selectedManuals },
+                set: { viewModel.send(.updateSelectedManuals($0)) }
+            ),
                         matching: .any(of: [.images, .not(.livePhotos)]),
                         photoLibrary: .shared()) {
                 Label("选择说明书文件", systemImage: "doc.badge.plus")
             }
             
             if !viewModel.selectedManuals.isEmpty {
-                Toggle("OCR 文字识别", isOn: $viewModel.performOCR)
+                Toggle("OCR 文字识别", isOn: Binding(
+                    get: { viewModel.performOCR },
+                    set: { viewModel.send(.updatePerformOCR($0)) }
+                ))
             }
         } header: {
             Text("说明书")

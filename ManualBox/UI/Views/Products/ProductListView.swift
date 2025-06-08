@@ -60,12 +60,27 @@ struct ProductListView: View {
         .toolbar {
             toolbarContent
         }
-        .sheet(isPresented: $viewModel.showingFilters) {
+        .sheet(isPresented: Binding(
+            get: { viewModel.showingFilters },
+            set: { _ in viewModel.send(.toggleFilters) }
+        )) {
             FilterView(
-                selectedCategories: $viewModel.selectedCategories,
-                selectedTags: $viewModel.selectedTags,
-                showWarrantyFilter: $viewModel.showWarrantyFilter,
-                onlyWithManuals: $viewModel.onlyWithManuals
+                selectedCategories: Binding(
+                    get: { viewModel.selectedCategories },
+                    set: { viewModel.send(.updateCategories($0)) }
+                ),
+                selectedTags: Binding(
+                    get: { viewModel.selectedTags },
+                    set: { viewModel.send(.updateTags($0)) }
+                ),
+                showWarrantyFilter: Binding(
+                    get: { viewModel.showWarrantyFilter },
+                    set: { _ in viewModel.send(.toggleWarrantyFilter) }
+                ),
+                onlyWithManuals: Binding(
+                    get: { viewModel.onlyWithManuals },
+                    set: { _ in viewModel.send(.toggleOnlyWithManuals) }
+                )
             )
         }
         .onChange(of: viewModel.selectedSort) { _, newSort in
@@ -94,12 +109,11 @@ struct ProductListView: View {
         ToolbarItem(placement: .navigationBarLeading) {
             if viewModel.isSelectMode {
                 Button("取消") {
-                    viewModel.isSelectMode = false
-                    viewModel.selectedProducts.removeAll()
+                    viewModel.send(.toggleSelectMode)
                 }
             } else {
                 Button("选择") {
-                    viewModel.isSelectMode = true
+                    viewModel.send(.toggleSelectMode)
                 }
             }
         }

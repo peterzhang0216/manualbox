@@ -51,18 +51,18 @@ enum ProductListAction: ActionProtocol {
 class ProductListViewModel: BaseViewModel<ProductListState, ProductListAction> {
     private let viewContext: NSManagedObjectContext
     
-    // 为了保持向后兼容，保留Published属性
-    @Published var searchText = ""
-    @Published var selectedSort: SortOption = .name
-    @Published var viewStyle: ViewStyle = .list
-    @Published var showingFilters = false
-    @Published var selectedCategories: Set<Category> = []
-    @Published var selectedTags: Set<Tag> = []
-    @Published var showWarrantyFilter = false
-    @Published var onlyWithManuals = false
-    @Published var isSelectMode = false
-    @Published var selectedProducts: Set<Product> = []
-    @Published var _selectedProduct: Product? = nil
+    // 便利属性，直接从state获取
+    var searchText: String { state.searchText }
+    var selectedSort: SortOption { state.selectedSort }
+    var viewStyle: ViewStyle { state.viewStyle }
+    var showingFilters: Bool { state.showingFilters }
+    var selectedCategories: Set<Category> { state.selectedCategories }
+    var selectedTags: Set<Tag> { state.selectedTags }
+    var showWarrantyFilter: Bool { state.showWarrantyFilter }
+    var onlyWithManuals: Bool { state.onlyWithManuals }
+    var isSelectMode: Bool { state.isSelectMode }
+    var selectedProducts: Set<Product> { state.selectedProducts }
+    var _selectedProduct: Product? { state.selectedProduct }
     
     init(viewContext: NSManagedObjectContext) {
         self.viewContext = viewContext
@@ -73,42 +73,30 @@ class ProductListViewModel: BaseViewModel<ProductListState, ProductListAction> {
     override func handle(_ action: ProductListAction) async {
         switch action {
         case .updateSearchText(let text):
-            searchText = text
             updateState { $0.searchText = text }
             
         case .updateSort(let sort):
-            selectedSort = sort
             updateState { $0.selectedSort = sort }
             
         case .updateViewStyle(let style):
-            viewStyle = style
             updateState { $0.viewStyle = style }
             
         case .toggleFilters:
-            showingFilters.toggle()
             updateState { $0.showingFilters.toggle() }
             
         case .updateCategories(let categories):
-            selectedCategories = categories
             updateState { $0.selectedCategories = categories }
             
         case .updateTags(let tags):
-            selectedTags = tags
             updateState { $0.selectedTags = tags }
             
         case .toggleWarrantyFilter:
-            showWarrantyFilter.toggle()
             updateState { $0.showWarrantyFilter.toggle() }
             
         case .toggleOnlyWithManuals:
-            onlyWithManuals.toggle()
             updateState { $0.onlyWithManuals.toggle() }
             
         case .toggleSelectMode:
-            isSelectMode.toggle()
-            if !isSelectMode {
-                selectedProducts.removeAll()
-            }
             updateState { 
                 $0.isSelectMode.toggle()
                 if !$0.isSelectMode {
@@ -117,19 +105,15 @@ class ProductListViewModel: BaseViewModel<ProductListState, ProductListAction> {
             }
             
         case .selectProduct(let product):
-            selectedProducts.insert(product)
             updateState { $0.selectedProducts.insert(product) }
             
         case .deselectProduct(let product):
-            selectedProducts.remove(product)
             updateState { $0.selectedProducts.remove(product) }
             
         case .clearSelection:
-            selectedProducts.removeAll()
             updateState { $0.selectedProducts.removeAll() }
             
         case .setSelectedProduct(let product):
-            _selectedProduct = product
             updateState { $0.selectedProduct = product }
         }
     }
@@ -192,8 +176,8 @@ class ProductListViewModel: BaseViewModel<ProductListState, ProductListAction> {
             viewContext.delete(product)
         }
         try? viewContext.save()
-        selectedProducts.removeAll()
-        isSelectMode = false
+        send(.clearSelection)
+        send(.toggleSelectMode)
     }
     
     func setupInitialSelection(from products: [Product]) {
@@ -227,18 +211,15 @@ class ProductListViewModel: BaseViewModel<ProductListState, ProductListAction> {
             viewContext.delete(product)
         }
         try? viewContext.save()
-        selectedProducts.removeAll()
-        isSelectMode = false
+        send(.clearSelection)
+        send(.toggleSelectMode)
     }
     
     func toggleSelectMode() {
-        isSelectMode.toggle()
-        if !isSelectMode {
-            selectedProducts.removeAll()
-        }
+        send(.toggleSelectMode)
     }
     
     func clearSearch() {
-        searchText = ""
+        send(.updateSearchText(""))
     }
 }

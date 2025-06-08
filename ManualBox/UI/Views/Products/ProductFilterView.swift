@@ -34,7 +34,10 @@ struct ProductFilterView: View {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.gray)
             
-            TextField("搜索产品、品牌、型号...", text: $viewModel.searchText)
+            TextField("搜索产品、品牌、型号...", text: Binding(
+                get: { viewModel.searchText },
+                set: { viewModel.send(.updateSearchText($0)) }
+            ))
                 .textFieldStyle(.plain)
             
             if !viewModel.searchText.isEmpty {
@@ -60,7 +63,7 @@ struct ProductFilterView: View {
         HStack {
             // 筛选按钮
             Button {
-                viewModel.showingFilters = true
+                viewModel.send(.toggleFilters)
             } label: {
                 HStack(spacing: 4) {
                     Image(systemName: "line.3.horizontal.decrease.circle")
@@ -76,7 +79,7 @@ struct ProductFilterView: View {
             Menu {
                 ForEach(SortOption.allCases, id: \.self) { option in
                     Button {
-                        viewModel.selectedSort = option
+                        viewModel.send(.updateSort(option))
                     } label: {
                         HStack {
                             Text(option.rawValue)
@@ -100,7 +103,8 @@ struct ProductFilterView: View {
             // 视图样式切换
             Button {
                 withAnimation(.easeInOut(duration: 0.3)) {
-                    viewModel.viewStyle = viewModel.viewStyle == .list ? .grid : .list
+                    let newStyle: ViewStyle = viewModel.viewStyle == .list ? .grid : .list
+                    viewModel.send(.updateViewStyle(newStyle))
                 }
             } label: {
                 Image(systemName: viewModel.viewStyle.icon)

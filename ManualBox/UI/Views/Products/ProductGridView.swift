@@ -22,7 +22,7 @@ struct ProductGridView: View {
             return Binding(
                 get: { viewModel._selectedProduct },
                 set: { 
-                    viewModel._selectedProduct = $0
+                    viewModel.send(.setSelectedProduct($0))
                     environmentSelectedProduct.wrappedValue = $0
                 }
             )
@@ -32,7 +32,7 @@ struct ProductGridView: View {
     private var selectedProduct: Binding<Product?> {
         return Binding(
             get: { viewModel._selectedProduct },
-            set: { viewModel._selectedProduct = $0 }
+            set: { viewModel.send(.setSelectedProduct($0)) }
         )
     }
     #endif
@@ -44,7 +44,7 @@ struct ProductGridView: View {
                     ProductGridItem(product: product, onTap: {
                         #if os(iOS)
                         if !viewModel.isSelectMode {
-                            viewModel._selectedProduct = product
+                            viewModel.send(.setSelectedProduct(product))
                         }
                         #else
                         selectedProduct.wrappedValue = product

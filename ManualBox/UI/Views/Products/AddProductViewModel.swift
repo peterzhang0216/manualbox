@@ -40,15 +40,19 @@ enum AddProductAction: ActionProtocol {
     case updateName(String)
     case updateBrand(String)
     case updateModel(String)
+    case updateSelectedCategory(Category?)
     case selectCategory(Category?)
     case toggleTag(Tag)
+    case updateSelectedImage(PhotosPickerItem?)
     case selectImage(PhotosPickerItem?)
     case updateOrderNumber(String)
     case updatePlatform(String)
     case updateOrderDate(Date)
     case updateWarrantyPeriod(Int)
+    case updateInvoiceImage(PhotosPickerItem?)
     case selectInvoiceImage(PhotosPickerItem?)
     case updateSelectedManuals([PhotosPickerItem])
+    case updatePerformOCR(Bool)
     case toggleOCR
     case startSaving
     case finishSaving(Result<Void, Error>)
@@ -57,57 +61,52 @@ enum AddProductAction: ActionProtocol {
 
 @MainActor
 final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction> {
-    // 为了保持向后兼容，保留Published属性
-    @Published var name = ""
-    @Published var brand = ""
-    @Published var model = ""
-    @Published var selectedCategory: Category?
-    @Published var selectedTags: Set<Tag> = []
-    @Published var selectedImage: PhotosPickerItem?
-    @Published var productImage: PlatformImage?
-    @Published var orderNumber = ""
-    @Published var platform = ""
-    @Published var orderDate = Date()
-    @Published var warrantyPeriod = 12
-    @Published var invoiceImage: PhotosPickerItem?
-    @Published var invoiceImageData: Data?
-    @Published var selectedManuals: [PhotosPickerItem] = []
-    @Published var performOCR = true
-    @Published var isSaving = false
-    @Published var saveError: String?
+    // 便利属性，直接从state获取
+    var name: String { state.name }
+    var brand: String { state.brand }
+    var model: String { state.model }
+    var selectedCategory: Category? { state.selectedCategory }
+    var selectedTags: Set<Tag> { state.selectedTags }
+    var selectedImage: PhotosPickerItem? { state.selectedImage }
+    var productImage: PlatformImage? { state.productImage }
+    var orderNumber: String { state.orderNumber }
+    var platform: String { state.platform }
+    var orderDate: Date { state.orderDate }
+    var warrantyPeriod: Int { state.warrantyPeriod }
+    var invoiceImage: PhotosPickerItem? { state.invoiceImage }
+    var invoiceImageData: Data? { state.invoiceImageData }
+    var selectedManuals: [PhotosPickerItem] { state.selectedManuals }
+    var performOCR: Bool { state.performOCR }
+    var isSaving: Bool { state.isSaving }
+    var saveError: String? { state.saveError }
     
-    // 取消订阅存储
-    private var cancellables = Set<AnyCancellable>()
+    override init(initialState: AddProductState) {
+        super.init(initialState: initialState)
+    }
     
-    init() {
-        super.init(initialState: AddProductState())
+    convenience init() {
+        self.init(initialState: AddProductState())
     }
     
     // MARK: - Action Handler
     override func handle(_ action: AddProductAction) async {
         switch action {
         case .updateName(let newName):
-            name = newName
             updateState { $0.name = newName }
             
         case .updateBrand(let newBrand):
-            brand = newBrand
             updateState { $0.brand = newBrand }
             
         case .updateModel(let newModel):
-            model = newModel
             updateState { $0.model = newModel }
             
+        case .updateSelectedCategory(let category):
+            updateState { $0.selectedCategory = category }
+            
         case .selectCategory(let category):
-            selectedCategory = category
             updateState { $0.selectedCategory = category }
             
         case .toggleTag(let tag):
-            if selectedTags.contains(tag) {
-                selectedTags.remove(tag)
-            } else {
-                selectedTags.insert(tag)
-            }
             updateState { 
                 if $0.selectedTags.contains(tag) {
                     $0.selectedTags.remove(tag)
@@ -116,54 +115,46 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
                 }
             }
             
+        case .updateSelectedImage(let image):
+            updateState { $0.selectedImage = image }
+            
         case .selectImage(let image):
-            selectedImage = image
             updateState { $0.selectedImage = image }
             
         case .updateOrderNumber(let number):
-            orderNumber = number
             updateState { $0.orderNumber = number }
             
         case .updatePlatform(let newPlatform):
-            platform = newPlatform
             updateState { $0.platform = newPlatform }
             
         case .updateOrderDate(let date):
-            orderDate = date
             updateState { $0.orderDate = date }
             
         case .updateWarrantyPeriod(let period):
-            warrantyPeriod = period
             updateState { $0.warrantyPeriod = period }
             
+        case .updateInvoiceImage(let image):
+            updateState { $0.invoiceImage = image }
+            
         case .selectInvoiceImage(let image):
-            invoiceImage = image
             updateState { $0.invoiceImage = image }
             
         case .updateSelectedManuals(let manuals):
-            selectedManuals = manuals
             updateState { $0.selectedManuals = manuals }
             
+        case .updatePerformOCR(let perform):
+            updateState { $0.performOCR = perform }
+            
         case .toggleOCR:
-            performOCR.toggle()
             updateState { $0.performOCR.toggle() }
             
         case .startSaving:
-            isSaving = true
-            saveError = nil
             updateState { 
                 $0.isSaving = true
                 $0.saveError = nil
             }
             
         case .finishSaving(let result):
-            isSaving = false
-            switch result {
-            case .success:
-                saveError = nil
-            case .failure(let error):
-                saveError = error.localizedDescription
-            }
             updateState {
                 $0.isSaving = false
                 switch result {
@@ -182,11 +173,11 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
     // MARK: - 业务方法
     
     func toggleTag(_ tag: Tag) {
-        send(.toggleTag(tag))
+        send(AddProductAction.toggleTag(tag))
     }
     
     func loadImage(from item: PhotosPickerItem?) {
-        send(.loadImage(item))
+        send(AddProductAction.loadImage(item))
     }
     
     private func loadImageFromItem(_ item: PhotosPickerItem?) async {
@@ -197,14 +188,12 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
                 #if os(macOS)
                 if let image = NSImage(data: data) {
                     await MainActor.run {
-                        self.productImage = image
                         self.updateState { $0.productImage = image }
                     }
                 }
                 #else
                 if let image = UIImage(data: data) {
                     await MainActor.run {
-                        self.productImage = image
                         self.updateState { $0.productImage = image }
                     }
                 }
@@ -212,7 +201,6 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
             }
         } catch {
             await MainActor.run {
-                self.saveError = "加载图片失败: \(error.localizedDescription)"
                 self.updateState { $0.saveError = "加载图片失败: \(error.localizedDescription)" }
             }
         }
@@ -223,7 +211,7 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
         
         if let data = try? await invoiceImage.loadTransferable(type: Data.self) {
             await MainActor.run {
-                self.invoiceImageData = data
+                self.updateState { $0.invoiceImageData = data }
             }
             return data
         }
@@ -234,8 +222,7 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
     // 改进的异步保存方法
     func saveProduct(in context: NSManagedObjectContext) async -> Bool {
         // 标记正在保存
-        self.isSaving = true
-        self.saveError = nil
+        send(AddProductAction.startSaving)
         
         do {
             // 创建一个任务组来等待所有异步操作完成
@@ -341,13 +328,12 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
             }
             
             // 8. 保存成功
-            self.isSaving = false
+            send(AddProductAction.finishSaving(Result<Void, Error>.success(())))
             return true
             
         } catch {
             // 保存失败，更新错误状态
-            self.isSaving = false
-            self.saveError = error.localizedDescription
+            send(AddProductAction.finishSaving(Result<Void, Error>.failure(error)))
             print("保存产品失败: \(error.localizedDescription)")
             return false
         }
