@@ -14,13 +14,10 @@ struct PlatformNavigationContainer<Content: View>: View {
     var body: some View {
         #if os(macOS)
         // macOS 使用现有的 NavigationSplitView 架构
-        NavigationSplitView {
-            PlatformSidebarView(selection: $selectedSidebarItem)
-                .navigationSplitViewColumnWidth(min: 250, ideal: 300)
-        } detail: {
+        // 注意：此容器已弃用，请直接使用 MainTabView
+        NavigationView {
             content()
         }
-        .navigationSplitViewStyle(.balanced)
         #else
         // iOS 使用 TabView
         TabView(selection: $selectedTab) {
@@ -60,71 +57,8 @@ struct PlatformNavigationContainer<Content: View>: View {
     }
 }
 
-// MARK: - 平台特定的侧边栏视图（重命名以避免冲突）
-struct PlatformSidebarView: View {
-    @Binding var selection: SelectionValue?
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    @FetchRequest(
-        entity: Category.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Category.name, ascending: true)]
-    ) private var categories: FetchedResults<Category>
-    
-    @FetchRequest(
-        entity: Tag.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.name, ascending: true)]
-    ) private var tags: FetchedResults<Tag>
-    
-    var body: some View {
-        List(selection: $selection) {
-            Label("所有商品", systemImage: "shippingbox")
-                .tag(SelectionValue.main(0))
-            
-            Section(header: Text("分类")) {
-                Label("全部分类", systemImage: "folder")
-                    .tag(SelectionValue.main(1))
-                
-                ForEach(categories) { category in
-                    if let id = category.id {
-                        Label(category.categoryName, systemImage: category.categoryIcon)
-                            .badge(category.productCount)
-                            .tag(SelectionValue.category(id))
-                    }
-                }
-            }
-            
-            Section(header: Text("标签")) {
-                Label("全部标签", systemImage: "tag")
-                    .tag(SelectionValue.main(2))
-                
-                ForEach(tags) { tag in
-                    if let id = tag.id {
-                        Label {
-                            Text(tag.tagName)
-                                .badge(tag.productCount)
-                        } icon: {
-                            Image(systemName: "tag.fill")
-                                .foregroundColor(tag.uiColor)
-                        }
-                        .tag(SelectionValue.tag(id))
-                    }
-                }
-            }
-            
-            Section(header: Text("维修管理")) {
-                Label("维修记录", systemImage: "wrench.and.screwdriver")
-                    .tag(SelectionValue.main(3))
-            }
-            
-            Section(header: Text("设置")) {
-                Label("设置与偏好", systemImage: "gear")
-                    .tag(SelectionValue.main(4))
-            }
-        }
-        .listStyle(.sidebar)
-        .navigationTitle("ManualBox")
-    }
-}
+// MARK: - macOS 侧边栏视图 (已移除重复代码)
+// 注意：实际的侧边栏视图现在在 MainTabView.swift 中的 SidebarView
 
 // MARK: - 平台感知的工具栏
 struct PlatformToolbar: ViewModifier {

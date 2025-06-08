@@ -395,19 +395,19 @@ SWIFT_CLASS_NAMED("Product")
 - (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@interface Product (SWIFT_EXTENSION(ManualBox))
+- (void)addManualsObject:(Manual * _Nonnull)value;
+- (void)removeManualsObject:(Manual * _Nonnull)value;
+- (void)addManuals:(NSSet * _Nonnull)values;
+- (void)removeManuals:(NSSet * _Nonnull)values;
+@end
+
 @class Tag;
 @interface Product (SWIFT_EXTENSION(ManualBox))
 - (void)addTagsObject:(Tag * _Nonnull)value;
 - (void)removeTagsObject:(Tag * _Nonnull)value;
 - (void)addTags:(NSSet * _Nonnull)values;
 - (void)removeTags:(NSSet * _Nonnull)values;
-@end
-
-@interface Product (SWIFT_EXTENSION(ManualBox))
-- (void)addManualsObject:(Manual * _Nonnull)value;
-- (void)removeManualsObject:(Manual * _Nonnull)value;
-- (void)addManuals:(NSSet * _Nonnull)values;
-- (void)removeManuals:(NSSet * _Nonnull)values;
 @end
 
 @interface Product (SWIFT_EXTENSION(ManualBox))

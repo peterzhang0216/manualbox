@@ -106,20 +106,40 @@ extension Category {
     
     // 在应用首次启动时创建默认分类
     static func createDefaultCategories(in context: NSManagedObjectContext) {
-        for (name, icon) in defaultCategories {
-            let fetchRequest: NSFetchRequest<Category> = Category.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+        // 添加线程安全检查
+        context.performAndWait {
+            for (name, icon) in defaultCategories {
+                let fetchRequest: NSFetchRequest<Category> = Category.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+                fetchRequest.fetchLimit = 1
+                
+                do {
+                    // 使用更严格的存在性检查
+                    let existingCategories = try context.fetch(fetchRequest)
+                    if existingCategories.isEmpty {
+                        let category = Category(context: context)
+                        category.id = UUID()
+                        category.name = name
+                        category.icon = icon
+                        print("创建默认分类: \(name)")
+                    } else {
+                        print("分类已存在，跳过创建: \(name)")
+                    }
+                } catch {
+                    print("检查分类存在性时出错: \(error.localizedDescription)")
+                }
+            }
             
-            // 检查分类是否已存在
-            if let count = try? context.count(for: fetchRequest), count == 0 {
-                let category = Category(context: context)
-                category.id = UUID()
-                category.name = name
-                category.icon = icon
+            // 保存上下文
+            if context.hasChanges {
+                do {
+                    try context.save()
+                    print("默认分类创建完成")
+                } catch {
+                    print("保存默认分类时出错: \(error.localizedDescription)")
+                }
             }
         }
-        
-        try? context.save()
     }
     
     // 获取预览分类

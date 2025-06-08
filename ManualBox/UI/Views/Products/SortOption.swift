@@ -10,11 +10,11 @@ enum SortOption: String, CaseIterable {
     var sortDescriptor: SortDescriptor<Product> {
         switch self {
         case .name:
-            return SortDescriptor(\Product.productName, order: .forward)
+            return SortDescriptor(\Product.name, order: .forward)
         case .createdDate:
-            return SortDescriptor(\Product.productCreatedAt, order: .reverse)
+            return SortDescriptor(\Product.createdAt, order: .reverse)
         case .updatedDate:
-            return SortDescriptor(\Product.productUpdatedAt, order: .reverse)
+            return SortDescriptor(\Product.updatedAt, order: .reverse)
         case .warrantyDate:
             return SortDescriptor(\Product.order?.warrantyEndDate, order: .reverse)
         }

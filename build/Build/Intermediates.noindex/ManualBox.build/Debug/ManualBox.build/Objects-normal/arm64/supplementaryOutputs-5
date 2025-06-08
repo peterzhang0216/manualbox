@@ -1,0 +1,36 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceRegistration.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ServiceRegistration.swiftdeps"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Tag+Extensions.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/Tag+Extensions.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsView.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/TagsView.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingRow.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SettingRow.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SettingRow.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SettingRow.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SettingRow.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/SettingRow.d"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/EditTagSheet.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditTagSheet.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditTagSheet.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditTagSheet.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditTagSheet.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditTagSheet.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationSettingsView.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/NotificationSettingsView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/NotificationSettingsView.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/NotificationSettingsView.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/NotificationSettingsView.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/NotificationSettingsView.dia"

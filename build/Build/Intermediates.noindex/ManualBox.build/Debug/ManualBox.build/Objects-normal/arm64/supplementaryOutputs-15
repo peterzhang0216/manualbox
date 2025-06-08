@@ -1,0 +1,24 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Configuration/AppConfiguration.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppConfiguration.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppConfiguration.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppConfiguration.d"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppConfiguration.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppConfiguration.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/EditCategorySheet.swift":
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditCategorySheet.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditCategorySheet.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditCategorySheet.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditCategorySheet.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditCategorySheet.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/ProductRow.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ProductRow.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ProductRow.swiftdeps"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ProductRow.d"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ProductRow.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ProductRow.o"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformPerformance.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformPerformance.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformPerformance.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformPerformance.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformPerformance.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformPerformance.o"

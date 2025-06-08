@@ -37,14 +37,24 @@ class PersistenceController {
         let viewContext = result.container.viewContext
         
         // 创建预览数据
-        // 1. 创建默认分类
-        Category.createDefaultCategories(in: viewContext)
+        // 1. 创建预览专用分类（不调用默认创建方法）
+        let electronicCategory = Category(context: viewContext)
+        electronicCategory.id = UUID()
+        electronicCategory.name = "电子产品"
+        electronicCategory.icon = "laptopcomputer"
         
-        // 2. 创建默认标签
-        Tag.createDefaultTags(in: viewContext)
+        let homeCategory = Category(context: viewContext)
+        homeCategory.id = UUID()
+        homeCategory.name = "家用电器"
+        homeCategory.icon = "oven"
+        
+        // 2. 创建预览专用标签（不调用默认创建方法）
+        let importantTag = Tag(context: viewContext)
+        importantTag.id = UUID()
+        importantTag.name = "重要"
+        importantTag.color = "orange"
         
         // 3. 创建示例产品
-        let electronicCategory = try? viewContext.fetch(NSFetchRequest<Category>(entityName: "Category")).first { $0.name == "电子产品" }
         
         // iPad
         let ipad = Product.createProduct(
@@ -75,8 +85,6 @@ class PersistenceController {
         )
         
         // 空气净化器
-        let homeCategory = try? viewContext.fetch(NSFetchRequest<Category>(entityName: "Category")).first { $0.name == "家用电器" }
-        
         let airPurifier = Product.createProduct(
             in: viewContext,
             name: "空气净化器",
@@ -235,15 +243,35 @@ class PersistenceController {
     func initializeDefaultData() {
         let context = container.viewContext
         
-        // 确认数据库是否为空
-        let productsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
-        let productsCount = (try? context.count(for: productsRequest)) ?? 0
+        // 分别检查分类和标签是否为空
+        let categoriesRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
+        let categoriesCount = (try? context.count(for: categoriesRequest)) ?? 0
         
-        if productsCount == 0 {
-            // 创建默认分类和标签
+        let tagsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Tag")
+        let tagsCount = (try? context.count(for: tagsRequest)) ?? 0
+        
+        var needsSave = false
+        
+        // 只有当分类表为空时才创建默认分类
+        if categoriesCount == 0 {
+            print("[Persistence] 创建默认分类...")
             Category.createDefaultCategories(in: context)
+            needsSave = true
+        } else {
+            print("[Persistence] 分类已存在，跳过创建默认分类")
+        }
+        
+        // 只有当标签表为空时才创建默认标签
+        if tagsCount == 0 {
+            print("[Persistence] 创建默认标签...")
             Tag.createDefaultTags(in: context)
-            
+            needsSave = true
+        } else {
+            print("[Persistence] 标签已存在，跳过创建默认标签")
+        }
+        
+        // 只有在需要时才保存
+        if needsSave {
             Task { @MainActor in
                 await saveContext()
             }

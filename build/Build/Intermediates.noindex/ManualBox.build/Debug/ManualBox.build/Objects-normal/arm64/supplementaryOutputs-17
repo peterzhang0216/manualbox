@@ -1,0 +1,24 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformInput.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformInput.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformInput.swiftconstvalues"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformInput.d"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformInput.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformInput.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/AppNotification.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppNotification.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppNotification.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppNotification.swiftdeps"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppNotification.swiftconstvalues"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/AppNotification.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoryDetailView.swift":
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoryDetailView.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoryDetailView.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoryDetailView.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoryDetailView.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoryDetailView.d"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformAdapter.swift":
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformAdapter.o"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformAdapter.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformAdapter.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformAdapter.dia"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/PlatformAdapter.d"

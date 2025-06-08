@@ -1,0 +1,24 @@
+"/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/ImportService.swift":
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ImportService.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ImportService.dia"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ImportService.o"
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ImportService.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ImportService.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditProductView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditProductView.d"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditProductView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditProductView.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditProductView.dia"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/EditProductView.swiftconstvalues"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemePickerView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ThemePickerView.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ThemePickerView.swiftconstvalues"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ThemePickerView.o"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ThemePickerView.swiftdeps"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ThemePickerView.dia"
+"/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesView.swift":
+  dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoriesView.d"
+  const-values: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoriesView.swiftconstvalues"
+  swift-dependencies: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoriesView.swiftdeps"
+  object: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoriesView.o"
+  diagnostics: "/Users/peter/Desktop/Github/manualbox/build/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/CategoriesView.dia"

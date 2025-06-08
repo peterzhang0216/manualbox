@@ -1,0 +1,72 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "暂无商品",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "没有找到符合条件的商品，请调整筛选条件",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "点击右上角的 + 按钮添加新商品",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加商品",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "暂无商品",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "没有找到符合条件的商品，请调整筛选条件",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "点击右上角的 + 按钮添加新商品",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 130
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加商品",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 140
+        }
+      }
+    ]
+  },
+  "version": 1
+}

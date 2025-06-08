@@ -13,6 +13,7 @@ import CoreData
 struct ManualBoxApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject private var notificationManager = AppNotificationManager()
+    @State private var hasInitialized = false
 
     init() {
         // 配置依赖注入服务
@@ -26,6 +27,10 @@ struct ManualBoxApp: App {
                 .environmentObject(notificationManager)
                 .serviceContainer(ServiceContainer.shared)
                 .onAppear {
+                    // 防止重复初始化
+                    guard !hasInitialized else { return }
+                    hasInitialized = true
+                    
                     // 初始化默认数据
                     persistenceController.initializeDefaultData()
                     

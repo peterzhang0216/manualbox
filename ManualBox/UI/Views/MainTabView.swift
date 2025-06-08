@@ -157,11 +157,21 @@ struct MainTabView: View {
                                     .id("main-\(index)")
                                     .environment(\.selectedProduct, $selectedProduct)
                             case 1:
-                                CategoriesView()
-                                    .id("main-\(index)")
+                                // 分类管理页面 - 显示空白或说明页面，避免重复显示分类
+                                ContentUnavailableView {
+                                    Label("分类管理", systemImage: "folder")
+                                } description: {
+                                    Text("请从左侧选择一个分类查看相关产品")
+                                }
+                                .id("main-\(index)")
                             case 2:
-                                TagsView()
-                                    .id("main-\(index)")
+                                // 标签管理页面 - 显示空白或说明页面，避免重复显示标签
+                                ContentUnavailableView {
+                                    Label("标签管理", systemImage: "tag")
+                                } description: {
+                                    Text("请从左侧选择一个标签查看相关产品")
+                                }
+                                .id("main-\(index)")
                             case 3:
                                 RepairRecordsView()
                                     .id("main-\(index)")

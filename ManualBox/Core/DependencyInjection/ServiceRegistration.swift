@@ -109,7 +109,7 @@ class ServiceRegistrationManager {
             print("❌ 无法解析 PersistenceController 服务")
             return
         }
-        persistenceController.initializeDefaultData()
+        // 注意：默认数据初始化已移至 ManualBoxApp.swift 中的 onAppear，避免重复初始化
         
         print("✅ 核心服务初始化完成")
         print("✅ Repository 服务注册完成")

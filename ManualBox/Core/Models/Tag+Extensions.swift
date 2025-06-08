@@ -120,20 +120,40 @@ extension Tag {
     
     // 在应用首次启动时创建默认标签
     static func createDefaultTags(in context: NSManagedObjectContext) {
-        for (name, color) in defaultTags {
-            let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+        // 添加线程安全检查
+        context.performAndWait {
+            for (name, color) in defaultTags {
+                let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+                fetchRequest.fetchLimit = 1
+                
+                do {
+                    // 使用更严格的存在性检查
+                    let existingTags = try context.fetch(fetchRequest)
+                    if existingTags.isEmpty {
+                        let tag = Tag(context: context)
+                        tag.id = UUID()
+                        tag.name = name
+                        tag.color = color
+                        print("创建默认标签: \(name)")
+                    } else {
+                        print("标签已存在，跳过创建: \(name)")
+                    }
+                } catch {
+                    print("检查标签存在性时出错: \(error.localizedDescription)")
+                }
+            }
             
-            // 检查标签是否已存在
-            if let count = try? context.count(for: fetchRequest), count == 0 {
-                let tag = Tag(context: context)
-                tag.id = UUID()
-                tag.name = name
-                tag.color = color
+            // 保存上下文
+            if context.hasChanges {
+                do {
+                    try context.save()
+                    print("默认标签创建完成")
+                } catch {
+                    print("保存默认标签时出错: \(error.localizedDescription)")
+                }
             }
         }
-        
-        try? context.save()
     }
     
     // 获取预览标签

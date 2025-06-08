@@ -1,0 +1,56 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Common/ManualSearchView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "说明书搜索",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 91
+        }
+      },
+      {
+        "comment": "",
+        "key": "请尝试其他关键词",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 54
+        }
+      },
+      {
+        "comment": "",
+        "key": "未找到结果",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "搜索说明书内容...",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "文件可能已损坏或不存在",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 128
+        }
+      },
+      {
+        "comment": "",
+        "key": "无法加载PDF",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 126
+        }
+      }
+    ]
+  },
+  "version": 1
+}

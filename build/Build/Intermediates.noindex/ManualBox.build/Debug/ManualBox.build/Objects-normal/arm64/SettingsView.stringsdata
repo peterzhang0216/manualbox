@@ -1,0 +1,368 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 54
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "通知与提醒",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "外观与主题",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "数据与默认",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "关于与支持",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "新增商品时的默认保修期限",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 437
+        }
+      },
+      {
+        "comment": "",
+        "key": "默认保修期",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 411
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 417
+        }
+      },
+      {
+        "comment": "",
+        "key": "个月",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 422
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置保修期",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 432
+        }
+      },
+      {
+        "comment": "",
+        "key": "添加说明书时自动识别文字内容",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 467
+        }
+      },
+      {
+        "comment": "",
+        "key": "OCR 文字识别",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 453
+        }
+      },
+      {
+        "comment": "",
+        "key": "默认开启文字识别",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 460
+        }
+      },
+      {
+        "comment": "",
+        "key": "数据备份与恢复功能开发中…",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 720
+        }
+      },
+      {
+        "comment": "",
+        "key": "保修与资产提醒",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 741
+        }
+      },
+      {
+        "comment": "",
+        "key": "多渠道、静默时段、定制提醒",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 743
+        }
+      },
+      {
+        "comment": "",
+        "key": "保修到期提醒",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 783
+        }
+      },
+      {
+        "comment": "",
+        "key": "设置保修到期前多少天收到提醒",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 808
+        }
+      },
+      {
+        "comment": "",
+        "key": "提前",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 791
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 793
+        }
+      },
+      {
+        "comment": "",
+        "key": "天推送通知",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 797
+        }
+      },
+      {
+        "comment": "",
+        "key": "调整提醒天数",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 804
+        }
+      },
+      {
+        "comment": "",
+        "key": "如有维修记录，自动推送进度/完成通知",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 839
+        }
+      },
+      {
+        "comment": "",
+        "key": "开启维修进度推送",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 835
+        }
+      },
+      {
+        "comment": "",
+        "key": "维修进度推送",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 829
+        }
+      },
+      {
+        "comment": "",
+        "key": "巡检/保养周期",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 864
+        }
+      },
+      {
+        "comment": "",
+        "key": "资产定期巡检/保养",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 858
+        }
+      },
+      {
+        "comment": "",
+        "key": "每年",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 865
+        }
+      },
+      {
+        "comment": "",
+        "key": "每半年",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 866
+        }
+      },
+      {
+        "comment": "",
+        "key": "每季度",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 867
+        }
+      },
+      {
+        "comment": "",
+        "key": "推送渠道",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 892
+        }
+      },
+      {
+        "comment": "",
+        "key": "通知方式",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 886
+        }
+      },
+      {
+        "comment": "",
+        "key": "系统通知",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 893
+        }
+      },
+      {
+        "comment": "",
+        "key": "邮件",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 894
+        }
+      },
+      {
+        "comment": "",
+        "key": "日历事件",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 895
+        }
+      },
+      {
+        "comment": "",
+        "key": "静默时段内不推送通知",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 937
+        }
+      },
+      {
+        "comment": "",
+        "key": "静默时段",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 914
+        }
+      },
+      {
+        "comment": "",
+        "key": "从",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 921
+        }
+      },
+      {
+        "comment": "",
+        "key": "到",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 927
+        }
+      },
+      {
+        "comment": "",
+        "key": "开始",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 923
+        }
+      },
+      {
+        "comment": "",
+        "key": "结束",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 929
+        }
+      },
+      {
+        "comment": "",
+        "key": "在浏览器中打开",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 1006
+        }
+      },
+      {
+        "comment": "",
+        "key": "请在浏览器中查看：",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 1016
+        }
+      },
+      {
+        "comment": "",
+        "key": "在浏览器中打开",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 1026
+        }
+      }
+    ]
+  },
+  "version": 1
+}
