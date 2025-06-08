@@ -105,7 +105,7 @@ class ServiceRegistrationManager {
     // 初始化需要异步初始化的服务
     private static func initializeCoreServices(_ container: ServiceContainer) async {
         // 初始化持久化控制器
-        guard let persistenceController: PersistenceController = container.resolve(PersistenceController.self) else {
+        guard let _: PersistenceController = container.resolve(PersistenceController.self) else {
             print("❌ 无法解析 PersistenceController 服务")
             return
         }
