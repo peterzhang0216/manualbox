@@ -16,8 +16,8 @@ protocol ViewModelProtocol: ObservableObject {
 
 // MARK: - 基础状态协议
 protocol StateProtocol {
-    var isLoading: Bool { get }
-    var errorMessage: String? { get }
+    var isLoading: Bool { get set }
+    var errorMessage: String? { get set }
 }
 
 // MARK: - 基础动作协议
@@ -79,28 +79,19 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
     
     func setLoading(_ isLoading: Bool) {
         updateState { state in
-            if var mutableState = state as? BaseState {
-                mutableState.isLoading = isLoading
-                state = mutableState as! State
-            }
+            state.isLoading = isLoading
         }
     }
     
     func setError(_ error: Error?) {
         updateState { state in
-            if var mutableState = state as? BaseState {
-                mutableState.errorMessage = error?.localizedDescription
-                state = mutableState as! State
-            }
+            state.errorMessage = error?.localizedDescription
         }
     }
     
     func setError(_ errorMessage: String?) {
         updateState { state in
-            if var mutableState = state as? BaseState {
-                mutableState.errorMessage = errorMessage
-                state = mutableState as! State
-            }
+            state.errorMessage = errorMessage
         }
     }
     

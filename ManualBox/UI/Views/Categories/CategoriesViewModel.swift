@@ -97,68 +97,65 @@ class CategoriesViewModel: BaseViewModel<CategoriesState, CategoriesAction> {
             }
             
         case .setError(let error):
-            updateState { $0.saveError = error }
+            updateState { 
+                $0.saveError = error
+                $0.errorMessage = error
+            }
             
         case .setSaving(let saving):
-            updateState { $0.isSaving = saving }
+            updateState { 
+                $0.isSaving = saving
+                $0.isLoading = saving
+            }
         }
     }
     
     // MARK: - Private Methods
     private func saveCategory() async {
-        guard !state.newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            updateState { $0.saveError = "分类名称不能为空" }
+        // 使用统一的验证方法
+        guard self.validateNonEmpty(self.state.newCategoryName, fieldName: "分类名称") else {
+            self.updateState { $0.saveError = self.state.errorMessage }
             return
         }
         
-        updateState { $0.isSaving = true }
-        
-        do {
-            let category = Category(context: viewContext)
-        category.id = UUID()
-        category.name = state.newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines)
-        category.icon = state.selectedIcon
-            
-            try viewContext.save()
-            
+        // 使用统一的加载状态管理
+        await self.performTask { [self] in
+            let category = Category(context: self.viewContext)
+            category.id = UUID()
+            category.name = self.state.newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines)
+            category.icon = self.state.selectedIcon
+            try self.viewContext.save()
             // 保存成功，关闭表单并清空状态
-            updateState {
+            self.updateState {
                 $0.showingAddSheet = false
                 $0.newCategoryName = ""
                 $0.selectedIcon = "folder"
                 $0.saveError = nil
                 $0.isSaving = false
             }
-        } catch {
-            updateState {
-                $0.saveError = "保存分类失败: \(error.localizedDescription)"
-                $0.isSaving = false
-            }
         }
     }
     
     private func deleteCategory(_ category: Category) async {
-        do {
-            viewContext.delete(category)
-            try viewContext.save()
-        } catch {
-            updateState { $0.errorMessage = "删除分类失败: \(error.localizedDescription)" }
+        await self.performTask { [self] in
+            self.viewContext.delete(category)
+            try self.viewContext.save()
         }
     }
     
     // MARK: - Public Methods
     func filteredCategories(from categories: [Category]) -> [Category] {
-        if state.searchText.isEmpty {
+        if self.state.searchText.isEmpty {
             return categories
         } else {
             return categories.filter { category in
-                category.name?.localizedCaseInsensitiveContains(state.searchText) ?? false
+                category.name?.localizedCaseInsensitiveContains(self.state.searchText) ?? false
             }
         }
     }
     
     func clearSearch() {
-        send(.updateSearchText(""))
+        self.send(.updateSearchText(""))
     }
 }
 

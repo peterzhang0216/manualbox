@@ -9,13 +9,42 @@ struct ProductGridItem: View {
         VStack(alignment: .leading, spacing: 12) {
             // 产品图片
             Group {
-                if let imageData = product.imageData,
-                   let image = PlatformImage(data: imageData) {
-                    Image(platformImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 120)
-                        .clipped()
+                if let imageData = product.imageData {
+                    #if os(macOS)
+                    if let image = NSImage(data: imageData) {
+                        Image(platformImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 120)
+                            .clipped()
+                    } else {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(height: 120)
+                            .overlay {
+                                Image(systemName: "photo")
+                                    .font(.title)
+                                    .foregroundColor(.gray)
+                            }
+                    }
+                    #else
+                    if let image = UIImage(data: imageData) {
+                        Image(platformImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 120)
+                            .clipped()
+                    } else {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(height: 120)
+                            .overlay {
+                                Image(systemName: "photo")
+                                    .font(.title)
+                                    .foregroundColor(.gray)
+                            }
+                    }
+                    #endif
                 } else {
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))

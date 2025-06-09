@@ -20,7 +20,7 @@ struct TagsState: StateProtocol {
     
     // 新标签表单状态
     var newTagName = ""
-    var selectedColor: TagColor = .blue
+    var selectedColor: String = "blue"
     
     // 操作状态
     var isSaving = false
@@ -32,7 +32,7 @@ enum TagsAction: ActionProtocol {
     case toggleAddSheet
     case updateSearchText(String)
     case updateNewTagName(String)
-    case updateSelectedColor(TagColor)
+    case updateSelectedColor(String)
     case saveTag
     case deleteTag(Tag)
     case clearForm
@@ -48,7 +48,7 @@ class TagsViewModel: BaseViewModel<TagsState, TagsAction> {
     var showingAddSheet: Bool { state.showingAddSheet }
     var searchText: String { state.searchText }
     var newTagName: String { state.newTagName }
-    var selectedColor: TagColor { state.selectedColor }
+    var selectedColor: String { state.selectedColor }
     var isSaving: Bool { state.isSaving }
     var saveError: String? { state.saveError }
     
@@ -66,7 +66,7 @@ class TagsViewModel: BaseViewModel<TagsState, TagsAction> {
                 if !$0.showingAddSheet {
                     // 关闭时清空表单
                     $0.newTagName = ""
-                    $0.selectedColor = .blue
+                    $0.selectedColor = "blue"
                     $0.saveError = nil
                 }
             }
@@ -89,60 +89,58 @@ class TagsViewModel: BaseViewModel<TagsState, TagsAction> {
         case .deleteTag(let tag):
             await deleteTag(tag)
             
+            
+        case .setError(let error):
+            updateState { 
+                $0.saveError = error
+                $0.errorMessage = error
+            }
+            
+        case .setSaving(let saving):
+            updateState { 
+                $0.isSaving = saving
+                $0.isLoading = saving
+            }
+            
         case .clearForm:
             updateState {
                 $0.newTagName = ""
-                $0.selectedColor = .blue
+                $0.selectedColor = "blue"
                 $0.saveError = nil
             }
             
-        case .setError(let error):
-            updateState { $0.saveError = error }
-            
-        case .setSaving(let saving):
-            updateState { $0.isSaving = saving }
         }
     }
     
     // MARK: - Private Methods
     private func saveTag() async {
-        guard !state.newTagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            updateState { $0.saveError = "标签名称不能为空" }
+        // 使用统一的验证方法
+        guard self.validateNonEmpty(self.state.newTagName, fieldName: "标签名称") else {
+            self.updateState { $0.saveError = self.state.errorMessage }
             return
         }
-        
-        updateState { $0.isSaving = true }
-        
-        let tag = Tag(context: viewContext)
-        tag.id = UUID()
-        tag.name = state.newTagName.trimmingCharacters(in: .whitespacesAndNewlines)
-        tag.color = state.selectedColor.rawValue
-        
-        do {
-            try viewContext.save()
-            
+        // 使用统一的加载状态管理
+        await self.performTask { [self] in
+            let tag = Tag(context: self.viewContext)
+            tag.id = UUID()
+            tag.name = self.state.newTagName.trimmingCharacters(in: .whitespacesAndNewlines)
+            tag.color = self.state.selectedColor
+            try self.viewContext.save()
             // 保存成功，关闭表单并清空状态
-            updateState {
+            self.updateState {
                 $0.showingAddSheet = false
                 $0.newTagName = ""
-                $0.selectedColor = .blue
+                $0.selectedColor = "blue"
                 $0.saveError = nil
-                $0.isSaving = false
-            }
-        } catch {
-            updateState {
-                $0.saveError = "保存标签失败: \(error.localizedDescription)"
                 $0.isSaving = false
             }
         }
     }
     
     private func deleteTag(_ tag: Tag) async {
-        do {
-            viewContext.delete(tag)
-            try viewContext.save()
-        } catch {
-            updateState { $0.errorMessage = "删除标签失败: \(error.localizedDescription)" }
+        await performTask { [self] in
+            self.viewContext.delete(tag)
+            try self.viewContext.save()
         }
     }
     
@@ -158,16 +156,17 @@ class TagsViewModel: BaseViewModel<TagsState, TagsAction> {
     }
     
     func clearSearch() {
-        send(.updateSearchText(""))
+        self.send(.updateSearchText(""))
     }
     
-    func getTagsGroupedByColor(from tags: [Tag]) -> [(TagColor, [Tag])] {
+    func getTagsGroupedByColor(from tags: [Tag]) -> [(String, [Tag])] {
         let filteredTags = filteredTags(from: tags)
         let grouped = Dictionary(grouping: filteredTags) { tag in
-            TagColor(rawValue: tag.color ?? TagColor.blue.rawValue) ?? .blue
+            tag.color ?? "blue"
         }
         
-        return TagColor.allCases.compactMap { color in
+        let colorOrder = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "gray"]
+        return colorOrder.compactMap { color in
             if let tagsForColor = grouped[color], !tagsForColor.isEmpty {
                 return (color, tagsForColor.sorted { ($0.name ?? "") < ($1.name ?? "") })
             }

@@ -108,7 +108,11 @@ struct AddProductView: View {
             ),
                         matching: .images,
                         photoLibrary: .shared()) {
-                ProductImagePreview(image: viewModel.productImage)
+                if let image = viewModel.productImage {
+                    ProductImagePreview(image: image)
+                } else {
+                    ProductImagePreview(image: nil)
+                }
             }
         } header: {
             Text("基本信息")

@@ -78,9 +78,9 @@ struct TagsView: View {
                 }
             } else {
                 List {
-                    ForEach(tags) { tag in
-                        NavigationLink(destination: ProductListView(tag: tag)) {
-                            TagRow(tag: tag)
+                    ForEach(tags) { tagItem in
+                        NavigationLink(destination: ProductListView(tag: tagItem)) {
+                            TagRow(tag: tagItem)
                         }
                     }
                     .onDelete(perform: deleteTags)

@@ -1,0 +1,530 @@
+{
+  "" : {
+    "const-values" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox-master.swiftconstvalues",
+    "dependencies" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox-master.d",
+    "diagnostics" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox-master.dia",
+    "emit-module-dependencies" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox-master-emit-module.dia",
+    "swift-dependencies" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox-master.swiftdeps"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/App/ManualBoxApp.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBoxApp.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBoxApp.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBoxApp.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/BaseRepository.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/BaseRepository.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/BaseRepository.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/BaseRepository.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/DataAccessProtocol.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataAccessProtocol.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataAccessProtocol.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataAccessProtocol.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/EntityRepositories.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EntityRepositories.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EntityRepositories.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EntityRepositories.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/ServiceProtocol.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceProtocol.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocol.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewModelProtocol.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewModelProtocol.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewModelProtocol.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocolExtensions.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewModelProtocolExtensions.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewModelProtocolExtensions.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewModelProtocolExtensions.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Configuration/AppConfiguration.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppConfiguration.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppConfiguration.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppConfiguration.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceContainer.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceContainer.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceContainer.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceContainer.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceRegistration.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceRegistration.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceRegistration.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ServiceRegistration.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/AppNotification.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppNotification.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppNotification.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppNotification.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Category+Extensions.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+Extensions.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+Extensions.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+Extensions.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/ExportService.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ExportService.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ExportService.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ExportService.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/ImportService.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ImportService.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ImportService.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ImportService.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Manual+Extensions.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+Extensions.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+Extensions.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+Extensions.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/MetalManager.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/MetalManager.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/MetalManager.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/MetalManager.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationManager.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationManager.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationManager.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationManager.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationScheduler.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationScheduler.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationScheduler.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationScheduler.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Order+Extensions.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+Extensions.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+Extensions.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+Extensions.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Product+Extensions.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+Extensions.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+Extensions.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+Extensions.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/RepairRecord+Extensions.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+Extensions.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/SearchFilters.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SearchFilters.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SearchFilters.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SearchFilters.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Models/Tag+Extensions.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+Extensions.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+Extensions.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+Extensions.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Services/CloudKitSyncService.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CloudKitSyncService.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CloudKitSyncService.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CloudKitSyncService.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataExportService.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataExportService.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataExportService.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Services/Persistence.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Persistence.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Persistence.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Persistence.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/Calendar+Extension.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Calendar+Extension.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformAdapter.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformAdapter.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformAdapter.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformAdapter.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformImage.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformImage.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformImage.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformImage.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformPerformance.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformPerformance.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/Features/Products/ContentView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ContentView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ContentView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ContentView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFeedback.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformFeedback.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformFeedback.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformFeedback.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFileHandler.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformFileHandler.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformFileHandler.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformFileHandler.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformInput.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformInput.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformInput.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformInput.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformLayout.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformLayout.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformLayout.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformLayout.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformNavigation.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformNavigation.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformNavigation.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PlatformNavigation.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/ProductRow.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductRow.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductRow.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductRow.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoriesView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoriesView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoriesView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesViewModel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoriesViewModel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoriesViewModel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoriesViewModel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoryDetailView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoryDetailView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoryDetailView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/CategoryDetailView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/EditCategorySheet.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditCategorySheet.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditCategorySheet.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditCategorySheet.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Common/ManualSearchView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualSearchView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualSearchView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualSearchView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/MainTabView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/MainTabView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/MainTabView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/MainTabView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddProductView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddProductView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddProductView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductViewModel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddProductViewModel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddProductViewModel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddProductViewModel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddRepairRecordView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AddRepairRecordView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditProductView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditProductView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditProductView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditProductView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditRepairRecordView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditRepairRecordView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditRepairRecordView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditRepairRecordView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/FilterView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/FilterView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/FilterView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/FilterView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ManualPreviewView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualPreviewView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductDetailView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductDetailView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductDetailView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailViewModel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductDetailViewModel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductDetailViewModel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductDetailViewModel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductFilterView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductFilterView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductFilterView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductFilterView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridItem.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductGridItem.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductGridItem.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductGridItem.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductGridView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductGridView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductGridView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListContentView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListContentView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListContentView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListContentView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListItem.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListItem.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListItem.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListItem.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListViewModel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductListViewModel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductRowView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductRowView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductRowView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ProductRowView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordDetailView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordDetailView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordRow.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordRow.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordRow.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordRow.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordsView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordsView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordsView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecordsView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SearchFilterView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SearchFilterView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SearchFilterView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SearchFilterView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SortOption.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SortOption.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SortOption.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SortOption.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ViewStyle.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewStyle.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewStyle.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ViewStyle.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AboutSettingsPanel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AboutSettingsPanel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AboutSettingsPanel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AboutSettingsPanel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AccentColorPickerView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AccentColorPickerView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AccentColorPickerView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AccentColorPickerView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AppInfoView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppInfoView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppInfoView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/AppInfoView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataBackupView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataBackupView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataBackupView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataBackupView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataExportView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataExportView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataExportView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataExportView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataImportView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataImportView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataImportView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataImportView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataSettingsPanel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataSettingsPanel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataSettingsPanel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/DataSettingsPanel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/LanguagePickerView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/LanguagePickerView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/LanguagePickerView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/LanguagePickerView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationAdvancedSettingsPanel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationAdvancedSettingsPanel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationAdvancedSettingsPanel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationAdvancedSettingsPanel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationSettingsView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/NotificationSettingsView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/OCRDefaultView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/OCRDefaultView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/OCRDefaultView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/OCRDefaultView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/PolicySheetView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PolicySheetView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PolicySheetView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/PolicySheetView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingRow.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingRow.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingRow.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingRow.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingsView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingsView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingsView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsViewModel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingsViewModel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingsViewModel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/SettingsViewModel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemePickerView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ThemePickerView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ThemePickerView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ThemePickerView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemeSettingsPanel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ThemeSettingsPanel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ThemeSettingsPanel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ThemeSettingsPanel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/WarrantyDefaultView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/WarrantyDefaultView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/WarrantyDefaultView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/WarrantyDefaultView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/EditTagSheet.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditTagSheet.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditTagSheet.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/EditTagSheet.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagDetailView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagDetailView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagDetailView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagDetailView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsView.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagsView.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagsView.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagsView.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsViewModel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagsViewModel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagsViewModel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/TagsViewModel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+CoreDataClass.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+CoreDataClass.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+CoreDataClass.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+CoreDataProperties.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+CoreDataProperties.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Category+CoreDataProperties.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Item+CoreDataClass.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Item+CoreDataClass.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Item+CoreDataClass.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Item+CoreDataProperties.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Item+CoreDataProperties.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Item+CoreDataProperties.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+CoreDataClass.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+CoreDataClass.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+CoreDataClass.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+CoreDataProperties.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+CoreDataProperties.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Manual+CoreDataProperties.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/ManualBox+CoreDataModel.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox+CoreDataModel.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox+CoreDataModel.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/ManualBox+CoreDataModel.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+CoreDataClass.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+CoreDataClass.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+CoreDataClass.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+CoreDataProperties.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+CoreDataProperties.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Order+CoreDataProperties.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+CoreDataClass.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+CoreDataClass.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+CoreDataClass.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+CoreDataProperties.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+CoreDataProperties.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Product+CoreDataProperties.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+CoreDataClass.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+CoreDataClass.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+CoreDataClass.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+CoreDataProperties.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+CoreDataProperties.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/RepairRecord+CoreDataProperties.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+CoreDataClass.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+CoreDataClass.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+CoreDataClass.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+CoreDataProperties.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+CoreDataProperties.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/Tag+CoreDataProperties.o"
+  },
+  "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/peter/Desktop/Github/manualbox/build/ManualBox.build/Release/ManualBox.build/Objects-normal/x86_64/GeneratedAssetSymbols.o"
+  }
+}

@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import Combine
+// import ManualBox.Core.Models
 
 // MARK: - 基础服务协议
 protocol ServiceProtocol {

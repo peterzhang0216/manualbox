@@ -264,6 +264,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				"$(SRCROOT)/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataClass.swift",
+				"$(SRCROOT)/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataProperties.swift",
+				"$(SRCROOT)/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataClass.swift",
+				"$(SRCROOT)/build/ManualBox.build/Release/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataProperties.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
