@@ -17,12 +17,7 @@ struct SettingsView: View {
     @State private var showAgreementSheet = false
     @State private var selectedPanel: SettingsPanel = .notification
     
-    enum SettingsPanel: Hashable {
-        case notification
-        case theme
-        case data
-        case about
-    }
+
     
     var body: some View {
         #if os(macOS)

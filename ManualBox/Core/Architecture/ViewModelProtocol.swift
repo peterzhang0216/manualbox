@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import CoreData
 
 // MARK: - 基础视图模型协议
 @MainActor
@@ -33,15 +34,18 @@ struct BaseState: StateProtocol {
 class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProtocol {
     @Published var state: State
     private var cancellables = Set<AnyCancellable>()
+    private var tasks = Set<Task<Void, Never>>()
     
     init(initialState: State) {
         self.state = initialState
     }
     
     func send(_ action: Action) {
-        Task {
-            await handle(action)
+        let task = Task { [weak self] in
+            await self?.handle(action)
+            return ()
         }
+        tasks.insert(task)
     }
     
     // 子类需要重写此方法来处理具体的动作
@@ -50,12 +54,20 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
     }
     
     func cleanup() {
+        // 取消所有正在执行的任务
+        for task in tasks {
+            task.cancel()
+        }
+        tasks.removeAll()
+        
+        // 清理所有订阅
         cancellables.removeAll()
     }
     
     deinit {
         // 在 Swift 6 中，避免在 deinit 中使用 Task 捕获 self
-        cancellables.removeAll()
+        // cleanup() 不能在 deinit 中调用，因为它是 MainActor 隔离的
+        // 依赖于 ARC 自动清理 cancellables 和 tasks
     }
     
     // MARK: - 便利方法
@@ -82,13 +94,43 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
             }
         }
     }
-}
-
-// MARK: - 视图模型工厂协议
-protocol ViewModelFactory {
-    func makeProductListViewModel() -> any ViewModelProtocol
-    func makeAddProductViewModel() -> any ViewModelProtocol
-    func makeCategoryViewModel() -> any ViewModelProtocol
-    func makeTagViewModel() -> any ViewModelProtocol
-    func makeSettingsViewModel() -> any ViewModelProtocol
+    
+    func setError(_ errorMessage: String?) {
+        updateState { state in
+            if var mutableState = state as? BaseState {
+                mutableState.errorMessage = errorMessage
+                state = mutableState as! State
+            }
+        }
+    }
+    
+    // MARK: - 异步任务管理
+    func performTask(_ operation: @escaping () async throws -> Void) async {
+        setLoading(true)
+        setError(nil as String?)
+        
+        do {
+            try await operation()
+        } catch {
+            setError(error)
+        }
+        
+        setLoading(false)
+    }
+    
+    // MARK: - 订阅管理
+    func addSubscription<P: Publisher>(
+        _ publisher: P,
+        receiveCompletion: @escaping ((Subscribers.Completion<P.Failure>) -> Void) = { _ in },
+        receiveValue: @escaping ((P.Output) -> Void)
+    ) {
+        publisher
+            .sink(receiveCompletion: receiveCompletion, receiveValue: receiveValue)
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - 任务完成处理
+    func taskCompleted(_ task: Task<Void, Never>) {
+        tasks.remove(task)
+    }
 }
