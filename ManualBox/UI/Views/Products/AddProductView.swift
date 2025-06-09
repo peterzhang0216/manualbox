@@ -55,13 +55,13 @@ struct AddProductView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
+            SwiftUI.ToolbarItem(placement: .cancellationAction) {
                 Button("取消") {
                     closeView()
                 }
                 .disabled(viewModel.isSaving)
             }
-            ToolbarItem(placement: .confirmationAction) {
+            SwiftUI.ToolbarItem(placement: .confirmationAction) {
                 Button("保存") {
                     saveProduct()
                 }

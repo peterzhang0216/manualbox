@@ -63,7 +63,7 @@ struct CategoryDetailView: View {
         }
         .navigationTitle(category.categoryName)
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
+            SwiftUI.ToolbarItem(placement: .primaryAction) {
                 Menu {
                     Button(action: { showAddProduct = true }) {
                         Label("添加产品", systemImage: "plus")

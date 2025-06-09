@@ -38,12 +38,12 @@ struct EditTagSheet: View {
         }
         .formStyle(.grouped)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
+            SwiftUI.ToolbarItem(placement: .cancellationAction) {
                 Button("取消") {
                     dismiss()
                 }
             }
-            ToolbarItem(placement: .confirmationAction) {
+            SwiftUI.ToolbarItem(placement: .confirmationAction) {
                 Button("保存") {
                     updateTag()
                 }

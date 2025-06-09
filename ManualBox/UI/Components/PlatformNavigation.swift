@@ -61,7 +61,7 @@ struct PlatformNavigationContainer<Content: View>: View {
 // 注意：实际的侧边栏视图现在在 MainTabView.swift 中的 SidebarView
 
 // MARK: - 平台感知的工具栏
-struct PlatformToolbar: ViewModifier {
+struct PlatformToolbarModifier: ViewModifier {
     let actions: [ToolbarAction]
     
     func body(content: Content) -> some View {
@@ -101,7 +101,7 @@ struct ToolbarAction {
 
 extension View {
     func platformToolbar(_ actions: [ToolbarAction]) -> some View {
-        modifier(PlatformToolbar(actions: actions))
+        modifier(PlatformToolbarModifier(actions: actions))
     }
 }
 

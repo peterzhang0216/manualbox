@@ -56,7 +56,7 @@ struct AddRepairRecordView: View {
         .navigationBarTitleDisplayMode(.inline)
 #endif
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
+            SwiftUI.ToolbarItem(placement: .cancellationAction) {
                 Button("取消") {
                     dismiss()
                 }

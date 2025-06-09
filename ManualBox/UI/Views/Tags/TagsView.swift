@@ -25,12 +25,12 @@ struct AddTagSheet: View {
         }
         .formStyle(.grouped)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
+            SwiftUI.ToolbarItem(placement: .cancellationAction) {
                 Button("取消") {
                     isPresented = false
                 }
             }
-            ToolbarItem(placement: .confirmationAction) {
+            SwiftUI.ToolbarItem(placement: .confirmationAction) {
                 Button("保存") {
                     addTag()
                 }
@@ -90,13 +90,13 @@ struct TagsView: View {
         .navigationTitle("标签管理")
         .toolbar {
             #if os(iOS)
-            ToolbarItem(placement: .navigationBarTrailing) {
+            SwiftUI.ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { showingAddSheet = true }) {
                     Label("添加标签", systemImage: "plus")
                 }
             }
             #else
-            ToolbarItem {
+            SwiftUI.ToolbarItem {
                 Button(action: { showingAddSheet = true }) {
                     Label("添加标签", systemImage: "plus")
                 }

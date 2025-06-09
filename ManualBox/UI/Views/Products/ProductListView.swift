@@ -135,7 +135,7 @@ struct ProductListView: View {
             }
         }
         #else
-        ToolbarItem {
+        SwiftUI.ToolbarItem(placement: .primaryAction) {
             addButton
         }
         #endif

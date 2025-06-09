@@ -52,7 +52,7 @@ struct RepairRecordDetailView: View {
         }
         .navigationTitle("维修记录详情")
         .toolbar {
-            ToolbarItem {
+            SwiftUI.ToolbarItem {
                 Button(action: {
                     showingEditSheet = true
                 }) {

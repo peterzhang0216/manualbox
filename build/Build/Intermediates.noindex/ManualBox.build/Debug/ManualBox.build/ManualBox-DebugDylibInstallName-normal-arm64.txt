@@ -1,0 +1,1 @@
+@rpath/ManualBox.debug.dylib

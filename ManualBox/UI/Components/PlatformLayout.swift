@@ -39,10 +39,27 @@ struct PlatformAdaptiveGrid<Content: View>: View {
 struct PlatformAdaptiveList<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable {
     let data: Data
     let content: (Data.Element) -> Content
+    let onRefresh: (() async -> Void)?
+    let onDelete: ((IndexSet) -> Void)?
+    let onMove: ((IndexSet, Int) -> Void)?
+    let searchText: String
     
-    init(_ data: Data, @ViewBuilder content: @escaping (Data.Element) -> Content) {
+    @State private var isRefreshing = false
+    
+    init(
+        _ data: Data,
+        searchText: String = "",
+        onRefresh: (() async -> Void)? = nil,
+        onDelete: ((IndexSet) -> Void)? = nil,
+        onMove: ((IndexSet, Int) -> Void)? = nil,
+        @ViewBuilder content: @escaping (Data.Element) -> Content
+    ) {
         self.data = data
         self.content = content
+        self.onRefresh = onRefresh
+        self.onDelete = onDelete
+        self.onMove = onMove
+        self.searchText = searchText
     }
     
     var body: some View {
@@ -50,14 +67,47 @@ struct PlatformAdaptiveList<Data: RandomAccessCollection, Content: View>: View w
         List(data, id: \.id) { item in
             content(item)
                 .platformListRow()
+                .contextMenu {
+                    contextMenuItems(for: item)
+                }
         }
         .listStyle(.sidebar)
+        .searchable(text: .constant(searchText))
         #else
-        List(data, id: \.id) { item in
-            content(item)
-                .platformListRow()
+        List {
+            ForEach(data, id: \.id) { item in
+                content(item)
+                    .platformListRow()
+            }
+            .onDelete(perform: onDelete)
+            .onMove(perform: onMove)
         }
         .listStyle(.plain)
+        .refreshable {
+            if let onRefresh = onRefresh {
+                await onRefresh()
+            }
+        }
+        .searchable(text: .constant(searchText))
+        #endif
+    }
+    
+    @ViewBuilder
+    private func contextMenuItems(for item: Data.Element) -> some View {
+        #if os(macOS)
+        Button("Edit") {
+            // 编辑操作
+        }
+        
+        Button("Duplicate") {
+            // 复制操作
+        }
+        
+        Divider()
+        
+        Button("Delete", role: .destructive) {
+            // 删除操作
+        }
         #endif
     }
 }
@@ -222,79 +272,6 @@ struct PlatformSearchBar: View {
                 .fill(Color(.systemGray6))
         )
         #endif
-    }
-}
-
-// MARK: - 平台自适应按钮样式
-struct PlatformButtonStyle: ButtonStyle {
-    let style: ButtonStyleType
-    
-    enum ButtonStyleType {
-        case primary
-        case secondary
-        case destructive
-        case plain
-    }
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(.horizontal, horizontalPadding)
-            .padding(.vertical, verticalPadding)
-            .background(backgroundColor(isPressed: configuration.isPressed))
-            .foregroundColor(foregroundColor)
-            .cornerRadius(cornerRadius)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-            .animation(PlatformAdapter.defaultAnimation, value: configuration.isPressed)
-    }
-    
-    private var horizontalPadding: CGFloat {
-        #if os(macOS)
-        return 16
-        #else
-        return 20
-        #endif
-    }
-    
-    private var verticalPadding: CGFloat {
-        #if os(macOS)
-        return 8
-        #else
-        return 12
-        #endif
-    }
-    
-    private var cornerRadius: CGFloat {
-        #if os(macOS)
-        return 6
-        #else
-        return 8
-        #endif
-    }
-    
-    private func backgroundColor(isPressed: Bool) -> Color {
-        let baseColor: Color
-        
-        switch style {
-        case .primary:
-            baseColor = .accentColor
-        case .secondary:
-            baseColor = PlatformAdapter.secondaryBackgroundColor
-        case .destructive:
-            baseColor = .red
-        case .plain:
-            baseColor = .clear
-        }
-        
-        return isPressed ? baseColor.opacity(0.8) : baseColor
-    }
-    
-    private var foregroundColor: Color {
-        switch style {
-        case .primary, .destructive:
-            return .white
-        case .secondary, .plain:
-            return .primary
-        }
     }
 }
 

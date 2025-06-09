@@ -66,13 +66,13 @@ struct EditProductView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
+            SwiftUI.ToolbarItem(placement: .cancellationAction) {
                 Button("取消") {
                     dismiss()
                 }
                 .disabled(isSaving)
             }
-            ToolbarItem(placement: .confirmationAction) {
+            SwiftUI.ToolbarItem(placement: .confirmationAction) {
                 Button("保存") {
                     saveChanges()
                 }

@@ -20,7 +20,7 @@ struct PolicySheetView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 #endif
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
+                    SwiftUI.ToolbarItem(placement: .primaryAction) {
                         Button(NSLocalizedString("Done", comment: "")) {
                             dismiss()
                         }

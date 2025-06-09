@@ -11,8 +11,8 @@ struct ManualPreviewView: View {
     @State private var previewImage: PlatformImage?
     @State private var previewURL: URL?
     
-    var body: some View {
-        VStack {
+    private var contentView: some View {
+        Group {
             if let content = manual.content, !content.isEmpty {
                 // 如果有OCR内容，显示文本
                 ScrollView {
@@ -23,35 +23,45 @@ struct ManualPreviewView: View {
                 }
             } else if let data = manual.fileData {
                 // 根据文件类型显示不同的预览
-                Group {
-                    if manual.fileType == "pdf" {
-                        PDFPreview(data: data)
-                    } else if let image = PlatformImage(data: data) {
-                        Image(platformImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        Text("无法预览此文件类型")
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .padding()
+                filePreviewView(data: data)
+                    .padding()
             } else {
                 Text("无法加载文件内容")
                     .foregroundColor(.secondary)
             }
         }
+    }
+    
+    private func filePreviewView(data: Data) -> some View {
+        Group {
+            if manual.fileType == "pdf" {
+                PDFPreview(data: data)
+            } else if let image = PlatformImage(data: data) {
+                Image(platformImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                Text("无法预览此文件类型")
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            contentView
+        }
         .navigationTitle(manual.fileName ?? "说明书预览")
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
+            SwiftUI.ToolbarItem(placement: .confirmationAction) {
                 Button("完成") {
                     dismiss()
                 }
             }
             
             if let fileData = manual.fileData {
-                ToolbarItem(placement: .primaryAction) {
+                SwiftUI.ToolbarItem(placement: .primaryAction) {
                     Button {
                         exportFile(data: fileData, name: manual.fileName ?? "manual.pdf")
                     } label: {

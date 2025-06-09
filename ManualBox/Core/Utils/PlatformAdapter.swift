@@ -6,6 +6,30 @@ enum DevicePerformanceLevel {
     case low
     case medium
     case high
+    
+    var maxConcurrentOperations: Int {
+        switch self {
+        case .low: return 2
+        case .medium: return 4
+        case .high: return 8
+        }
+    }
+    
+    var imageCompressionQuality: CGFloat {
+        switch self {
+        case .low: return 0.6
+        case .medium: return 0.8
+        case .high: return 0.9
+        }
+    }
+    
+    var cacheSize: Int {
+        switch self {
+        case .low: return 50 * 1024 * 1024  // 50MB
+        case .medium: return 100 * 1024 * 1024  // 100MB
+        case .high: return 200 * 1024 * 1024  // 200MB
+        }
+    }
 }
 
 // MARK: - 平台适配管理器
@@ -14,21 +38,55 @@ struct PlatformAdapter {
     // MARK: - 设备性能
     static var devicePerformanceLevel: DevicePerformanceLevel {
         #if os(macOS)
-        // macOS 设备通常性能较好
-        return .high
-        #else
-        // iOS 设备根据内存大小判断性能级别
+        // macOS 设备根据处理器和内存综合判断
         let physicalMemory = ProcessInfo.processInfo.physicalMemory
         let memoryGB = Double(physicalMemory) / (1024 * 1024 * 1024)
+        let processorCount = ProcessInfo.processInfo.processorCount
         
-        if memoryGB >= 6 {
+        if memoryGB >= 16 && processorCount >= 8 {
             return .high
-        } else if memoryGB >= 3 {
+        } else if memoryGB >= 8 && processorCount >= 4 {
+            return .medium
+        } else {
+            return .low
+        }
+        #else
+        // iOS 设备根据内存大小和处理器核心数判断性能级别
+        let physicalMemory = ProcessInfo.processInfo.physicalMemory
+        let memoryGB = Double(physicalMemory) / (1024 * 1024 * 1024)
+        let processorCount = ProcessInfo.processInfo.processorCount
+        
+        if memoryGB >= 6 && processorCount >= 6 {
+            return .high
+        } else if memoryGB >= 3 && processorCount >= 4 {
             return .medium
         } else {
             return .low
         }
         #endif
+    }
+    
+    // MARK: - 内存管理策略
+    static var memoryPressureThreshold: Double {
+        switch devicePerformanceLevel {
+        case .low: return 0.7
+        case .medium: return 0.8
+        case .high: return 0.9
+        }
+    }
+    
+    static var shouldUseMemoryCache: Bool {
+        let availableMemory = ProcessInfo.processInfo.physicalMemory
+        let memoryGB = Double(availableMemory) / (1024 * 1024 * 1024)
+        return memoryGB >= 2.0
+    }
+    
+    static var maxImageCacheCount: Int {
+        switch devicePerformanceLevel {
+        case .low: return 50
+        case .medium: return 100
+        case .high: return 200
+        }
     }
     
     // MARK: - 布局相关
@@ -207,6 +265,105 @@ struct PlatformAdapter {
         return 2
         #endif
     }
+    
+    // MARK: - 文件系统访问适配
+    static var supportsFileSystemAccess: Bool {
+        #if os(macOS)
+        return true
+        #else
+        return false // iOS 使用沙盒机制
+        #endif
+    }
+    
+    static var documentsDirectory: URL {
+        #if os(macOS)
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        #else
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        #endif
+    }
+    
+    static var supportedFileTypes: [String] {
+        #if os(macOS)
+        return ["pdf", "jpg", "jpeg", "png", "gif", "tiff", "bmp", "txt", "rtf", "doc", "docx"]
+        #else
+        return ["pdf", "jpg", "jpeg", "png", "gif", "txt"]
+        #endif
+    }
+    
+    // MARK: - 窗口管理适配
+    static var supportsWindowManagement: Bool {
+        #if os(macOS)
+        return true
+        #else
+        return false
+        #endif
+    }
+    
+    static var defaultWindowSize: CGSize {
+        #if os(macOS)
+        return CGSize(width: 1200, height: 800)
+        #else
+        return CGSize.zero // iOS 不适用
+        #endif
+    }
+    
+    static var minimumWindowSize: CGSize {
+        #if os(macOS)
+        return CGSize(width: 800, height: 600)
+        #else
+        return CGSize.zero // iOS 不适用
+        #endif
+    }
+    
+    // MARK: - 触摸/鼠标交互差异处理
+    static var primaryInteractionMode: InteractionMode {
+        #if os(macOS)
+        return .mouse
+        #else
+        return .touch
+        #endif
+    }
+    
+    static var supportsRightClick: Bool {
+        #if os(macOS)
+        return true
+        #else
+        return false
+        #endif
+    }
+    
+    static var supportsLongPress: Bool {
+        #if os(macOS)
+        return false
+        #else
+        return true
+        #endif
+    }
+    
+    // MARK: - 性能优化配置
+    static var shouldUseHardwareAcceleration: Bool {
+        return devicePerformanceLevel != .low
+    }
+    
+    static var animationDuration: Double {
+        switch devicePerformanceLevel {
+        case .low: return 0.15
+        case .medium: return 0.25
+        case .high: return 0.3
+        }
+    }
+    
+    static var shouldPreloadImages: Bool {
+        return devicePerformanceLevel == .high && shouldUseMemoryCache
+    }
+}
+
+// MARK: - 交互模式枚举
+enum InteractionMode {
+    case touch
+    case mouse
+    case hybrid
 }
 
 // MARK: - 导航样式枚举
@@ -313,5 +470,80 @@ extension View {
     @ViewBuilder
     func platformTouchTarget() -> some View {
         self.frame(minHeight: PlatformAdapter.minimumTouchTarget)
+    }
+    
+    @ViewBuilder
+    func platformInteraction() -> some View {
+        #if os(macOS)
+        self
+            .onTapGesture {
+                // macOS 点击处理
+            }
+            .onHover { isHovering in
+                // macOS 悬停处理
+            }
+        #else
+        self
+            .onTapGesture {
+                // iOS 触摸处理
+            }
+            .onLongPressGesture {
+                // iOS 长按处理
+            }
+        #endif
+    }
+    
+    @ViewBuilder
+    func platformKeyboardShortcut(_ key: KeyEquivalent, modifiers: EventModifiers = []) -> some View {
+        #if os(macOS)
+        self.keyboardShortcut(key, modifiers: modifiers)
+        #else
+        self // iOS 不支持键盘快捷键
+        #endif
+    }
+    
+    @ViewBuilder
+    func platformDragAndDrop<T: Transferable>(of type: T.Type, action: @escaping ([T]) -> Void) -> some View {
+        #if os(macOS)
+        self
+            .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+                // macOS 拖拽处理
+                return true
+            }
+        #else
+        self
+            .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+                // iOS 拖拽处理
+                return true
+            }
+        #endif
+    }
+    
+    @ViewBuilder
+    func platformAccessibility(label: String, hint: String? = nil) -> some View {
+        self
+            .accessibilityLabel(label)
+            .accessibilityHint(hint ?? "")
+            .accessibilityAddTraits(.isButton)
+    }
+    
+    @ViewBuilder
+    func platformPerformanceOptimized() -> some View {
+        if PlatformAdapter.shouldUseHardwareAcceleration {
+            self
+                .drawingGroup() // 硬件加速
+        } else {
+            self
+        }
+    }
+    
+    @ViewBuilder
+    func platformMemoryOptimized() -> some View {
+        if PlatformAdapter.shouldUseMemoryCache {
+            self
+        } else {
+            self
+                .clipped() // 减少内存使用
+        }
     }
 }

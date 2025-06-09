@@ -21,12 +21,12 @@ struct AddCategorySheet: View {
         }
         .formStyle(.grouped)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
+            SwiftUI.ToolbarItem(placement: .cancellationAction) {
                 Button("取消") {
                     isPresented = false
                 }
             }
-            ToolbarItem(placement: .confirmationAction) {
+            SwiftUI.ToolbarItem(placement: .confirmationAction) {
                 Button("保存") {
                     addCategory()
                 }
@@ -92,7 +92,7 @@ struct CategoriesView: View {
                 }
             }
             #else
-            ToolbarItem {
+            SwiftUI.ToolbarItem {
                 Button(action: { showingAddSheet = true }) {
                     Label("添加分类", systemImage: "plus")
                 }

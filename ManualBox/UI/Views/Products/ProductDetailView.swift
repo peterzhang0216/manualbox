@@ -44,7 +44,7 @@ struct ProductDetailView: View {
         }
         .navigationTitle(product.productName)
         .toolbar {
-            ToolbarItem {
+            SwiftUI.ToolbarItem {
                 Button {
                     showingEditSheet = true
                 } label: {
