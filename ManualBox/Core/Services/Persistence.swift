@@ -33,6 +33,10 @@ class PersistenceController {
     private(set) lazy var repairRecordRepository: RepairRecordRepository = {
         RepairRecordRepository(context: container.viewContext)
     }()
+    
+    private(set) lazy var manualRepository: ManualRepository = {
+        ManualRepository(context: container.viewContext)
+    }()
 
     @MainActor
     static let preview: PersistenceController = {
@@ -213,7 +217,8 @@ class PersistenceController {
         categories: CategoryRepository,
         tags: TagRepository,
         orders: OrderRepository,
-        repairRecords: RepairRecordRepository
+        repairRecords: RepairRecordRepository,
+        manuals: ManualRepository
     ) {
         let backgroundContext = newBackgroundContext()
         return (
@@ -221,7 +226,8 @@ class PersistenceController {
             categories: CategoryRepository(context: backgroundContext),
             tags: TagRepository(context: backgroundContext),
             orders: OrderRepository(context: backgroundContext),
-            repairRecords: RepairRecordRepository(context: backgroundContext)
+            repairRecords: RepairRecordRepository(context: backgroundContext),
+            manuals: ManualRepository(context: backgroundContext)
         )
     }
     
@@ -231,14 +237,16 @@ class PersistenceController {
         categories: CategoryRepository,
         tags: TagRepository,
         orders: OrderRepository,
-        repairRecords: RepairRecordRepository
+        repairRecords: RepairRecordRepository,
+        manuals: ManualRepository
     ) {
         return (
             products: ProductRepository(context: context),
             categories: CategoryRepository(context: context),
             tags: TagRepository(context: context),
             orders: OrderRepository(context: context),
-            repairRecords: RepairRecordRepository(context: context)
+            repairRecords: RepairRecordRepository(context: context),
+            manuals: ManualRepository(context: context)
         )
     }
     

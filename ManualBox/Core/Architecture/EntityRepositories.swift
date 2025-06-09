@@ -229,3 +229,48 @@ class RepairRecordRepository: BaseRepository<RepairRecord> {
         return try await fetchWithFilters([compoundPredicate])
     }
 }
+
+// MARK: - 说明书Repository
+class ManualRepository: BaseRepository<Manual> {
+    
+    init(context: NSManagedObjectContext) {
+        super.init(context: context, entityName: "Manual")
+    }
+    
+    // MARK: - 说明书特定查询
+    
+    /// 根据产品获取说明书
+    func fetchByProduct(_ product: Product) async throws -> [Manual] {
+        let predicate = NSPredicate(format: "product == %@", product)
+        return try await fetchWithFilters([predicate])
+    }
+    
+    /// 获取待OCR处理的说明书
+    func fetchPendingOCR() async throws -> [Manual] {
+        let predicate = NSPredicate(format: "isOCRPending == YES AND isOCRProcessed == NO")
+        return try await fetchWithFilters([predicate])
+    }
+    
+    /// 获取已完成OCR的说明书
+    func fetchOCRProcessed() async throws -> [Manual] {
+        let predicate = NSPredicate(format: "isOCRProcessed == YES")
+        return try await fetchWithFilters([predicate])
+    }
+    
+    /// 根据文件类型获取说明书
+    func fetchByFileType(_ fileType: String) async throws -> [Manual] {
+        let predicate = NSPredicate(format: "fileType == %@", fileType)
+        return try await fetchWithFilters([predicate])
+    }
+    
+    override func search(_ query: String) async throws -> [Manual] {
+        let predicates = [
+            NSPredicate(format: "fileName CONTAINS[cd] %@", query),
+            NSPredicate(format: "content CONTAINS[cd] %@", query),
+            NSPredicate(format: "product.name CONTAINS[cd] %@", query),
+            NSPredicate(format: "product.brand CONTAINS[cd] %@", query)
+        ]
+        let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        return try await fetchWithFilters([compoundPredicate])
+    }
+}

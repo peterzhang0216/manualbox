@@ -80,7 +80,14 @@ class ServiceRegistrationManager {
             persistenceController.repairRecordRepository
         }
         
-        // 注册Repository工厂，用于创建后台上下文的Repository
+        container.register(
+            ManualRepository.self,
+            lifetime: .singleton
+        ) {
+            persistenceController.manualRepository
+        }
+        
+        // 注册RepositoryFactory
         container.register(
             RepositoryFactory.self,
             lifetime: .singleton
@@ -132,11 +139,12 @@ class RepositoryFactory {
             categories: repositories.categories,
             tags: repositories.tags,
             orders: repositories.orders,
-            repairRecords: repositories.repairRecords
+            repairRecords: repositories.repairRecords,
+            manuals: repositories.manuals
         )
     }
     
-    /// 为特定上下文创建Repository
+    /// 为特定上下文创建Repository实例
     func createRepositories(for context: NSManagedObjectContext) -> ContextRepositories {
         let repositories = persistenceController.repositories(for: context)
         return ContextRepositories(
@@ -144,7 +152,8 @@ class RepositoryFactory {
             categories: repositories.categories,
             tags: repositories.tags,
             orders: repositories.orders,
-            repairRecords: repositories.repairRecords
+            repairRecords: repositories.repairRecords,
+            manuals: repositories.manuals
         )
     }
 }
@@ -156,6 +165,7 @@ struct BackgroundRepositories {
     let tags: TagRepository
     let orders: OrderRepository
     let repairRecords: RepairRecordRepository
+    let manuals: ManualRepository
 }
 
 struct ContextRepositories {
@@ -164,6 +174,7 @@ struct ContextRepositories {
     let tags: TagRepository
     let orders: OrderRepository
     let repairRecords: RepairRecordRepository
+    let manuals: ManualRepository
 }
 
 // MARK: - 测试环境配置
