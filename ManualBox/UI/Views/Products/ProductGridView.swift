@@ -20,7 +20,7 @@ struct ProductGridView: View {
             return environmentSelectedProduct
         } else {
             return Binding(
-                get: { viewModel._selectedProduct },
+                get: { viewModel.selectedProduct },
                 set: { 
                     viewModel.send(.setSelectedProduct($0))
                     environmentSelectedProduct.wrappedValue = $0
@@ -31,7 +31,7 @@ struct ProductGridView: View {
     #else
     private var selectedProduct: Binding<Product?> {
         return Binding(
-            get: { viewModel._selectedProduct },
+            get: { viewModel.selectedProduct },
             set: { viewModel.send(.setSelectedProduct($0)) }
         )
     }

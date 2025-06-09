@@ -97,10 +97,7 @@ struct ProductListView: View {
     // MARK: - 辅助属性
     
     private var hasActiveFilters: Bool {
-        return !viewModel.selectedCategories.isEmpty || 
-               !viewModel.selectedTags.isEmpty || 
-               viewModel.showWarrantyFilter || 
-               viewModel.onlyWithManuals
+        return viewModel.hasActiveFilters
     }
     
     @ToolbarContentBuilder
@@ -122,14 +119,15 @@ struct ProductListView: View {
             if viewModel.isSelectMode {
                 Menu {
                     Button {
-                        viewModel.deleteSelectedProducts(viewContext: viewContext)
+                        viewModel.deleteSelectedProducts()
                     } label: {
                         Label("删除选中", systemImage: "trash")
                     }
+                    .disabled(viewModel.isDeletingProducts)
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
-                .disabled(viewModel.selectedProducts.isEmpty)
+                .disabled(!viewModel.hasSelectedProducts || viewModel.isDeletingProducts)
             } else {
                 addButton
             }

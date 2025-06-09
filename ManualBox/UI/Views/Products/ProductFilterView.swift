@@ -42,7 +42,7 @@ struct ProductFilterView: View {
             
             if !viewModel.searchText.isEmpty {
                 Button {
-                    viewModel.clearSearch()
+                    viewModel.send(.updateSearchText(""))
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.gray)
