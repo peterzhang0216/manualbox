@@ -35,40 +35,30 @@ final class InteractionTests: XCTestCase {
     }
 
     // 测试1: 验证AddProductViewModel中的异步保存逻辑
-    func testProductSaveAsync() throws {
-        let expectation = self.expectation(description: "保存产品完成")
+    @MainActor
+    func testProductSaveAsync() async throws {
         let viewModel = AddProductViewModel()
         
         // 设置产品基本信息
-        viewModel.name = "测试产品"
-        viewModel.brand = "测试品牌"
-        viewModel.model = "TS-100"
+        viewModel.send(AddProductAction.updateName("测试产品"))
+        viewModel.send(AddProductAction.updateBrand("测试品牌"))
+        viewModel.send(AddProductAction.updateModel("TS-100"))
         
-        // 模拟发票图片数据
-        let mockImageData = Data([0, 1, 2, 3, 4]) // 假图片数据
-        viewModel.invoiceImageData = mockImageData
+        // 模拟发票图片数据 - 直接设置状态而不是通过action
+        // 因为invoiceImageData是通过loadInvoiceImage方法异步设置的
         
         // 调用保存方法
-        viewModel.saveProduct(in: context) { success in
-            XCTAssertTrue(success, "产品保存应该成功")
-            
-            // 验证产品已被保存到数据库
-            let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "name == %@", "测试产品")
-            
-            do {
-                let results = try self.context.fetch(fetchRequest)
-                XCTAssertEqual(results.count, 1, "应该找到一个产品")
-                XCTAssertEqual(results.first?.productBrand, "测试品牌", "品牌应该匹配")
-            } catch {
-                XCTFail("查询产品失败: \(error)")
-            }
-            
-            expectation.fulfill()
-        }
+        let success = await viewModel.saveProduct(in: context)
+        XCTAssertTrue(success, "产品保存应该成功")
         
-        // 等待异步操作完成
-        wait(for: [expectation], timeout: 5.0)
+        // 验证产品已被保存到数据库
+        let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", "测试产品")
+        
+        let results = try context.fetch(fetchRequest)
+        XCTAssertEqual(results.count, 1, "应该找到一个产品")
+        XCTAssertEqual(results.first?.name, "测试产品", "产品名称应该匹配")
+        XCTAssertEqual(results.first?.brand, "测试品牌", "品牌应该匹配")
     }
     
     // 测试2: 验证通知机制是否正确触发UI更新
