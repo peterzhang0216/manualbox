@@ -29,7 +29,7 @@ struct PlatformButton: View {
                 return .clear
             case .toolbar:
                 #if os(macOS)
-                return Color(NSColor.controlBackgroundColor)
+                return Color(.controlBackgroundColor)
                 #else
                 return Color(.systemGray6)
                 #endif

@@ -27,19 +27,19 @@ struct PlatformToolbar<Content: View>: View {
             switch self {
             case .primary:
                 #if os(macOS)
-                return Color(NSColor.windowBackgroundColor)
+                return Color(.windowBackgroundColor)
                 #else
                 return Color(.systemBackground)
                 #endif
             case .secondary:
                 #if os(macOS)
-                return Color(NSColor.controlBackgroundColor)
+                return Color(.controlBackgroundColor)
                 #else
                 return Color(.secondarySystemBackground)
                 #endif
             case .floating:
                 #if os(macOS)
-                return Color(NSColor.windowBackgroundColor).opacity(0.9)
+                return Color(.windowBackgroundColor).opacity(0.9)
                 #else
                 return Color(.systemBackground).opacity(0.9)
                 #endif

@@ -75,7 +75,7 @@ struct CategoriesView: View {
             } else {
                 List {
                     ForEach(categories) { category in
-                        NavigationLink(destination: ProductListView(category: category)) {
+                        NavigationLink(destination: CategoryDetailView(category: category)) {
                             CategoryRow(category: category)
                         }
                     }
@@ -86,7 +86,7 @@ struct CategoriesView: View {
         .navigationTitle("分类管理")
         .toolbar {
             #if os(iOS)
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .primaryAction) {
                 Button(action: { showingAddSheet = true }) {
                     Label("添加分类", systemImage: "plus")
                 }

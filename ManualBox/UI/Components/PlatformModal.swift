@@ -202,12 +202,12 @@ private struct PlatformDragGesture: ViewModifier {
         content.gesture(
             DragGesture()
                 .onChanged { value in
-                    if value.translation.y > 0 {
+                    if value.translation.height > 0 {
                         dragOffset = value.translation
                     }
                 }
                 .onEnded { value in
-                    if value.translation.y > 100 {
+                    if value.translation.height > 100 {
                         onDismiss()
                     } else {
                         withAnimation(.spring()) {
@@ -294,7 +294,7 @@ extension View {
                     Text("It adapts to different platforms automatically.")
                         .foregroundColor(.secondary)
                     
-                    PlatformButton("Close", style: .secondary) {
+                    PlatformButton("Close", icon: "xmark", style: .secondary) {
                         showSheet = false
                     }
                 }

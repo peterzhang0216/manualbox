@@ -91,7 +91,7 @@ struct RepairRecordsView: View {
 #if os(iOS)
                 .background(Color(.secondarySystemBackground))
 #else
-                .background(Color(NSColor.windowBackgroundColor))
+                .background(Color(.windowBackgroundColor))
 #endif
                 .cornerRadius(10)
                 .padding(.horizontal)

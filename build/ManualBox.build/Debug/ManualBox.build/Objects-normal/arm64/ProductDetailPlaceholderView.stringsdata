@@ -1,0 +1,32 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/Features/Products/ProductDetailPlaceholderView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "产品详情",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "请选择一个产品",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "在左侧选择或新建一个产品以查看详情",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 34
+        }
+      }
+    ]
+  },
+  "version": 1
+}

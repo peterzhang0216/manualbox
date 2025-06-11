@@ -1,0 +1,40 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformModal.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "This is a sheet modal",
+        "location": {
+          "startingColumn": 1,
+          "startingLine": 269
+        }
+      },
+      {
+        "comment": "",
+        "key": "It adapts to different platforms automatically.",
+        "location": {
+          "startingColumn": 1,
+          "startingLine": 269
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quick info",
+        "location": {
+          "startingColumn": 1,
+          "startingLine": 269
+        }
+      },
+      {
+        "comment": "",
+        "key": "This is a popover with platform-specific styling.",
+        "location": {
+          "startingColumn": 1,
+          "startingLine": 269
+        }
+      }
+    ]
+  },
+  "version": 1
+}

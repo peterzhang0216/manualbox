@@ -79,7 +79,7 @@ struct PlatformToolbarModifier: ViewModifier {
                 }
                 #else
                 // iOS 工具栏布局
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .primaryAction) {
                     ForEach(actions, id: \.id) { action in
                         Button(action: action.action) {
                             Image(systemName: action.icon)

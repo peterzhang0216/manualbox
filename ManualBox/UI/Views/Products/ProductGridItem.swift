@@ -107,7 +107,7 @@ struct ProductGridItem: View {
         }
         .padding(12)
         #if os(macOS)
-        .background(Color(NSColor.windowBackgroundColor))
+        .background(Color(.windowBackgroundColor))
         #else
         .background(Color(.systemBackground))
         #endif

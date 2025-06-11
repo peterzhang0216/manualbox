@@ -96,84 +96,102 @@ extension Manual {
         return nil
     }
     
-    // 执行 OCR 识别
+    // 执行 OCR 识别 - 使用增强版OCR服务
+    @MainActor
     func performOCR(completion: @escaping (Bool) -> Void) {
-        guard let image = getPreviewImage() else {
-            completion(false)
-            return
-        }
+        let ocrService = OCRService.shared
         
-        #if os(macOS)
-        guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-            completion(false)
-            return
-        }
-        #else
-        guard let cgImage = image.cgImage else {
-            completion(false)
-            return
-        }
-        #endif
-        
-        // 创建 OCR 请求
-        let request = VNRecognizeTextRequest { [weak self] request, error in
-            guard let self = self else {
-                completion(false)
-                return
-            }
-            
-            guard error == nil else {
-                print("OCR 错误: \(error!.localizedDescription)")
-                completion(false)
-                return
-            }
-            
-            guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                completion(false)
-                return
-            }
-            
-            // 提取识别的文本
-            let recognizedText = observations.compactMap { observation in
-                observation.topCandidates(1).first?.string
-            }.joined(separator: "\n")
-            
+        ocrService.performOCR(on: self, configuration: .default) { result in
             DispatchQueue.main.async {
-                self.content = recognizedText
-                self.isOCRProcessed = true
-                
-                // 保存 CoreData 上下文
-                if let context = self.managedObjectContext {
-                    do {
-                        try context.save()
-                        completion(true)
-                    } catch {
-                        print("保存 OCR 结果失败: \(error.localizedDescription)")
+                switch result {
+                case .success(let ocrResult):
+                    self.content = ocrResult.text
+                    self.isOCRProcessed = true
+                    // 注意：Core Data模型中可能没有这些字段，先注释掉
+                    // self.ocrConfidence = ocrResult.confidence
+                    // self.detectedLanguage = ocrResult.languageDetected
+                    
+                    // 保存到Core Data
+                    if let context = self.managedObjectContext {
+                        do {
+                            try context.save()
+                            completion(true)
+                        } catch {
+                            print("保存OCR结果失败: \(error.localizedDescription)")
+                            completion(false)
+                        }
+                    } else {
                         completion(false)
                     }
-                } else {
+                    
+                case .failure(let error):
+                    print("OCR处理失败: \(error.localizedDescription)")
                     completion(false)
                 }
             }
         }
+    }
+    
+    // 执行快速OCR（用于预览）
+    @MainActor
+    func performFastOCR(completion: @escaping (Bool) -> Void) {
+        let ocrService = OCRService.shared
         
-        // 配置 OCR 请求
-        request.recognitionLevel = .accurate
-        request.usesLanguageCorrection = true
-        
-        // 支持中文识别
-        if #available(iOS 14.0, macOS 11.0, *) {
-            request.recognitionLanguages = ["zh-Hans", "zh-Hant", "en-US"]
+        ocrService.performOCR(on: self, configuration: .fast) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let ocrResult):
+                    self.content = ocrResult.text
+                    self.isOCRProcessed = true
+                    // self.ocrConfidence = ocrResult.confidence
+                    completion(true)
+                    
+                case .failure(let error):
+                    print("快速OCR处理失败: \(error.localizedDescription)")
+                    completion(false)
+                }
+            }
         }
+    }
+    
+    // 获取OCR处理进度
+    @MainActor
+    func performOCRWithProgress(
+        progressCallback: @escaping @Sendable (Float) -> Void,
+        completion: @escaping (Bool) -> Void
+    ) {
+        let ocrService = OCRService.shared
         
-        // 执行 OCR 请求
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                try handler.perform([request])
-            } catch {
-                print("OCR 处理失败: \(error.localizedDescription)")
-                DispatchQueue.main.async {
+        let config = OCRConfiguration(
+            recognitionLevel: .accurate,
+            languages: ["zh-Hans", "zh-Hant", "en-US"],
+            usesLanguageCorrection: true,
+            minimumTextHeight: 0.02,
+            customWords: [],
+            progressCallback: progressCallback
+        )
+        
+        ocrService.performOCR(on: self, configuration: config) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let ocrResult):
+                    self.content = ocrResult.text
+                    self.isOCRProcessed = true
+                    // self.ocrConfidence = ocrResult.confidence
+                    // self.detectedLanguage = ocrResult.languageDetected
+                    
+                    if let context = self.managedObjectContext {
+                        do {
+                            try context.save()
+                            completion(true)
+                        } catch {
+                            completion(false)
+                        }
+                    } else {
+                        completion(false)
+                    }
+                    
+                case .failure(_):
                     completion(false)
                 }
             }

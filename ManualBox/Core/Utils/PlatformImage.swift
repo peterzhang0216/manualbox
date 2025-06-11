@@ -10,9 +10,9 @@ typealias PlatformImage = UIImage
 #endif
 
 // MARK: - PlatformImage Extensions
+#if os(macOS)
 extension PlatformImage {
     func jpegData(compressionQuality: CGFloat) -> Data? {
-        #if os(macOS)
         guard let tiffData = self.tiffRepresentation,
               let bitmapImage = NSBitmapImageRep(data: tiffData) else {
             return nil
@@ -23,11 +23,9 @@ extension PlatformImage {
         ]
         
         return bitmapImage.representation(using: .jpeg, properties: properties)
-        #else
-        return self.jpegData(compressionQuality: compressionQuality)
-        #endif
     }
 }
+#endif
 
 // MARK: - 平台图像处理器
 struct PlatformImageProcessor {
@@ -134,7 +132,7 @@ struct PlatformImageProcessor {
         let hasAlpha = image.representations.first?.hasAlpha ?? false
         #else
         let colorSpace = image.cgImage?.colorSpace?.name ?? "Unknown" as CFString
-        let hasAlpha = image.cgImage?.alphaInfo != .none
+        let hasAlpha = image.cgImage?.alphaInfo != CGImageAlphaInfo.none
         #endif
         
         return ImageMetadata(

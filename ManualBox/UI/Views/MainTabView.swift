@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import Foundation
 
 
 
@@ -40,6 +41,10 @@ struct MainTabView: View {
     @State private var selectedProduct: Product? = nil
     @State private var showingAddProduct = false
     
+    // 产品相关状态
+    @State private var searchText = ""
+    @State private var isEditing = false
+    
     @FetchRequest(
         entity: Category.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Category.name, ascending: true)]
@@ -49,6 +54,42 @@ struct MainTabView: View {
         entity: Tag.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Tag.name, ascending: true)]
     ) private var tags: FetchedResults<Tag>
+    
+    @FetchRequest(
+        sortDescriptors: [
+            NSSortDescriptor(keyPath: \Product.updatedAt, ascending: false),
+            NSSortDescriptor(keyPath: \Product.createdAt, ascending: false)
+        ],
+        animation: .default
+    )
+    private var products: FetchedResults<Product>
+    
+    // 计算属性：过滤后的产品列表
+    private var filteredProducts: [Product] {
+        return Array(products).filter { product in
+            if searchText.isEmpty {
+                return true
+            }
+            let searchLower = searchText.lowercased()
+            return product.name?.lowercased().contains(searchLower) == true ||
+                   product.brand?.lowercased().contains(searchLower) == true ||
+                   product.model?.lowercased().contains(searchLower) == true
+        }
+    }
+    
+    // 删除产品函数
+    private func deleteProducts(offsets: IndexSet) {
+        withAnimation {
+            offsets.map { filteredProducts[$0] }.forEach(viewContext.delete)
+            
+            do {
+                try viewContext.save()
+            } catch {
+                // 处理错误
+                print("删除产品失败: \(error)")
+            }
+        }
+    }
     
     var body: some View {
         // 主题设置
@@ -85,7 +126,11 @@ struct MainTabView: View {
                 set: { selectedTab = .main($0) }
             )) {
                 NavigationView {
-                    ProductListView()
+                    ProductListView(
+                        filteredProducts: filteredProducts,
+                        searchText: searchText,
+                        deleteProducts: deleteProducts
+                    )
                 }
                 .tabItem {
                     Label("商品", systemImage: "shippingbox")
@@ -153,7 +198,12 @@ struct MainTabView: View {
                         case .main(let index):
                             switch index {
                             case 0:
-                                ProductListView()
+                                ProductListView(
+                                    filteredProducts: filteredProducts,
+                                    searchText: searchText,
+                                    deleteProducts: deleteProducts,
+                                    isEditing: isEditing
+                                )
                                     .id("main-\(index)")
                                     .environment(\.selectedProduct, $selectedProduct)
                             case 1:
@@ -179,33 +229,53 @@ struct MainTabView: View {
                                 SettingsView()
                                     .id("main-\(index)")
                             default:
-                                ProductListView()
+                                ProductListView(
+                                    filteredProducts: filteredProducts,
+                                    searchText: searchText,
+                                    deleteProducts: deleteProducts,
+                                    isEditing: isEditing
+                                )
                                     .id("main-\(index)")
                                     .environment(\.selectedProduct, $selectedProduct)
                             }
                         case .category(let id):
                             if let category = categories.first(where: { $0.id == id }) {
-                                ProductListView(category: category)
+                                CategoryDetailView(category: category)
                                     .id("category-\(id)")
                                     .environment(\.selectedProduct, $selectedProduct)
                             } else {
-                                ProductListView()
+                                ProductListView(
+                                    filteredProducts: filteredProducts,
+                                    searchText: searchText,
+                                    deleteProducts: deleteProducts,
+                                    isEditing: isEditing
+                                )
                                     .id("category-default")
                                     .environment(\.selectedProduct, $selectedProduct)
                             }
                         case .tag(let id):
                             if let tag = tags.first(where: { $0.id == id }) {
-                                ProductListView(tag: tag)
+                                TagDetailView(tag: tag)
                                     .id("tag-\(id)")
                                     .environment(\.selectedProduct, $selectedProduct)
                             } else {
-                                ProductListView()
+                                ProductListView(
+                                    filteredProducts: filteredProducts,
+                                    searchText: searchText,
+                                    deleteProducts: deleteProducts,
+                                    isEditing: isEditing
+                                )
                                     .id("tag-default")
                                     .environment(\.selectedProduct, $selectedProduct)
                             }
                         }
                     } else {
-                        ProductListView()
+                        ProductListView(
+                            filteredProducts: filteredProducts,
+                            searchText: searchText,
+                            deleteProducts: deleteProducts,
+                            isEditing: isEditing
+                        )
                             .id("default")
                             .environment(\.selectedProduct, $selectedProduct)
                     }

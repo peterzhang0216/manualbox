@@ -79,7 +79,7 @@ struct TagsView: View {
             } else {
                 List {
                     ForEach(tags) { tagItem in
-                        NavigationLink(destination: ProductListView(tag: tagItem)) {
+                        NavigationLink(destination: TagDetailView(tag: tagItem)) {
                             TagRow(tag: tagItem)
                         }
                     }
@@ -90,7 +90,7 @@ struct TagsView: View {
         .navigationTitle("标签管理")
         .toolbar {
             #if os(iOS)
-            SwiftUI.ToolbarItem(placement: .navigationBarTrailing) {
+            SwiftUI.ToolbarItem(placement: .primaryAction) {
                 Button(action: { showingAddSheet = true }) {
                     Label("添加标签", systemImage: "plus")
                 }

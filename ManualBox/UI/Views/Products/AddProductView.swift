@@ -102,17 +102,14 @@ struct AddProductView: View {
                 }
             }
             
+            let currentImage = viewModel.productImage
             PhotosPicker(selection: Binding(
                 get: { viewModel.selectedImage },
                 set: { viewModel.send(.updateSelectedImage($0)) }
             ),
                         matching: .images,
                         photoLibrary: .shared()) {
-                if let image = viewModel.productImage {
-                    ProductImagePreview(image: image)
-                } else {
-                    ProductImagePreview(image: nil)
-                }
+                ProductImagePreview(image: currentImage)
             }
         } header: {
             Text("基本信息")

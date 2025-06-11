@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import CoreData
 
 // MARK: - ViewModelProtocol Extensions
 extension ViewModelProtocol {

@@ -23,7 +23,7 @@ struct ProductFilterView: View {
         .padding(.horizontal)
         .padding(.vertical, 8)
         #if os(macOS)
-        .background(Color(NSColor.windowBackgroundColor))
+        .background(Color(.windowBackgroundColor))
         #else
         .background(Color(.systemBackground))
         #endif
@@ -52,7 +52,7 @@ struct ProductFilterView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         #if os(macOS)
-        .background(Color(NSColor.controlBackgroundColor))
+        .background(Color(.controlBackgroundColor))
         #else
         .background(Color(.systemGray6))
         #endif

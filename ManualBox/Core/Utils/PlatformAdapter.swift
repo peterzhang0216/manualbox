@@ -142,7 +142,7 @@ struct PlatformAdapter {
     // MARK: - 颜色系统
     static var backgroundColor: Color {
         #if os(macOS)
-        return Color(NSColor.windowBackgroundColor)
+        return Color(.windowBackgroundColor)
         #else
         return Color(.systemBackground)
         #endif
@@ -150,7 +150,7 @@ struct PlatformAdapter {
     
     static var secondaryBackgroundColor: Color {
         #if os(macOS)
-        return Color(NSColor.controlBackgroundColor)
+        return Color(.controlBackgroundColor)
         #else
         return Color(.secondarySystemBackground)
         #endif

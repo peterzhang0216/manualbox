@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreData
+import Foundation
 
 struct FilterView: View {
     @Environment(\.dismiss) private var dismiss
@@ -11,11 +12,13 @@ struct FilterView: View {
     @Binding var onlyWithManuals: Bool
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Category.categoryName, ascending: true)]
+        entity: Category.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \Category.name, ascending: true)]
     ) private var categories: FetchedResults<Category>
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.tagName, ascending: true)]
+        entity: Tag.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.name, ascending: true)]
     ) private var tags: FetchedResults<Tag>
     
     var body: some View {
@@ -29,10 +32,10 @@ struct FilterView: View {
                 #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItemGroup(placement: .navigationBarLeading) {
                         resetButton
                     }
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItemGroup(placement: .primaryAction) {
                         doneButton
                     }
                 }
@@ -58,7 +61,11 @@ struct FilterView: View {
     
     private func categoryRow(_ category: Category) -> some View {
         HStack {
-            Text(category.categoryName)
+            #if os(macOS)
+            Text(category.name ?? "未命名分类")
+            #else
+            Text("分类项目")
+            #endif
             Spacer()
             if selectedCategories.contains(category) {
                 Image(systemName: "checkmark")
@@ -85,7 +92,11 @@ struct FilterView: View {
     
     private func tagRow(_ tag: Tag) -> some View {
         HStack {
-            Text(tag.tagName)
+            #if os(macOS)
+            Text(tag.name ?? "未命名标签")
+            #else
+            Text("标签项目")
+            #endif
             Spacer()
             if selectedTags.contains(tag) {
                 Image(systemName: "checkmark")

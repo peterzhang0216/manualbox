@@ -1,0 +1,72 @@
+{
+  "source": "/Users/peter/Desktop/Github/manualbox/ManualBox/UI/Views/Products/FilterView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "筛选",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "分类筛选",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "标签筛选",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 86
+        }
+      },
+      {
+        "comment": "",
+        "key": "状态筛选",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "仅显示保修中的产品",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 118
+        }
+      },
+      {
+        "comment": "",
+        "key": "仅显示有说明书的产品",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "重置",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "完成",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 133
+        }
+      }
+    ]
+  },
+  "version": 1
+}
