@@ -77,16 +77,10 @@ class DataExportService: ExportServiceProtocol {
             return try context.fetch(request)
         }
         
-        let tags = try await context.perform {
-            let request: NSFetchRequest<Tag> = Tag.fetchRequest()
-            return try context.fetch(request)
-        }
-        
         // 生成完整数据库导出
         let exportData = FullDatabaseExport(
             products: products,
             categories: categories,
-            tags: tags,
             exportDate: Date()
         )
         
@@ -99,8 +93,8 @@ class DataExportService: ExportServiceProtocol {
     }
     
     // MARK: - Private Methods
-    private func generateJSONData(from products: [Product]) async throws -> [ProductExportData] {
-        return products.map { ProductExportData(from: $0) }
+    private func generateJSONData(from products: [Product]) async throws -> [ProductImportData] {
+        return products.map { ProductImportData(from: $0) }
     }
     
     private func generateCSVContent(from products: [Product]) -> String {
@@ -328,73 +322,81 @@ class DataExportService: ExportServiceProtocol {
 
 // MARK: - Supporting Types
 struct FullDatabaseExport: Codable {
-    let products: [ProductExportData]
-    let categories: [CategoryExportData]
-    let tags: [TagExportData]
-    let exportDate: Date
+    let version: String
+    let exportDate: String
+    let categories: [CategoryBackupData]
+    let products: [ProductImportData]
+    let metadata: BackupMetadata?
     
-    init(products: [Product], categories: [Category], tags: [Tag], exportDate: Date) {
-        self.products = products.map { ProductExportData(from: $0) }
-        self.categories = categories.map { CategoryExportData(from: $0) }
-        self.tags = tags.map { TagExportData(from: $0) }
-        self.exportDate = exportDate
+    init(products: [Product], categories: [Category], exportDate: Date) {
+        self.version = "1.0"
+        
+        let formatter = ISO8601DateFormatter()
+        self.exportDate = formatter.string(from: exportDate)
+        
+        self.categories = categories.map { CategoryBackupData(from: $0) }
+        self.products = products.map { ProductImportData(from: $0) }
+        
+        self.metadata = BackupMetadata(
+            appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0",
+            deviceInfo: nil,
+            totalProducts: products.count,
+            totalCategories: categories.count
+        )
     }
 }
 
-struct ProductExportData: Codable {
-    let name: String
-    let model: String
-    let brand: String
-    let notes: String
-    let createdAt: Date
-    let categoryName: String?
-    let tagNames: [String]
-    
-    init(from product: Product) {
-        self.name = product.productName
-        self.model = product.productModel
-        self.brand = product.productBrand
-        self.notes = product.productNotes
-        self.createdAt = product.productCreatedAt
-        self.categoryName = product.category?.categoryName
-        self.tagNames = product.productTags.map { $0.tagName }
-    }
-}
-
-struct CategoryExportData: Codable {
-    let name: String
-    let icon: String
-    
+// MARK: - Extensions for ImportService Data Structures
+extension CategoryBackupData {
     init(from category: Category) {
+        self.id = category.id ?? UUID()
         self.name = category.categoryName
         self.icon = category.categoryIcon
+        
+        let formatter = ISO8601DateFormatter()
+        self.createdAt = formatter.string(from: category.createdAt ?? Date())
+        self.updatedAt = formatter.string(from: category.updatedAt ?? Date())
     }
 }
 
-struct TagExportData: Codable {
-    let name: String
-    let color: String
-    
-    init(from tag: Tag) {
-        self.name = tag.tagName
-        self.color = tag.tagColor
+extension ProductImportData {
+    init(from product: Product) {
+        self.name = product.productName
+        self.brand = product.productBrand
+        self.model = product.productModel
+        self.notes = product.productNotes
+        self.categoryName = product.category?.categoryName
+        
+        if let order = product.order {
+            self.order = OrderImportData(from: order)
+        } else {
+            self.order = nil
+        }
+    }
+}
+
+extension OrderImportData {
+    init(from order: Order) {
+        self.orderNumber = order.orderNumber
+        self.platform = order.platform
+        
+        let formatter = ISO8601DateFormatter()
+        if let date = order.orderDate {
+            self.orderDate = formatter.string(from: date)
+        } else {
+            self.orderDate = ""
+        }
+        
+        // 计算保修期月数
+        if let orderDate = order.orderDate,
+           let warrantyEndDate = order.warrantyEndDate {
+            let months = Calendar.current.dateComponents([.month], from: orderDate, to: warrantyEndDate).month ?? 0
+            self.warrantyPeriod = months
+        } else {
+            self.warrantyPeriod = nil
+        }
     }
 }
 
 // MARK: - Export Errors
-enum ExportError: Error {
-    case encodingFailed
-    case pdfGenerationFailed
-    case fileWriteFailed
-    
-    var localizedDescription: String {
-        switch self {
-        case .encodingFailed:
-            return "数据编码失败"
-        case .pdfGenerationFailed:
-            return "PDF生成失败"
-        case .fileWriteFailed:
-            return "文件写入失败"
-        }
-    }
-}
+// ExportError 在 DataExportView.swift 中定义

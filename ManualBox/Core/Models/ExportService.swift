@@ -219,4 +219,45 @@ class ExportService {
     }
 }
 
-// MARK: - Supporting Types已移至DataExportService.swift中
+// MARK: - Supporting Types
+struct ProductExportData: Codable {
+    let name: String
+    let brand: String?
+    let model: String?
+    let notes: String?
+    let categoryName: String?
+    let orderDate: String?
+    let orderNumber: String?
+    let platform: String?
+    let warrantyStatus: String?
+    let warrantyPeriod: Int?
+    
+    init(from product: Product) {
+        self.name = product.productName
+        self.brand = product.productBrand
+        self.model = product.productModel
+        self.notes = product.productNotes
+        self.categoryName = product.category?.categoryName
+        
+        if let order = product.order {
+            let formatter = ISO8601DateFormatter()
+            self.orderDate = order.orderDate != nil ? formatter.string(from: order.orderDate!) : nil
+            self.orderNumber = order.displayOrderNumber
+            self.platform = order.displayPlatform
+            
+            if let orderDate = order.orderDate, let warrantyEndDate = order.warrantyEndDate {
+                self.warrantyStatus = product.hasActiveWarranty ? "保修中" : "已过保"
+                self.warrantyPeriod = Calendar.current.dateComponents([.month], from: orderDate, to: warrantyEndDate).month
+            } else {
+                self.warrantyStatus = nil
+                self.warrantyPeriod = nil
+            }
+        } else {
+            self.orderDate = nil
+            self.orderNumber = nil
+            self.platform = nil
+            self.warrantyStatus = nil
+            self.warrantyPeriod = nil
+        }
+    }
+}

@@ -408,11 +408,19 @@ struct ManualDetailSheet: View {
             .navigationBarBackButtonHidden(true)
             #endif
             .toolbar(content: {
+                #if os(iOS)
+                SwiftUI.ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("完成") {
+                        dismiss()
+                    }
+                }
+                #else
                 SwiftUI.ToolbarItem(placement: .primaryAction) {
                     Button("完成") {
                         dismiss()
                     }
                 }
+                #endif
             })
         }
     }
