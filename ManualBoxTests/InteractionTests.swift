@@ -4,34 +4,18 @@ import CoreData
 import PhotosUI
 @testable import ManualBox
 
-final class InteractionTests: XCTestCase {
-    var container: NSPersistentContainer!
-    var context: NSManagedObjectContext!
+final class InteractionTests: IsolatedDataTestCase {
     
     override func setUpWithError() throws {
-        // 创建内存中的CoreData容器用于测试
-        container = NSPersistentContainer(name: "ManualBox")
-        container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
-        container.loadPersistentStores { (_, error) in
-            if let error = error {
-                fatalError("加载Core Data失败: \(error)")
-            }
-        }
-        context = container.viewContext
-        
-        // 创建基本测试数据
-        Category.createDefaultCategories(in: context)
-        Tag.createDefaultTags(in: context)
+        try super.setUpWithError()
     }
-
-    override func tearDownWithError() throws {
-        // 清理测试数据
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Product")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        try container.persistentStoreCoordinator.execute(deleteRequest, with: context)
-        
-        context = nil
-        container = nil
+    
+    @MainActor 
+    private func setupTestData() throws {
+        // 创建基本测试数据
+        Category.createDefaultCategories(in: testContext)
+        Tag.createDefaultTags(in: testContext)
+        try saveTestContext()
     }
 
     // 测试1: 验证AddProductViewModel中的异步保存逻辑
@@ -48,14 +32,14 @@ final class InteractionTests: XCTestCase {
         // 因为invoiceImageData是通过loadInvoiceImage方法异步设置的
         
         // 调用保存方法
-        let success = await viewModel.saveProduct(in: context)
+        let success = await viewModel.saveProduct(in: testContext)
         XCTAssertTrue(success, "产品保存应该成功")
         
         // 验证产品已被保存到数据库
         let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "name == %@", "测试产品")
         
-        let results = try context.fetch(fetchRequest)
+        let results = try testContext.fetch(fetchRequest)
         XCTAssertEqual(results.count, 1, "应该找到一个产品")
         XCTAssertEqual(results.first?.name, "测试产品", "产品名称应该匹配")
         XCTAssertEqual(results.first?.brand, "测试品牌", "品牌应该匹配")
@@ -101,17 +85,17 @@ final class InteractionTests: XCTestCase {
     // 测试3: 验证选择状态更新
     func testSelectionStateUpdates() throws {
         // 模拟一个小型测试环境来测试选择状态变更
-        let category = Category(context: context)
+        let category = Category(context: testContext)
         category.id = UUID()
         category.name = "测试分类"
         category.icon = "folder"
         
-        let tag = Tag(context: context)
+        let tag = Tag(context: testContext)
         tag.id = UUID()
         tag.name = "测试标签"
         tag.color = TagColor.blue.rawValue
         
-        try context.save()
+        try! saveTestContext()
         
         // 创建选择状态
         var selection: SelectionValue? = .main(0)
@@ -151,7 +135,7 @@ final class InteractionTests: XCTestCase {
             
             DispatchQueue.global(qos: .userInitiated).async {
                 // 在后台上下文中执行操作
-                let bgContext = self.container.newBackgroundContext()
+                let bgContext = self.testPersistenceController.container.newBackgroundContext()
                 
                 bgContext.perform {
                     let product = Product(context: bgContext)
@@ -171,7 +155,7 @@ final class InteractionTests: XCTestCase {
             let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
             
             do {
-                let products = try self.context.fetch(fetchRequest)
+                let products = try self.testContext.fetch(fetchRequest)
                 XCTAssertEqual(products.count, 5, "应该创建了5个产品")
             } catch {
                 XCTFail("获取产品失败: \(error)")

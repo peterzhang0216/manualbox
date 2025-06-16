@@ -9,15 +9,6 @@ import SwiftUI
 import CoreData
 import Foundation
 
-
-
-// 添加 SelectionValue 枚举来统一处理选择类型
-enum SelectionValue: Hashable {
-    case main(Int)
-    case category(UUID)
-    case tag(UUID)
-}
-
 // 创建 EnvironmentKey 传递选中产品状态
 struct SelectedProductKey: EnvironmentKey {
     static var defaultValue: Binding<Product?> = .constant(nil)
@@ -100,8 +91,6 @@ struct MainTabView: View {
             default: return nil
             }
         }()
-        
-        // 主题色设置
         let accentColor: Color = {
             switch accentColorKey {
             case "blue": return .blue
@@ -113,121 +102,43 @@ struct MainTabView: View {
             default: return .accentColor
             }
         }()
-        
-        Group {
-            #if os(iOS)
-            TabView(selection: Binding(
-                get: {
-                    if case let .main(index) = selectedTab ?? .main(0) {
-                        return index
-                    }
-                    return 0
-                },
-                set: { selectedTab = .main($0) }
-            )) {
-                NavigationView {
-                    ProductListView(
-                        filteredProducts: filteredProducts,
-                        searchText: searchText,
-                        deleteProducts: deleteProducts
-                    )
-                }
-                .tabItem {
-                    Label("商品", systemImage: "shippingbox")
-                }
-                .tag(0)
-                
-                NavigationView {
-                    CategoriesView()
-                }
-                .tabItem {
-                    Label("分类", systemImage: "folder")
-                }
-                .tag(1)
-                
-                NavigationView {
-                    TagsView()
-                }
-                .tabItem {
-                    Label("标签", systemImage: "tag")
-                }
-                .tag(2)
-                
-                NavigationView {
-                    RepairRecordsView()
-                }
-                .tabItem {
-                    Label("维修", systemImage: "wrench.and.screwdriver")
-                }
-                .tag(3)
-                
-                NavigationView {
-                    SettingsView()
-                }
-                .tabItem {
-                    Label("设置", systemImage: "gear")
-                }
-                .tag(4)
-            }
-            .sheet(isPresented: $showingAddProduct) {
-                NavigationView {
-                    AddProductView(isPresented: $showingAddProduct)
-                }
-                .navigationViewStyle(StackNavigationViewStyle())
-            }
-            .onAppNotification(.createNewProduct) { _ in
-                showingAddProduct = true
-            }
-            .onAppear {
-                // 更新所有保修提醒
-                notificationManager.updateAllWarrantyReminders(in: viewContext)
-                
-                // 设置通知观察者
-                setupNotificationObservers()
-            }
-            #else
-            // macOS 使用三列 NavigationSplitView
-            NavigationSplitView {
-                // 第一列：侧边栏
+        UnifiedSplitView(
+            selection: $selectedTab,
+            selectedItem: $selectedProduct,
+            sidebar: {
                 SidebarView(selection: $selectedTab)
-            } content: {
-                // 第二列：产品列表
+            },
+            content: {
+                // 内容区：根据选中Tab/分类/标签动态切换
                 ZStack {
                     if let selection = selectedTab {
                         switch selection {
                         case .main(let index):
                             switch index {
                             case 0:
-                                ProductListView(
+                                EnhancedProductListView(
                                     filteredProducts: filteredProducts,
                                     searchText: searchText,
-                                    deleteProducts: deleteProducts,
-                                    isEditing: isEditing
+                                    deleteProducts: deleteProducts
                                 )
-                                    .id("main-\(index)")
                                     .environment(\.selectedProduct, $selectedProduct)
+                                    .adaptiveLayout()
                             case 1:
-                                // 分类管理页面 - 显示空白或说明页面，避免重复显示分类
                                 ContentUnavailableView {
                                     Label("分类管理", systemImage: "folder")
                                 } description: {
                                     Text("请从左侧选择一个分类查看相关产品")
                                 }
-                                .id("main-\(index)")
                             case 2:
-                                // 标签管理页面 - 显示空白或说明页面，避免重复显示标签
                                 ContentUnavailableView {
                                     Label("标签管理", systemImage: "tag")
                                 } description: {
                                     Text("请从左侧选择一个标签查看相关产品")
                                 }
-                                .id("main-\(index)")
                             case 3:
                                 RepairRecordsView()
-                                    .id("main-\(index)")
                             case 4:
                                 SettingsView()
-                                    .id("main-\(index)")
                             default:
                                 ProductListView(
                                     filteredProducts: filteredProducts,
@@ -235,38 +146,35 @@ struct MainTabView: View {
                                     deleteProducts: deleteProducts,
                                     isEditing: isEditing
                                 )
-                                    .id("main-\(index)")
                                     .environment(\.selectedProduct, $selectedProduct)
                             }
                         case .category(let id):
                             if let category = categories.first(where: { $0.id == id }) {
                                 CategoryDetailView(category: category)
-                                    .id("category-\(id)")
                                     .environment(\.selectedProduct, $selectedProduct)
+                                    .adaptiveLayout()
                             } else {
-                                ProductListView(
+                                EnhancedProductListView(
                                     filteredProducts: filteredProducts,
                                     searchText: searchText,
-                                    deleteProducts: deleteProducts,
-                                    isEditing: isEditing
+                                    deleteProducts: deleteProducts
                                 )
-                                    .id("category-default")
                                     .environment(\.selectedProduct, $selectedProduct)
+                                    .adaptiveLayout()
                             }
                         case .tag(let id):
                             if let tag = tags.first(where: { $0.id == id }) {
                                 TagDetailView(tag: tag)
-                                    .id("tag-\(id)")
                                     .environment(\.selectedProduct, $selectedProduct)
+                                    .adaptiveLayout()
                             } else {
-                                ProductListView(
+                                EnhancedProductListView(
                                     filteredProducts: filteredProducts,
                                     searchText: searchText,
-                                    deleteProducts: deleteProducts,
-                                    isEditing: isEditing
+                                    deleteProducts: deleteProducts
                                 )
-                                    .id("tag-default")
                                     .environment(\.selectedProduct, $selectedProduct)
+                                    .adaptiveLayout()
                             }
                         }
                     } else {
@@ -276,36 +184,32 @@ struct MainTabView: View {
                             deleteProducts: deleteProducts,
                             isEditing: isEditing
                         )
-                            .id("default")
                             .environment(\.selectedProduct, $selectedProduct)
                     }
                 }
-            } detail: {
-                // 第三列：根据选中的页面显示不同内容
+            },
+            detail: {
+                // 详情区
                 if let selection = selectedTab {
                     switch selection {
                     case .main(let index):
                         switch index {
-                        case 0:  // 商品列表页面
-                            ZStack {
-                                if let product = selectedProduct {
-                                    ProductDetailView(product: product)
-                                        .id(product.id?.uuidString ?? "unknown") // 强制刷新详情视图，防止内容错乱
-                                } else {
-                                    ContentUnavailableView {
-                                        Label("暂无选中商品", systemImage: "shippingbox")
-                                    } description: {
-                                        Text("请从列表中选择一个商品查看详情")
-                                    }
+                        case 0:
+                            if let product = selectedProduct {
+                                ProductDetailView(product: product)
+                                    .id(product.id?.uuidString ?? "unknown")
+                            } else {
+                                ContentUnavailableView {
+                                    Label("暂无选中商品", systemImage: "shippingbox")
+                                } description: {
+                                    Text("请从列表中选择一个商品查看详情")
                                 }
                             }
-                        case 1:  // 分类页面
+                        case 1:
                             CategoryDetailView(category: categories.first ?? Category(context: viewContext))
-                                .id("category-detail")
-                        case 2:  // 标签页面
+                        case 2:
                             TagDetailView(tag: tags.first ?? Tag(context: viewContext))
-                                .id("tag-detail")
-                        case 3:  // 设置页面
+                        case 3, 4:
                             EmptyView()
                         default:
                             EmptyView()
@@ -317,7 +221,6 @@ struct MainTabView: View {
                                     .id(product.id?.uuidString ?? "unknown")
                             } else {
                                 CategoryDetailView(category: category)
-                                    .id("category-\(id)-detail")
                             }
                         }
                     case .tag(let id):
@@ -327,12 +230,10 @@ struct MainTabView: View {
                                     .id(product.id?.uuidString ?? "unknown")
                             } else {
                                 TagDetailView(tag: tag)
-                                    .id("tag-\(id)-detail")
                             }
                         }
                     }
                 } else {
-                    // 默认显示空白或占位内容
                     ContentUnavailableView {
                         Label("暂无选中内容", systemImage: "square.3.layers.3d")
                     } description: {
@@ -340,22 +241,23 @@ struct MainTabView: View {
                     }
                 }
             }
-            .navigationSplitViewStyle(.balanced)
-            .navigationSplitViewColumnWidth(min: 200, ideal: 280, max: 320)
-            .sheet(isPresented: $showingAddProduct) {
-                AddProductSheet(isPresented: $showingAddProduct)
-            }
-            .onAppNotification(.createNewProduct) { _ in
-                showingAddProduct = true
-            }
-            .onAppear {
-                notificationManager.updateAllWarrantyReminders(in: viewContext)
-                setupNotificationObservers()
-            }
-            #endif
-        }
+        )
         .preferredColorScheme(colorScheme)
         .accentColor(accentColor)
+        .sheet(isPresented: $showingAddProduct) {
+            QuickAddProductView(isPresented: $showingAddProduct)
+                #if os(iOS)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+                #endif
+        }
+        .onAppNotification(.createNewProduct) { _ in
+            showingAddProduct = true
+        }
+        .onAppear {
+            notificationManager.updateAllWarrantyReminders(in: viewContext)
+            setupNotificationObservers()
+        }
     }
     
     private func setupNotificationObservers() {
@@ -422,16 +324,22 @@ struct SidebarView: View {
         List(selection: $selection) {
             Label("所有商品", systemImage: "shippingbox")
                 .tag(SelectionValue.main(0))
+                .accessibilityLabel("所有商品")
+                .accessibilityHint("查看所有商品列表")
             
             Section(header: Text("分类")) {
                 Label("全部分类", systemImage: "folder")
                     .tag(SelectionValue.main(1))
+                    .accessibilityLabel("全部分类")
+                    .accessibilityHint("管理商品分类")
                 
                 ForEach(categories) { category in
                     if let id = category.id {
                         Label(category.categoryName, systemImage: category.categoryIcon)
                             .badge(category.productCount)
                             .tag(SelectionValue.category(id))
+                            .accessibilityLabel("\(category.categoryName)分类")
+                            .accessibilityHint("查看\(category.categoryName)分类下的商品，共\(category.productCount)个")
                     }
                 }
             }
@@ -439,6 +347,8 @@ struct SidebarView: View {
             Section(header: Text("标签")) {
                 Label("全部标签", systemImage: "tag")
                     .tag(SelectionValue.main(2))
+                    .accessibilityLabel("全部标签")
+                    .accessibilityHint("管理商品标签")
                 
                 ForEach(tags) { tag in
                     if let id = tag.id {
@@ -450,6 +360,8 @@ struct SidebarView: View {
                                 .foregroundColor(tag.uiColor)
                         }
                         .tag(SelectionValue.tag(id))
+                        .accessibilityLabel("\(tag.tagName)标签")
+                        .accessibilityHint("查看\(tag.tagName)标签下的商品，共\(tag.productCount)个")
                     }
                 }
             }
@@ -457,15 +369,21 @@ struct SidebarView: View {
             Section(header: Text("维修管理")) {
                 Label("维修记录", systemImage: "wrench.and.screwdriver")
                     .tag(SelectionValue.main(3))
+                    .accessibilityLabel("维修记录")
+                    .accessibilityHint("查看和管理设备维修记录")
             }
             
             Section(header: Text("设置")) {
                 Label("设置与偏好", systemImage: "gear")
                     .tag(SelectionValue.main(4))
+                    .accessibilityLabel("设置与偏好")
+                    .accessibilityHint("配置应用设置和个人偏好")
             }
         }
         .listStyle(SidebarListStyle())
         .frame(minWidth: 200, idealWidth: 250, maxWidth: 320) // maxWidth 统一为 320
+        .accessibilityLabel("主导航")
+        .accessibilityHint("选择要浏览的内容分类")
     }
 }
 #endif

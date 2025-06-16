@@ -2,25 +2,14 @@ import XCTest
 import CoreData
 @testable import ManualBox
 
-class ManualSearchServiceTests: XCTestCase {
+class ManualSearchServiceTests: IsolatedServiceTestCase {
     
-    var persistenceController: PersistenceController!
-    var context: NSManagedObjectContext!
-    var searchService: ManualSearchService!
-    
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
-        
-        // 创建内存中的Core Data堆栈用于测试
-        persistenceController = PersistenceController(inMemory: true)
-        context = persistenceController.container.viewContext
-        searchService = ManualSearchService(context: context)
     }
     
     override func tearDownWithError() throws {
-        context = nil
-        persistenceController = nil
-        searchService = nil
         try super.tearDownWithError()
     }
     
@@ -165,14 +154,14 @@ class ManualSearchServiceTests: XCTestCase {
     func testSearchWithCorruptedData() async {
         // 创建损坏的测试数据
         let manual = Manual.createManual(
-            in: context,
+            in: testContext,
             fileName: "corrupted.pdf",
             fileData: Data(), // 空数据
             fileType: "pdf"
         )
         manual.content = nil // 没有内容
         
-        try! context.save()
+        try! saveTestContext()
         
         // 搜索不应该崩溃
         let results = await searchService.performSearch(query: "corrupted")
@@ -200,20 +189,20 @@ class ManualSearchServiceTests: XCTestCase {
     
     private func createTestData() throws {
         // 创建分类
-        let category = Category(context: context)
+        let category = Category(context: testContext)
         category.id = UUID()
         category.name = "电子产品"
         category.icon = "iphone"
         
         // 创建标签
-        let tag = Tag(context: context)
+        let tag = Tag(context: testContext)
         tag.id = UUID()
         tag.name = "重要"
         tag.color = "red"
         
         // 创建产品
         let product = Product.createProduct(
-            in: context,
+            in: testContext,
             name: "iPhone 14 Pro",
             brand: "Apple",
             model: "A2894"
@@ -222,27 +211,27 @@ class ManualSearchServiceTests: XCTestCase {
         product.tags = NSSet(array: [tag])
         
         // 创建说明书
-        let manual = Manual.createManual(
-            in: context,
+        let _ = Manual.createManual(
+            in: testContext,
             fileName: "iPhone_14_Pro_用户指南.pdf",
             fileData: Data("测试PDF内容".utf8),
             fileType: "pdf",
             product: product
         )
         
-        try context.save()
+        try! saveTestContext()
     }
     
     private func createTestDataWithOCRContent() throws {
         let product = Product.createProduct(
-            in: context,
+            in: testContext,
             name: "智能手表",
             brand: "Apple",
             model: "Series 9"
         )
         
         let manual = Manual.createManual(
-            in: context,
+            in: testContext,
             fileName: "watch_manual.pdf",
             fileData: Data("测试PDF内容".utf8),
             fileType: "pdf",
@@ -253,7 +242,7 @@ class ManualSearchServiceTests: XCTestCase {
         manual.content = "Apple Watch 操作指南\n\n1. 基本设置\n2. 健康监测\n3. 应用使用\n4. 故障排除"
         manual.isOCRProcessed = true
         
-        try context.save()
+        try! saveTestContext()
     }
     
     private func createMultipleTestData() throws {
@@ -266,14 +255,14 @@ class ManualSearchServiceTests: XCTestCase {
         
         for (name, brand, model) in products {
             let product = Product.createProduct(
-                in: context,
+                in: testContext,
                 name: name,
                 brand: brand,
                 model: model
             )
             
             let manual = Manual.createManual(
-                in: context,
+                in: testContext,
                 fileName: "\(name.replacingOccurrences(of: " ", with: "_"))_manual.pdf",
                 fileData: Data("测试内容".utf8),
                 fileType: "pdf",
@@ -284,20 +273,20 @@ class ManualSearchServiceTests: XCTestCase {
             manual.isOCRProcessed = true
         }
         
-        try context.save()
+        try! saveTestContext()
     }
     
     private func createLargeTestDataSet() throws {
         for i in 0..<100 {
             let product = Product.createProduct(
-                in: context,
+                in: testContext,
                 name: "Test Product \(i)",
                 brand: "Test Brand",
                 model: "Model-\(i)"
             )
             
             let manual = Manual.createManual(
-                in: context,
+                in: testContext,
                 fileName: "test_manual_\(i).pdf",
                 fileData: Data("测试内容 \(i)".utf8),
                 fileType: "pdf",
@@ -308,6 +297,6 @@ class ManualSearchServiceTests: XCTestCase {
             manual.isOCRProcessed = true
         }
         
-        try context.save()
+        try! saveTestContext()
     }
 }

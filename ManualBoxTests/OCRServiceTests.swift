@@ -3,36 +3,28 @@ import CoreData
 import Vision
 @testable import ManualBox
 
-class OCRServiceTests: XCTestCase {
+class OCRServiceTests: IsolatedServiceTestCase {
     
-    var persistenceController: PersistenceController!
-    var context: NSManagedObjectContext!
-    var ocrService: OCRService!
+    // 移除原有的属性声明，因为现在继承自 IsolatedServiceTestCase
+    // var persistenceController: PersistenceController!
+    // var context: NSManagedObjectContext!
+    // var ocrService: OCRService!
     
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        
-        // 创建内存中的Core Data堆栈用于测试
-        persistenceController = PersistenceController(inMemory: true)
-        context = persistenceController.container.viewContext
-        ocrService = OCRService.shared
-    }
-    
-    override func tearDownWithError() throws {
-        context = nil
-        persistenceController = nil
-        try super.tearDownWithError()
-    }
+    // 不需要重写 setUpWithError 和 tearDownWithError
+    // 父类已经提供了完整的隔离机制
     
     // MARK: - OCR Service Tests
     
+    @MainActor
     func testOCRServiceInitialization() {
-        XCTAssertNotNil(ocrService, "OCR服务应该能够正常初始化")
-        XCTAssertFalse(ocrService.isProcessing, "初始状态下不应该正在处理")
-        XCTAssertEqual(ocrService.currentProgress, 0.0, "初始进度应该为0")
-        XCTAssertTrue(ocrService.processingQueue.isEmpty, "初始队列应该为空")
+        // 使用父类提供的 assertOCRServiceIdle 方法
+        assertOCRServiceIdle()
+        
+        // 验证服务是 ObservableObject
+        XCTAssertTrue(ocrService is any ObservableObject, "服务应该是 ObservableObject")
     }
     
+    @MainActor
     func testOCRConfigurationDefaults() {
         let defaultConfig = OCRConfiguration.default
         XCTAssertEqual(defaultConfig.recognitionLevel, .accurate, "默认应该使用高精度识别")
@@ -47,12 +39,12 @@ class OCRServiceTests: XCTestCase {
     
     @MainActor
     func testCreateManualWithImageData() async throws {
-        // 创建一个测试用的图像数据（1x1像素的PNG）
+        // 使用父类提供的便捷方法创建测试图像数据
         let imageData = createTestImageData()
         
         // 创建测试说明书
         let manual = Manual.createManual(
-            in: context,
+            in: testContext,
             fileName: "test_manual.png",
             fileData: imageData,
             fileType: "png"
@@ -66,12 +58,10 @@ class OCRServiceTests: XCTestCase {
         XCTAssertFalse(manual.isOCRProcessed, "初始状态不应该已处理OCR")
         
         // 保存到Core Data
-        try context.save()
+        try saveTestContext()
         
-        // 验证数据已保存
-        let fetchRequest: NSFetchRequest<Manual> = Manual.fetchRequest()
-        let savedManuals = try context.fetch(fetchRequest)
-        XCTAssertEqual(savedManuals.count, 1, "应该保存了一个说明书")
+        // 验证数据已保存 - 使用父类提供的便捷方法
+        assertEntityCount(Manual.self, equals: 1)
     }
     
     @MainActor
@@ -81,13 +71,13 @@ class OCRServiceTests: XCTestCase {
         
         // 创建测试说明书
         let manual = Manual.createManual(
-            in: context,
+            in: testContext,
             fileName: "test_ocr.png",
             fileData: imageData,
             fileType: "png"
         )
         
-        try context.save()
+        try saveTestContext()
         
         let expectation = XCTestExpectation(description: "OCR处理完成")
         
@@ -108,13 +98,13 @@ class OCRServiceTests: XCTestCase {
         
         // 创建测试说明书
         let manual = Manual.createManual(
-            in: context,
+            in: testContext,
             fileName: "test_fast_ocr.png",
             fileData: imageData,
             fileType: "png"
         )
         
-        try context.save()
+        try saveTestContext()
         
         let expectation = XCTestExpectation(description: "快速OCR处理完成")
         
@@ -134,27 +124,31 @@ class OCRServiceTests: XCTestCase {
         
         // 创建测试说明书
         let manual = Manual.createManual(
-            in: context,
+            in: testContext,
             fileName: "test_progress_ocr.png",
             fileData: imageData,
             fileType: "png"
         )
         
-        try context.save()
+        try saveTestContext()
         
         let expectation = XCTestExpectation(description: "带进度的OCR处理完成")
-        var progressValues: [Float] = []
+        var progressValues: [Float] = [] // 使用 Sendable 类型
         
         // 测试带进度回调的OCR处理
         manual.performOCRWithProgress(
-            progressCallback: { progress in
-                progressValues.append(progress)
-                print("OCR进度: \(progress)")
+            progressCallback: { @Sendable progress in
+                DispatchQueue.main.async {
+                    progressValues.append(progress)
+                    print("OCR进度: \(progress)")
+                }
             },
-            completion: { success in
-                print("带进度的OCR处理结果: \(success)")
-                print("记录的进度值: \(progressValues)")
-                expectation.fulfill()
+            completion: { @Sendable success in
+                DispatchQueue.main.async {
+                    print("带进度的OCR处理结果: \(success)")
+                    print("记录的进度值: \(progressValues)")
+                    expectation.fulfill()
+                }
             }
         )
         
@@ -162,34 +156,36 @@ class OCRServiceTests: XCTestCase {
         XCTAssertFalse(progressValues.isEmpty, "应该有进度回调")
     }
     
+    @MainActor
     func testManualSearchWithoutOCR() throws {
         // 创建测试说明书（没有OCR内容）
-        let manual1 = Manual.createManual(
-            in: context,
+        let _ = Manual.createManual(
+            in: testContext,
             fileName: "iPhone用户手册.pdf",
             fileData: Data(),
             fileType: "pdf"
         )
         
-        let manual2 = Manual.createManual(
-            in: context,
+        let _ = Manual.createManual(
+            in: testContext,
             fileName: "iPad使用指南.pdf",
             fileData: Data(),
             fileType: "pdf"
         )
         
-        try context.save()
+        try saveTestContext()
         
         // 测试搜索文件名
-        let searchResults = Manual.searchManuals(in: context, query: "iPhone")
+        let searchResults = Manual.searchManuals(in: testContext, query: "iPhone")
         XCTAssertEqual(searchResults.count, 1, "应该找到一个匹配的说明书")
         XCTAssertEqual(searchResults.first?.manualFileName, "iPhone用户手册.pdf", "应该找到正确的文件")
     }
     
+    @MainActor
     func testManualSearchWithOCRContent() throws {
         // 创建测试说明书（有OCR内容）
         let manual = Manual.createManual(
-            in: context,
+            in: testContext,
             fileName: "product_manual.pdf",
             fileData: Data(),
             fileType: "pdf"
@@ -197,10 +193,10 @@ class OCRServiceTests: XCTestCase {
         manual.content = "这是一份产品使用说明书，包含了详细的操作指南和维护信息"
         manual.isOCRProcessed = true
         
-        try context.save()
+        try saveTestContext()
         
         // 测试搜索OCR内容
-        let searchResults = Manual.searchManuals(in: context, query: "操作指南")
+        let searchResults = Manual.searchManuals(in: testContext, query: "操作指南")
         XCTAssertEqual(searchResults.count, 1, "应该找到一个匹配的说明书")
         
         // 测试预览文本
@@ -209,14 +205,17 @@ class OCRServiceTests: XCTestCase {
         XCTAssertTrue(previewText!.contains("操作指南"), "预览文本应该包含搜索关键词")
     }
     
+    @MainActor
     func testImagePreprocessor() async {
         let preprocessor = ImagePreprocessor()
         let testImage = createTestPlatformImage()
         
+        // 直接在主 actor 上处理图像，避免 Sendable 警告
         let enhancedImage = await preprocessor.enhance(testImage)
         XCTAssertNotNil(enhancedImage, "图像预处理应该返回结果")
     }
     
+    @MainActor
     func testTextPostprocessor() {
         let postprocessor = TextPostprocessor()
         
@@ -231,20 +230,7 @@ class OCRServiceTests: XCTestCase {
     
     // MARK: - Helper Methods
     
-    private func createTestImageData() -> Data {
-        // 创建一个1x1像素的红色PNG图像
-        #if os(iOS)
-        let image = UIImage(systemName: "doc.text") ?? UIImage()
-        return image.pngData() ?? Data()
-        #else
-        let image = NSImage(systemSymbolName: "doc.text", accessibilityDescription: nil) ?? NSImage()
-        guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-            return Data()
-        }
-        let rep = NSBitmapImageRep(cgImage: cgImage)
-        return rep.representation(using: .png, properties: [:]) ?? Data()
-        #endif
-    }
+    // createTestImageData() 方法已由父类 IsolatedServiceTestCase 提供
     
     private func createTestPlatformImage() -> PlatformImage {
         #if os(iOS)

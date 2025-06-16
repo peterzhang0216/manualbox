@@ -51,7 +51,7 @@ final class ServiceLayerTests: XCTestCase {
     
     // MARK: - ManualRepository集成测试
     
-    func testManualRepositoryIntegration() {
+    func testManualRepositoryIntegration() async throws {
         let container = ServiceContainer.shared
         guard let manualRepo = container.resolve(ManualRepository.self) else {
             XCTFail("无法解析ManualRepository")
@@ -59,16 +59,16 @@ final class ServiceLayerTests: XCTestCase {
         }
         
         // 测试基本操作
-        let manuals = manualRepo.fetchAll()
+        let manuals = try await manualRepo.fetchAll()
         XCTAssertNotNil(manuals, "应该能够获取手册列表")
         
-        // 测试OCR统计
-        let ocrStats = manualRepo.getOCRStatistics()
-        XCTAssertNotNil(ocrStats, "应该能够获取OCR统计信息")
+        // 测试OCR处理的说明书
+        let ocrProcessed = try await manualRepo.fetchOCRProcessed()
+        XCTAssertNotNil(ocrProcessed, "应该能够获取已OCR处理的说明书")
         
-        // 测试文件类型统计
-        let fileTypeStats = manualRepo.getFileTypeStatistics()
-        XCTAssertNotNil(fileTypeStats, "应该能够获取文件类型统计信息")
+        // 测试按文件类型查询
+        let pdfManuals = try await manualRepo.fetchByFileType("pdf")
+        XCTAssertNotNil(pdfManuals, "应该能够获取PDF类型的说明书")
     }
     
     // MARK: - 服务生命周期测试
@@ -87,30 +87,20 @@ final class ServiceLayerTests: XCTestCase {
     
     // MARK: - 错误处理测试
     
-    func testErrorHandling() {
+    func testErrorHandling() throws {
         let container = ServiceContainer.shared
         
         // 测试解析不存在的服务
         let nonExistentService: String? = container.resolve(String.self)
         XCTAssertNil(nonExistentService, "不存在的服务应该返回nil")
         
-        // 测试必需解析失败
-        XCTAssertThrowsError(try {
-            let _ = container.resolveRequired(String.self)
-        }(), "必需解析不存在的服务应该抛出错误")
+        // 注意：ServiceContainer的resolveRequired会直接crash，这里不测试它
+        // 而是测试普通的resolve方法
+        XCTAssertNil(container.resolve(String.self), "不存在的服务应该返回nil")
     }
 }
 
-// MARK: - 测试辅助扩展
-
-extension ServiceContainer {
-    func resolveRequired<T>(_ type: T.Type) throws -> T {
-        guard let service = resolve(type) else {
-            throw ServiceResolutionError.serviceNotFound(String(describing: type))
-        }
-        return service
-    }
-}
+// MARK: - 错误类型定义
 
 enum ServiceResolutionError: Error {
     case serviceNotFound(String)

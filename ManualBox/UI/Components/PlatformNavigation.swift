@@ -107,8 +107,8 @@ extension View {
 
 // MARK: - 响应式布局组件
 struct ResponsiveLayout<Content: View>: View {
-    let content: (LayoutMetrics) -> Content
-    @State private var layoutMetrics = LayoutMetrics()
+    let content: (NavigationLayoutMetrics) -> Content
+    @State private var layoutMetrics = NavigationLayoutMetrics()
     
     var body: some View {
         content(layoutMetrics)
@@ -134,7 +134,7 @@ struct ResponsiveLayout<Content: View>: View {
     }
 }
 
-struct LayoutMetrics {
+struct NavigationLayoutMetrics {
     var width: CGFloat = 800
     var height: CGFloat = 600
     
