@@ -120,7 +120,11 @@ struct MainTabView: View {
             selection: $selectedTab,
             selectedItem: $selectedProduct,
             sidebar: {
+                #if os(macOS)
                 SidebarView(selection: $selectedTab)
+                #else
+                EmptyView()
+                #endif
             },
             content: {
                 // 内容区：根据选中Tab/分类/标签动态切换
@@ -152,6 +156,7 @@ struct MainTabView: View {
                             case 3:
                                 RepairRecordsView()
                             default:
+                                #if os(macOS)
                                 ProductListView(
                                     filteredProducts: filteredProducts,
                                     searchText: searchText,
@@ -159,6 +164,14 @@ struct MainTabView: View {
                                     isEditing: isEditing
                                 )
                                     .environment(\.selectedProduct, $selectedProduct)
+                                #else
+                                ProductListView(
+                                    filteredProducts: filteredProducts,
+                                    searchText: searchText,
+                                    deleteProducts: deleteProducts
+                                )
+                                    .environment(\.selectedProduct, $selectedProduct)
+                                #endif
                             }
                         case .category(let id):
                             if let category = categories.first(where: { $0.id == id }) {
@@ -192,6 +205,7 @@ struct MainTabView: View {
                             settingsDetailView(for: panel)
                         }
                     } else {
+                        #if os(macOS)
                         ProductListView(
                             filteredProducts: filteredProducts,
                             searchText: searchText,
@@ -199,6 +213,14 @@ struct MainTabView: View {
                             isEditing: isEditing
                         )
                             .environment(\.selectedProduct, $selectedProduct)
+                        #else
+                        ProductListView(
+                            filteredProducts: filteredProducts,
+                            searchText: searchText,
+                            deleteProducts: deleteProducts
+                        )
+                            .environment(\.selectedProduct, $selectedProduct)
+                        #endif
                     }
                 }
             },
@@ -301,7 +323,28 @@ struct MainTabView: View {
     // 设置详情视图
     @ViewBuilder
     private func settingsDetailView(for panel: SettingsPanel) -> some View {
-        SettingsDetailView(selectedPanel: panel)
+        switch panel {
+        case .notification:
+            NotificationAdvancedSettingsPanel()
+        case .theme:
+            ThemeSettingsPanel()
+        case .data:
+            DataSettingsPanel(
+                defaultWarrantyPeriod: Binding(
+                    get: { UserDefaults.standard.integer(forKey: "defaultWarrantyPeriod") == 0 ? 12 : UserDefaults.standard.integer(forKey: "defaultWarrantyPeriod") },
+                    set: { UserDefaults.standard.set($0, forKey: "defaultWarrantyPeriod") }
+                ),
+                enableOCRByDefault: Binding(
+                    get: { UserDefaults.standard.bool(forKey: "enableOCRByDefault") },
+                    set: { UserDefaults.standard.set($0, forKey: "enableOCRByDefault") }
+                )
+            )
+        case .about:
+            AboutSettingsPanel(
+                showPrivacySheet: .constant(false),
+                showAgreementSheet: .constant(false)
+            )
+        }
     }
 
     private func setupNotificationObservers() {

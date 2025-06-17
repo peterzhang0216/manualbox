@@ -263,13 +263,13 @@ struct UnifiedSplitView<Sidebar: View, Content: View, Detail: View, SelectedItem
                         NavigationStack {
                             detail()
                                 .navigationBarTitleDisplayMode(.inline)
-                                .toolbar {
-                                    ToolbarItem(placement: .navigationBarTrailing) {
+                                .toolbar(content: {
+                                    SwiftUI.ToolbarItem(placement: .navigationBarTrailing) {
                                         Button("完成") {
                                             isShowingDetail = false
                                         }
                                     }
-                                }
+                                })
                         }
                         #else
                         detail()

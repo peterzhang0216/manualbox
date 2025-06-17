@@ -52,6 +52,33 @@ extension Category {
         category.updatedAt = Date()
         return category
     }
+
+    /// 安全创建分类（检查重复）
+    static func createCategoryIfNotExists(
+        in context: NSManagedObjectContext,
+        name: String,
+        icon: String = "folder"
+    ) -> Category {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // 检查是否已存在同名分类
+        let fetchRequest: NSFetchRequest<Category> = Category.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name ==[c] %@", trimmedName)
+        fetchRequest.fetchLimit = 1
+
+        do {
+            let existingCategories = try context.fetch(fetchRequest)
+            if let existingCategory = existingCategories.first {
+                print("[Category] 分类已存在，返回现有分类: \(trimmedName)")
+                return existingCategory
+            }
+        } catch {
+            print("[Category] 检查分类存在性时出错: \(error.localizedDescription)")
+        }
+
+        // 创建新分类
+        return createCategory(in: context, name: trimmedName, icon: icon)
+    }
     
     // MARK: - Associated Objects Keys
     private struct AssociatedKeys {
@@ -199,9 +226,9 @@ extension Category {
         // 添加线程安全检查
         context.performAndWait {
             for (name, icon) in defaultCategories {
-                // 使用更严格的查询条件，同时检查名称和图标
+                // 使用严格的名称匹配（忽略大小写和空格）
                 let fetchRequest: NSFetchRequest<Category> = Category.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "name == %@ OR (name == %@ AND icon == %@)", name, name, icon)
+                fetchRequest.predicate = NSPredicate(format: "name ==[c] %@", name.trimmingCharacters(in: .whitespacesAndNewlines))
                 fetchRequest.fetchLimit = 1
 
                 do {

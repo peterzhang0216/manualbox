@@ -40,11 +40,12 @@ struct AddTagSheet: View {
     }
     
     private func addTag() {
-        let tag = Tag(context: viewContext)
-        tag.id = UUID()
-        tag.name = tagName
-        tag.color = selectedColor.rawValue
-        
+        let _ = Tag.createTagIfNotExists(
+            in: viewContext,
+            name: tagName,
+            color: selectedColor.rawValue
+        )
+
         do {
             try viewContext.save()
             isPresented = false

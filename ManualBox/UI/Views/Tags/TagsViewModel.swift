@@ -121,10 +121,11 @@ class TagsViewModel: BaseViewModel<TagsState, TagsAction> {
         }
         // 使用统一的加载状态管理
         await self.performTask { [self] in
-            let tag = Tag(context: self.viewContext)
-            tag.id = UUID()
-            tag.name = self.state.newTagName.trimmingCharacters(in: .whitespacesAndNewlines)
-            tag.color = self.state.selectedColor
+            let _ = Tag.createTagIfNotExists(
+                in: self.viewContext,
+                name: self.state.newTagName,
+                color: self.state.selectedColor
+            )
             try self.viewContext.save()
             // 保存成功，关闭表单并清空状态
             self.updateState {

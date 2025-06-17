@@ -8,21 +8,29 @@ import CoreData
 
 // MARK: - 设置视图
 struct SettingsView: View {
-    @AppStorage("defaultWarrantyPeriod") private var defaultWarrantyPeriod = 12
-    @AppStorage("enableOCRByDefault") private var enableOCRByDefault = true
+    @StateObject private var viewModel: SettingsViewModel
     @EnvironmentObject private var notificationManager: AppNotificationManager
     @Environment(\.colorScheme) private var colorScheme
-    @State private var showResetAlert = false
-    @State private var showPrivacySheet = false
-    @State private var showAgreementSheet = false
-    @State private var selectedPanel: SettingsPanel = .notification
+    @Environment(\.managedObjectContext) private var viewContext
+
+    init() {
+        let context = PersistenceController.shared.container.viewContext
+        self._viewModel = StateObject(wrappedValue: SettingsViewModel(viewContext: context))
+    }
     
 
     
     var body: some View {
         #if os(macOS)
         NavigationSplitView {
-            List(selection: $selectedPanel) {
+            List(selection: Binding(
+                get: { viewModel.selectedPanel },
+                set: { panel in
+                    Task {
+                        await viewModel.send(.selectPanel(panel))
+                    }
+                }
+            )) {
                 Section(header: Text("设置")) {
                     NavigationLink(value: SettingsPanel.notification) {
                         Label("通知与提醒", systemImage: "bell.badge.fill")
@@ -41,20 +49,48 @@ struct SettingsView: View {
             .listStyle(.sidebar)
             .navigationTitle("设置")
         } detail: {
-            switch selectedPanel {
+            switch viewModel.selectedPanel {
             case .notification:
                 NotificationAdvancedSettingsPanel()
             case .theme:
                 ThemeSettingsPanel()
             case .data:
                 DataSettingsPanel(
-                    defaultWarrantyPeriod: $defaultWarrantyPeriod,
-                    enableOCRByDefault: $enableOCRByDefault
+                    defaultWarrantyPeriod: Binding(
+                        get: { viewModel.defaultWarrantyPeriod },
+                        set: { period in
+                            Task {
+                                await viewModel.send(.updateDefaultWarrantyPeriod(period))
+                            }
+                        }
+                    ),
+                    enableOCRByDefault: Binding(
+                        get: { viewModel.enableOCRByDefault },
+                        set: { enabled in
+                            Task {
+                                await viewModel.send(.updateEnableOCRByDefault(enabled))
+                            }
+                        }
+                    )
                 )
             case .about:
                 AboutSettingsPanel(
-                    showPrivacySheet: $showPrivacySheet,
-                    showAgreementSheet: $showAgreementSheet
+                    showPrivacySheet: Binding(
+                        get: { viewModel.showPrivacySheet },
+                        set: { show in
+                            Task {
+                                await viewModel.send(.togglePrivacySheet)
+                            }
+                        }
+                    ),
+                    showAgreementSheet: Binding(
+                        get: { viewModel.showAgreementSheet },
+                        set: { show in
+                            Task {
+                                await viewModel.send(.toggleAgreementSheet)
+                            }
+                        }
+                    )
                 )
             }
         }
@@ -79,8 +115,22 @@ struct SettingsView: View {
                         )
                     }
                     NavigationLink(destination: DataSettingsPanel(
-                        defaultWarrantyPeriod: $defaultWarrantyPeriod,
-                        enableOCRByDefault: $enableOCRByDefault
+                        defaultWarrantyPeriod: Binding(
+                            get: { viewModel.defaultWarrantyPeriod },
+                            set: { period in
+                                Task {
+                                    await viewModel.send(.updateDefaultWarrantyPeriod(period))
+                                }
+                            }
+                        ),
+                        enableOCRByDefault: Binding(
+                            get: { viewModel.enableOCRByDefault },
+                            set: { enabled in
+                                Task {
+                                    await viewModel.send(.updateEnableOCRByDefault(enabled))
+                                }
+                            }
+                        )
                     )) {
                         SettingRow(
                             icon: "tray.full",
@@ -90,8 +140,22 @@ struct SettingsView: View {
                         )
                     }
                     NavigationLink(destination: AboutSettingsPanel(
-                        showPrivacySheet: $showPrivacySheet,
-                        showAgreementSheet: $showAgreementSheet
+                        showPrivacySheet: Binding(
+                            get: { viewModel.showPrivacySheet },
+                            set: { show in
+                                Task {
+                                    await viewModel.send(.togglePrivacySheet)
+                                }
+                            }
+                        ),
+                        showAgreementSheet: Binding(
+                            get: { viewModel.showAgreementSheet },
+                            set: { show in
+                                Task {
+                                    await viewModel.send(.toggleAgreementSheet)
+                                }
+                            }
+                        )
                     )) {
                         SettingRow(
                             icon: "info.circle",
@@ -111,4 +175,5 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environmentObject(AppNotificationManager())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

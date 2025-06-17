@@ -120,10 +120,11 @@ class CategoriesViewModel: BaseViewModel<CategoriesState, CategoriesAction> {
         
         // 使用统一的加载状态管理
         await self.performTask { [self] in
-            let category = Category(context: self.viewContext)
-            category.id = UUID()
-            category.name = self.state.newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines)
-            category.icon = self.state.selectedIcon
+            let _ = Category.createCategoryIfNotExists(
+                in: self.viewContext,
+                name: self.state.newCategoryName,
+                icon: self.state.selectedIcon
+            )
             try self.viewContext.save()
             // 保存成功，关闭表单并清空状态
             self.updateState {

@@ -42,24 +42,21 @@ class PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        
-        // 创建预览数据
-        // 1. 创建预览专用分类（不调用默认创建方法）
-        let electronicCategory = Category(context: viewContext)
-        electronicCategory.id = UUID()
-        electronicCategory.name = "电子产品"
-        electronicCategory.icon = "laptopcomputer"
-        
-        let homeCategory = Category(context: viewContext)
-        homeCategory.id = UUID()
-        homeCategory.name = "家用电器"
-        homeCategory.icon = "oven"
-        
-        // 2. 创建预览专用标签（不调用默认创建方法）
-        let importantTag = Tag(context: viewContext)
-        importantTag.id = UUID()
-        importantTag.name = "重要"
-        importantTag.color = "orange"
+
+        // 创建预览数据 - 使用默认创建方法确保一致性
+        Category.createDefaultCategories(in: viewContext)
+        Tag.createDefaultTags(in: viewContext)
+
+        // 获取创建的分类和标签
+        let categoriesRequest: NSFetchRequest<Category> = Category.fetchRequest()
+        let categories = try! viewContext.fetch(categoriesRequest)
+
+        let tagsRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+        let tags = try! viewContext.fetch(tagsRequest)
+
+        let electronicCategory = categories.first { $0.name == "电子产品" }!
+        let homeCategory = categories.first { $0.name == "家用电器" }!
+        let importantTag = tags.first { $0.name == "重要" }!
         
         // 3. 创建示例产品
         
@@ -250,7 +247,8 @@ class PersistenceController {
         )
     }
     
-    // 初始化默认数据
+    // 初始化默认数据（兼容旧版本，会清理重复数据）
+    // 注意：此方法主要用于数据修复和兼容性，不会检查初始化标记
     func initializeDefaultData() {
         let context = container.viewContext
 
@@ -292,6 +290,71 @@ class PersistenceController {
         }
     }
 
+    // 只在需要时初始化默认数据（不清理重复数据，更温和的方式）
+    func initializeDefaultDataIfNeeded() {
+        let context = container.viewContext
+
+        // 检查是否已经进行过首次初始化
+        let hasInitialized = UserDefaults.standard.bool(forKey: "ManualBox_HasInitializedDefaultData")
+
+        if hasInitialized {
+            print("[Persistence] 已完成首次初始化，跳过默认数据创建")
+            return
+        }
+
+        // 分别检查分类和标签是否为空
+        let categoriesRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
+        let categoriesCount = (try? context.count(for: categoriesRequest)) ?? 0
+
+        let tagsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Tag")
+        let tagsCount = (try? context.count(for: tagsRequest)) ?? 0
+
+        var needsSave = false
+
+        // 只有当分类表为空时才创建默认分类
+        if categoriesCount == 0 {
+            print("[Persistence] 首次启动，创建默认分类...")
+            Category.createDefaultCategories(in: context)
+            needsSave = true
+        } else {
+            print("[Persistence] 分类已存在 (\(categoriesCount) 个)，跳过创建")
+        }
+
+        // 只有当标签表为空时才创建默认标签
+        if tagsCount == 0 {
+            print("[Persistence] 首次启动，创建默认标签...")
+            Tag.createDefaultTags(in: context)
+            needsSave = true
+        } else {
+            print("[Persistence] 标签已存在 (\(tagsCount) 个)，跳过创建")
+        }
+
+        // 只有在需要时才保存
+        if needsSave {
+            do {
+                try context.save()
+                print("[Persistence] 默认数据保存成功")
+            } catch {
+                print("[Persistence] 保存默认数据时出错: \(error.localizedDescription)")
+            }
+        }
+
+        // 标记已完成首次初始化
+        UserDefaults.standard.set(true, forKey: "ManualBox_HasInitializedDefaultData")
+        print("[Persistence] 首次初始化完成，已设置标记")
+    }
+
+    // 重置初始化标记（用于重置应用数据时）
+    func resetInitializationFlag() {
+        UserDefaults.standard.removeObject(forKey: "ManualBox_HasInitializedDefaultData")
+        print("[Persistence] 已重置初始化标记")
+    }
+
+    // 检查是否已完成首次初始化
+    func hasCompletedInitialSetup() -> Bool {
+        return UserDefaults.standard.bool(forKey: "ManualBox_HasInitializedDefaultData")
+    }
+
     // MARK: - 数据清理
 
     /// 清理重复的分类和标签数据
@@ -317,66 +380,104 @@ class PersistenceController {
         }
     }
 
-    /// 清理重复分类
+    /// 清理重复分类（改进版本）
     private func removeDuplicateCategories(in context: NSManagedObjectContext) {
         let request: NSFetchRequest<Category> = Category.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Category.name, ascending: true)]
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Category.name, ascending: true)
+        ]
 
         do {
             let categories = try context.fetch(request)
-            var seenNames = Set<String>()
-            var duplicates: [Category] = []
+            var nameToCategory: [String: Category] = [:]
+            var duplicatesToDelete: [Category] = []
 
             for category in categories {
-                let name = category.name ?? ""
-                if seenNames.contains(name) {
-                    duplicates.append(category)
-                    print("[Persistence] 发现重复分类: \(name)")
+                let name = (category.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if name.isEmpty {
+                    // 删除空名称的分类
+                    duplicatesToDelete.append(category)
+                    print("[Persistence] 发现空名称分类，将删除")
+                    continue
+                }
+
+                if let existingCategory = nameToCategory[name] {
+                    // 发现重复，决定保留哪一个
+                    let categoryToKeep = chooseCategoryToKeep(existing: existingCategory, duplicate: category)
+                    let categoryToDelete = (categoryToKeep == existingCategory) ? category : existingCategory
+
+                    // 转移产品关联到保留的分类
+                    transferProductsToCategory(from: categoryToDelete, to: categoryToKeep, in: context)
+
+                    duplicatesToDelete.append(categoryToDelete)
+                    nameToCategory[name] = categoryToKeep
+
+                    print("[Persistence] 发现重复分类: \(name)，保留较早创建的版本")
                 } else {
-                    seenNames.insert(name)
+                    nameToCategory[name] = category
                 }
             }
 
             // 删除重复项
-            for duplicate in duplicates {
+            for duplicate in duplicatesToDelete {
                 context.delete(duplicate)
             }
 
-            if !duplicates.isEmpty {
-                print("[Persistence] 已删除 \(duplicates.count) 个重复分类")
+            if !duplicatesToDelete.isEmpty {
+                print("[Persistence] 已删除 \(duplicatesToDelete.count) 个重复分类")
             }
         } catch {
             print("[Persistence] 清理重复分类时出错: \(error.localizedDescription)")
         }
     }
 
-    /// 清理重复标签
+    /// 清理重复标签（改进版本）
     private func removeDuplicateTags(in context: NSManagedObjectContext) {
         let request: NSFetchRequest<Tag> = Tag.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Tag.name, ascending: true)]
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Tag.name, ascending: true)
+        ]
 
         do {
             let tags = try context.fetch(request)
-            var seenNames = Set<String>()
-            var duplicates: [Tag] = []
+            var nameToTag: [String: Tag] = [:]
+            var duplicatesToDelete: [Tag] = []
 
             for tag in tags {
-                let name = tag.name ?? ""
-                if seenNames.contains(name) {
-                    duplicates.append(tag)
-                    print("[Persistence] 发现重复标签: \(name)")
+                let name = (tag.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if name.isEmpty {
+                    // 删除空名称的标签
+                    duplicatesToDelete.append(tag)
+                    print("[Persistence] 发现空名称标签，将删除")
+                    continue
+                }
+
+                if let existingTag = nameToTag[name] {
+                    // 发现重复，决定保留哪一个
+                    let tagToKeep = chooseTagToKeep(existing: existingTag, duplicate: tag)
+                    let tagToDelete = (tagToKeep == existingTag) ? tag : existingTag
+
+                    // 转移产品关联到保留的标签
+                    transferProductsToTag(from: tagToDelete, to: tagToKeep, in: context)
+
+                    duplicatesToDelete.append(tagToDelete)
+                    nameToTag[name] = tagToKeep
+
+                    print("[Persistence] 发现重复标签: \(name)，保留较早创建的版本")
                 } else {
-                    seenNames.insert(name)
+                    nameToTag[name] = tag
                 }
             }
 
             // 删除重复项
-            for duplicate in duplicates {
+            for duplicate in duplicatesToDelete {
                 context.delete(duplicate)
             }
 
-            if !duplicates.isEmpty {
-                print("[Persistence] 已删除 \(duplicates.count) 个重复标签")
+            if !duplicatesToDelete.isEmpty {
+                print("[Persistence] 已删除 \(duplicatesToDelete.count) 个重复标签")
             }
         } catch {
             print("[Persistence] 清理重复标签时出错: \(error.localizedDescription)")
@@ -387,6 +488,61 @@ class PersistenceController {
     @MainActor
     func cleanupDuplicateData() async {
         removeDuplicateData()
+    }
+
+    // MARK: - 辅助方法
+
+    /// 选择要保留的分类（优先保留有更多产品关联的）
+    private func chooseCategoryToKeep(existing: Category, duplicate: Category) -> Category {
+        let existingProductCount = (existing.products as? Set<Product>)?.count ?? 0
+        let duplicateProductCount = (duplicate.products as? Set<Product>)?.count ?? 0
+
+        // 优先保留有更多产品的分类
+        if existingProductCount != duplicateProductCount {
+            return existingProductCount > duplicateProductCount ? existing : duplicate
+        }
+
+        // 如果产品数量相同，保留第一个（existing）
+        return existing
+    }
+
+    /// 选择要保留的标签（优先保留有更多产品关联的）
+    private func chooseTagToKeep(existing: Tag, duplicate: Tag) -> Tag {
+        let existingProductCount = (existing.products as? Set<Product>)?.count ?? 0
+        let duplicateProductCount = (duplicate.products as? Set<Product>)?.count ?? 0
+
+        // 优先保留有更多产品的标签
+        if existingProductCount != duplicateProductCount {
+            return existingProductCount > duplicateProductCount ? existing : duplicate
+        }
+
+        // 如果产品数量相同，保留第一个（existing）
+        return existing
+    }
+
+    /// 将产品从一个分类转移到另一个分类
+    private func transferProductsToCategory(from source: Category, to target: Category, in context: NSManagedObjectContext) {
+        guard let sourceProducts = source.products as? Set<Product> else { return }
+
+        for product in sourceProducts {
+            product.category = target
+            print("[Persistence] 转移产品 '\(product.name ?? "未知")' 从分类 '\(source.name ?? "")' 到 '\(target.name ?? "")'")
+        }
+    }
+
+    /// 将产品从一个标签转移到另一个标签
+    private func transferProductsToTag(from source: Tag, to target: Tag, in context: NSManagedObjectContext) {
+        guard let sourceProducts = source.products as? Set<Product> else { return }
+
+        for product in sourceProducts {
+            // 移除旧标签关联
+            product.removeFromTags(source)
+            // 添加新标签关联（如果还没有的话）
+            if let targetProducts = target.products as? Set<Product>, !targetProducts.contains(product) {
+                product.addToTags(target)
+                print("[Persistence] 转移产品 '\(product.name ?? "未知")' 从标签 '\(source.name ?? "")' 到 '\(target.name ?? "")'")
+            }
+        }
     }
 
     // MARK: - 上下文管理
@@ -596,8 +752,309 @@ extension PersistenceController {
     private func optimizeDatabase(in context: NSManagedObjectContext) throws {
         // 刷新所有对象以释放内存
         context.refreshAllObjects()
-        
+
         // 强制保存以确保所有更改都写入磁盘
         try context.save()
+    }
+}
+
+// MARK: - 示例数据创建
+extension PersistenceController {
+
+    /// 创建示例产品数据（用于测试和演示）
+    func createSampleData() {
+        let context = container.viewContext
+
+        context.performAndWait {
+            do {
+                // 检查是否已有产品数据
+                let productRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+                let productCount = try context.count(for: productRequest)
+
+                if productCount > 0 {
+                    print("[Persistence] 已存在产品数据，跳过示例数据创建")
+                    return
+                }
+
+                // 获取所有分类和标签
+                let categoriesRequest: NSFetchRequest<Category> = Category.fetchRequest()
+                let categories = try context.fetch(categoriesRequest)
+
+                let tagsRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+                let tags = try context.fetch(tagsRequest)
+
+                // 为每个分类创建示例产品
+                createSampleProductsForCategories(categories, tags: tags, in: context)
+
+                // 保存更改
+                if context.hasChanges {
+                    try context.save()
+                    print("[Persistence] 示例数据创建完成")
+                }
+
+            } catch {
+                print("[Persistence] 创建示例数据时出错: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    /// 删除所有示例数据
+    @MainActor
+    func deleteSampleData() async -> (success: Bool, message: String, deletedCount: Int) {
+        let context = container.viewContext
+
+        return await withCheckedContinuation { continuation in
+            context.perform {
+                do {
+                    // 识别示例数据
+                    let sampleProducts = self.identifySampleProducts(in: context)
+                    let deletedCount = sampleProducts.count
+
+                    if sampleProducts.isEmpty {
+                        continuation.resume(returning: (true, "未发现示例数据", 0))
+                        return
+                    }
+
+                    // 删除示例产品及其关联数据
+                    for product in sampleProducts {
+                        // 删除关联的订单
+                        if let order = product.order {
+                            context.delete(order)
+                        }
+
+                        // 删除关联的说明书
+                        if let manuals = product.manuals as? Set<Manual> {
+                            for manual in manuals {
+                                context.delete(manual)
+                            }
+                        }
+
+                        // 删除产品本身
+                        context.delete(product)
+                    }
+
+                    // 保存更改
+                    try context.save()
+
+                    let message = "成功删除 \(deletedCount) 个示例产品及其关联数据"
+                    print("[Persistence] \(message)")
+                    continuation.resume(returning: (true, message, deletedCount))
+
+                } catch {
+                    let errorMessage = "删除示例数据时出错: \(error.localizedDescription)"
+                    print("[Persistence] \(errorMessage)")
+                    continuation.resume(returning: (false, errorMessage, 0))
+                }
+            }
+        }
+    }
+
+    /// 检查是否存在示例数据
+    @MainActor
+    func hasSampleData() async -> Bool {
+        let context = container.viewContext
+
+        return await withCheckedContinuation { continuation in
+            context.perform {
+                let sampleProducts = self.identifySampleProducts(in: context)
+                continuation.resume(returning: !sampleProducts.isEmpty)
+            }
+        }
+    }
+
+    /// 获取示例数据统计信息
+    @MainActor
+    func getSampleDataInfo() async -> (productCount: Int, categoryCount: Int, hasOrders: Bool) {
+        let context = container.viewContext
+
+        return await withCheckedContinuation { continuation in
+            context.perform {
+                let sampleProducts = self.identifySampleProducts(in: context)
+                let categories = Set(sampleProducts.compactMap { $0.category })
+                let hasOrders = sampleProducts.contains { $0.order != nil }
+
+                continuation.resume(returning: (
+                    productCount: sampleProducts.count,
+                    categoryCount: categories.count,
+                    hasOrders: hasOrders
+                ))
+            }
+        }
+    }
+
+    /// 识别示例产品
+    private func identifySampleProducts(in context: NSManagedObjectContext) -> [Product] {
+        let request: NSFetchRequest<Product> = Product.fetchRequest()
+
+        // 示例产品的特征：特定的品牌和型号组合
+        let sampleProductIdentifiers = [
+            ("iPhone 15 Pro", "Apple", "A3102"),
+            ("MacBook Pro", "Apple", "M3 Max"),
+            ("iPad Air", "Apple", "M2"),
+            ("AirPods Pro", "Apple", "第二代"),
+            ("小米空气净化器", "小米", "Pro H"),
+            ("戴森吸尘器", "Dyson", "V15"),
+            ("美的电饭煲", "美的", "MB-WFS4029"),
+            ("海尔冰箱", "海尔", "BCD-470WDPG"),
+            ("宜家沙发", "IKEA", "KIVIK"),
+            ("办公椅", "Herman Miller", "Aeron"),
+            ("书桌", "宜家", "BEKANT"),
+            ("床垫", "席梦思", "黑标"),
+            ("九阳豆浆机", "九阳", "DJ13B-D08D"),
+            ("苏泊尔炒锅", "苏泊尔", "PC32H1"),
+            ("摩飞榨汁机", "摩飞", "MR9600"),
+            ("双立人刀具", "双立人", "Twin Signature"),
+            ("跑步机", "舒华", "SH-T5517i"),
+            ("哑铃", "海德", "可调节"),
+            ("瑜伽垫", "Lululemon", "The Mat 5mm"),
+            ("健身手环", "小米", "Mi Band 8"),
+            ("登山包", "始祖鸟", "Beta AR 65"),
+            ("帐篷", "MSR", "Hubba Hubba NX"),
+            ("睡袋", "Mountain Hardwear", "Phantom 32"),
+            ("登山鞋", "Salomon", "X Ultra 4"),
+            ("行车记录仪", "70迈", "A800S"),
+            ("车载充电器", "Anker", "PowerDrive Speed+"),
+            ("轮胎", "米其林", "Pilot Sport 4"),
+            ("机油", "美孚", "1号全合成"),
+            ("蓝牙音箱", "Bose", "SoundLink Revolve+"),
+            ("移动电源", "Anker", "PowerCore 26800"),
+            ("无线鼠标", "罗技", "MX Master 3S"),
+            ("机械键盘", "Cherry", "MX Keys")
+        ]
+
+        do {
+            let allProducts = try context.fetch(request)
+
+            // 筛选出示例产品
+            let sampleProducts = allProducts.filter { product in
+                guard let productName = product.name,
+                      let productBrand = product.brand,
+                      let productModel = product.model else {
+                    return false
+                }
+
+                return sampleProductIdentifiers.contains { (name, brand, model) in
+                    productName == name && productBrand == brand && productModel == model
+                }
+            }
+
+            return sampleProducts
+
+        } catch {
+            print("[Persistence] 识别示例产品时出错: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    /// 为分类创建示例产品
+    private func createSampleProductsForCategories(_ categories: [Category], tags: [Tag], in context: NSManagedObjectContext) {
+        // 示例产品数据
+        let sampleProducts: [String: [(name: String, brand: String, model: String, tagNames: [String])]] = [
+            "电子产品": [
+                ("iPhone 15 Pro", "Apple", "A3102", ["新购", "重要"]),
+                ("MacBook Pro", "Apple", "M3 Max", ["重要", "收藏"]),
+                ("iPad Air", "Apple", "M2", ["新购"]),
+                ("AirPods Pro", "Apple", "第二代", ["收藏"])
+            ],
+            "家用电器": [
+                ("小米空气净化器", "小米", "Pro H", ["新购"]),
+                ("戴森吸尘器", "Dyson", "V15", ["重要", "收藏"]),
+                ("美的电饭煲", "美的", "MB-WFS4029", ["需维修"]),
+                ("海尔冰箱", "海尔", "BCD-470WDPG", ["重要"])
+            ],
+            "家具家私": [
+                ("宜家沙发", "IKEA", "KIVIK", ["收藏"]),
+                ("办公椅", "Herman Miller", "Aeron", ["重要", "收藏"]),
+                ("书桌", "宜家", "BEKANT", ["新购"]),
+                ("床垫", "席梦思", "黑标", ["重要"])
+            ],
+            "厨房用品": [
+                ("九阳豆浆机", "九阳", "DJ13B-D08D", ["需维修"]),
+                ("苏泊尔炒锅", "苏泊尔", "PC32H1", ["收藏"]),
+                ("摩飞榨汁机", "摩飞", "MR9600", ["新购"]),
+                ("双立人刀具", "双立人", "Twin Signature", ["重要"])
+            ],
+            "健身器材": [
+                ("跑步机", "舒华", "SH-T5517i", ["重要", "收藏"]),
+                ("哑铃", "海德", "可调节", ["新购"]),
+                ("瑜伽垫", "Lululemon", "The Mat 5mm", ["收藏"]),
+                ("健身手环", "小米", "Mi Band 8", ["新购"])
+            ],
+            "户外装备": [
+                ("登山包", "始祖鸟", "Beta AR 65", ["重要", "收藏"]),
+                ("帐篷", "MSR", "Hubba Hubba NX", ["收藏"]),
+                ("睡袋", "Mountain Hardwear", "Phantom 32", ["新购"]),
+                ("登山鞋", "Salomon", "X Ultra 4", ["重要"])
+            ],
+            "汽车配件": [
+                ("行车记录仪", "70迈", "A800S", ["新购", "重要"]),
+                ("车载充电器", "Anker", "PowerDrive Speed+", ["收藏"]),
+                ("轮胎", "米其林", "Pilot Sport 4", ["需维修"]),
+                ("机油", "美孚", "1号全合成", ["新购"])
+            ],
+            "其他": [
+                ("蓝牙音箱", "Bose", "SoundLink Revolve+", ["收藏"]),
+                ("移动电源", "Anker", "PowerCore 26800", ["新购"]),
+                ("无线鼠标", "罗技", "MX Master 3S", ["重要"]),
+                ("机械键盘", "Cherry", "MX Keys", ["收藏"])
+            ]
+        ]
+
+        // 为每个分类创建产品
+        for category in categories {
+            guard let categoryName = category.name,
+                  let products = sampleProducts[categoryName] else { continue }
+
+            for productData in products {
+                // 创建产品
+                let product = Product.createProduct(
+                    in: context,
+                    name: productData.name,
+                    brand: productData.brand,
+                    model: productData.model,
+                    category: category
+                )
+
+                // 添加标签
+                for tagName in productData.tagNames {
+                    if let tag = tags.first(where: { $0.name == tagName }) {
+                        product.addTag(tag)
+                    }
+                }
+
+                // 添加一些随机的创建时间（过去30天内）
+                let randomDaysAgo = Int.random(in: 0...30)
+                product.createdAt = Calendar.current.date(byAdding: .day, value: -randomDaysAgo, to: Date())
+                product.updatedAt = product.createdAt
+
+                // 为部分产品添加订单信息
+                if Bool.random() && productData.name.contains("iPhone") || productData.name.contains("MacBook") || productData.name.contains("iPad") {
+                    createSampleOrder(for: product, in: context)
+                }
+
+                print("[Persistence] 创建示例产品: \(productData.name) - \(categoryName)")
+            }
+        }
+    }
+
+    /// 为产品创建示例订单
+    private func createSampleOrder(for product: Product, in context: NSManagedObjectContext) {
+        let platforms = ["Apple Store", "京东", "天猫", "苏宁易购", "拼多多"]
+        let randomPlatform = platforms.randomElement() ?? "Apple Store"
+
+        let orderNumber = "ORD\(Int.random(in: 100000...999999))"
+        let orderDate = Calendar.current.date(byAdding: .day, value: -Int.random(in: 1...90), to: Date()) ?? Date()
+        let warrantyPeriod = [12, 24, 36].randomElement() ?? 12
+
+        let _ = Order.createOrder(
+            in: context,
+            orderNumber: orderNumber,
+            platform: randomPlatform,
+            orderDate: orderDate,
+            warrantyPeriod: warrantyPeriod,
+            product: product
+        )
+
+        print("[Persistence] 为产品 \(product.name ?? "") 创建订单: \(orderNumber)")
     }
 }

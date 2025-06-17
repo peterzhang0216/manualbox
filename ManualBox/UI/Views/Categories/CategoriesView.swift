@@ -36,11 +36,12 @@ struct AddCategorySheet: View {
     }
     
     private func addCategory() {
-        let category = Category(context: viewContext)
-        category.id = UUID()
-        category.name = categoryName
-        category.icon = selectedIcon
-        
+        let _ = Category.createCategoryIfNotExists(
+            in: viewContext,
+            name: categoryName,
+            icon: selectedIcon
+        )
+
         do {
             try viewContext.save()
             isPresented = false

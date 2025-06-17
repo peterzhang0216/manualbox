@@ -93,6 +93,33 @@ extension Tag {
         tag.color = color
         return tag
     }
+
+    /// 安全创建标签（检查重复）
+    static func createTagIfNotExists(
+        in context: NSManagedObjectContext,
+        name: String,
+        color: String = "blue"
+    ) -> Tag {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // 检查是否已存在同名标签
+        let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name ==[c] %@", trimmedName)
+        fetchRequest.fetchLimit = 1
+
+        do {
+            let existingTags = try context.fetch(fetchRequest)
+            if let existingTag = existingTags.first {
+                print("[Tag] 标签已存在，返回现有标签: \(trimmedName)")
+                return existingTag
+            }
+        } catch {
+            print("[Tag] 检查标签存在性时出错: \(error.localizedDescription)")
+        }
+
+        // 创建新标签
+        return createTag(in: context, name: trimmedName, color: color)
+    }
     
     // MARK: - 辅助方法
     func addProduct(_ product: Product) {
@@ -123,9 +150,9 @@ extension Tag {
         // 添加线程安全检查
         context.performAndWait {
             for (name, color) in defaultTags {
-                // 使用更严格的查询条件，同时检查名称和颜色
+                // 使用严格的名称匹配（忽略大小写和空格）
                 let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "name == %@ OR (name == %@ AND color == %@)", name, name, color)
+                fetchRequest.predicate = NSPredicate(format: "name ==[c] %@", name.trimmingCharacters(in: .whitespacesAndNewlines))
                 fetchRequest.fetchLimit = 1
 
                 do {

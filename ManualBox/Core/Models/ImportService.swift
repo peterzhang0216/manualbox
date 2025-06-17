@@ -374,18 +374,22 @@ class ImportService {
         warningCallback: WarningCallback? = nil
     ) async throws -> ImportResult {
         progressCallback?(0.1)
-        
+
         // 读取备份文件
         let backupData = try Data(contentsOf: url)
         progressCallback?(0.2)
-        
+
         // 解析完整备份数据
         let decoder = JSONDecoder()
         let fullBackup = try decoder.decode(FullBackupData.self, from: backupData)
         progressCallback?(0.3)
-        
+
         // 清空现有数据
         try await clearAllData(context: context)
+
+        // 重置初始化标记，因为我们清空了所有数据
+        PersistenceController.shared.resetInitializationFlag()
+
         progressCallback?(0.4)
         
         var warnings: [String] = []
@@ -417,9 +421,13 @@ class ImportService {
         
         totalImported = result.importedCount
         warnings.append(contentsOf: result.warnings)
-        
+
+        // 设置初始化标记，因为我们已经导入了分类数据
+        UserDefaults.standard.set(true, forKey: "ManualBox_HasInitializedDefaultData")
+        print("[ImportService] 完整备份导入完成，已设置初始化标记")
+
         warningCallback?(warnings)
-        
+
         return ImportResult(
             importedCount: totalImported,
             warnings: warnings
@@ -606,16 +614,21 @@ class ImportService {
             let productFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
             let deleteProductRequest = NSBatchDeleteRequest(fetchRequest: productFetch)
             try context.execute(deleteProductRequest)
-            
+
             let orderFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Order")
             let deleteOrderRequest = NSBatchDeleteRequest(fetchRequest: orderFetch)
             try context.execute(deleteOrderRequest)
-            
+
             // 删除分类
             let categoryFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
             let deleteCategoryRequest = NSBatchDeleteRequest(fetchRequest: categoryFetch)
             try context.execute(deleteCategoryRequest)
-            
+
+            // 删除标签
+            let tagFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Tag")
+            let deleteTagRequest = NSBatchDeleteRequest(fetchRequest: tagFetch)
+            try context.execute(deleteTagRequest)
+
             try context.save()
         }
     }
