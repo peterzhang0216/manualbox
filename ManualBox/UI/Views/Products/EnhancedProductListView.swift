@@ -27,7 +27,6 @@ struct EnhancedProductListView: View {
     enum ViewMode: String, CaseIterable {
         case list = "列表"
         case grid = "网格"
-        case compact = "紧凑"
     }
     
     var body: some View {
@@ -59,14 +58,14 @@ struct EnhancedProductListView: View {
     private var toolbarView: some View {
         HStack {
             // 视图模式切换
-            Picker("视图模式", selection: $viewMode) {
+            Picker("", selection: $viewMode) {
                 ForEach(ViewMode.allCases, id: \.self) { mode in
                     Image(systemName: iconForViewMode(mode))
                         .tag(mode)
                 }
             }
             .pickerStyle(.segmented)
-            .frame(maxWidth: 120)
+            .frame(maxWidth: 80)
             
             Spacer()
             
@@ -103,8 +102,6 @@ struct EnhancedProductListView: View {
                     listView
                 case .grid:
                     gridView
-                case .compact:
-                    compactListView
                 }
             }
         }
@@ -167,30 +164,7 @@ struct EnhancedProductListView: View {
         }
     }
     
-    // MARK: - 紧凑列表视图
-    private var compactListView: some View {
-        List {
-            ForEach(filteredProducts, id: \.self) { product in
-                ProductCompactRow(
-                    product: product,
-                    isSelected: selectedProducts.contains(product),
-                    isSelectionMode: isSelectionMode,
-                    onSelectionToggle: {
-                        toggleProductSelection(product)
-                    },
-                    onTap: {
-                        #if os(macOS)
-                        if !isSelectionMode {
-                            selectedProduct.wrappedValue = product
-                        }
-                        #endif
-                    }
-                )
-            }
-            .onDelete(perform: isSelectionMode ? nil : deleteProducts)
-        }
-        .listStyle(.plain)
-    }
+
     
     // MARK: - 空状态视图
     private var emptyStateView: some View {
@@ -223,7 +197,6 @@ struct EnhancedProductListView: View {
         switch mode {
         case .list: return "list.bullet"
         case .grid: return "grid"
-        case .compact: return "list.dash"
         }
     }
     
@@ -460,76 +433,7 @@ struct ProductGridCard: View {
     }
 }
 
-// MARK: - 产品紧凑行组件
-struct ProductCompactRow: View {
-    let product: Product
-    let isSelected: Bool
-    let isSelectionMode: Bool
-    let onSelectionToggle: () -> Void
-    let onTap: (() -> Void)?
 
-    init(
-        product: Product,
-        isSelected: Bool,
-        isSelectionMode: Bool,
-        onSelectionToggle: @escaping () -> Void,
-        onTap: (() -> Void)? = nil
-    ) {
-        self.product = product
-        self.isSelected = isSelected
-        self.isSelectionMode = isSelectionMode
-        self.onSelectionToggle = onSelectionToggle
-        self.onTap = onTap
-    }
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            // 选择指示器
-            if isSelectionMode {
-                Button(action: onSelectionToggle) {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(isSelected ? .accentColor : .secondary)
-                }
-                .buttonStyle(.plain)
-            }
-            
-            // 产品图片
-            ProductImageView(product: product, size: 40)
-            
-            // 产品信息
-            VStack(alignment: .leading, spacing: 2) {
-                Text(product.productName)
-                    .font(.body)
-                    .lineLimit(1)
-                
-                HStack(spacing: 8) {
-                    if !product.productBrand.isEmpty {
-                        Text(product.productBrand)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    if !product.productModel.isEmpty {
-                        Text("• \(product.productModel)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            
-            Spacer()
-        }
-        .padding(.vertical, 6)
-        .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
-        .animation(.easeInOut(duration: 0.2), value: isSelected)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if !isSelectionMode {
-                onTap?()
-            }
-        }
-    }
-}
 
 // MARK: - 产品图片视图组件
 struct ProductImageView: View {

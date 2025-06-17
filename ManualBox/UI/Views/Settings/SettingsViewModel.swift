@@ -9,31 +9,7 @@ import Foundation
 import SwiftUI
 import CoreData
 
-// MARK: - Settings Panel
-enum SettingsPanel: Hashable {
-    case notification
-    case theme
-    case data
-    case about
-    
-    var title: String {
-        switch self {
-        case .notification: return "通知设置"
-        case .theme: return "主题设置"
-        case .data: return "数据管理"
-        case .about: return "关于"
-        }
-    }
-    
-    var icon: String {
-        switch self {
-        case .notification: return "bell"
-        case .theme: return "paintbrush"
-        case .data: return "externaldrive"
-        case .about: return "info.circle"
-        }
-    }
-}
+// MARK: - Settings Panel (已移至 UnifiedSplitView.swift)
 
 // MARK: - Settings State
 struct SettingsState: StateProtocol {

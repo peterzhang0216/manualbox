@@ -30,10 +30,13 @@ struct ManualBoxApp: App {
                     // 防止重复初始化
                     guard !hasInitialized else { return }
                     hasInitialized = true
-                    
+
+                    // 重置到完整的默认分类
+                    Category.resetToDefaultCategories(in: persistenceController.container.viewContext)
+
                     // 初始化默认数据
                     persistenceController.initializeDefaultData()
-                    
+
                     // 注册通知并安排通知检查
                     notificationManager.registerForNotifications()
                     NotificationScheduler.shared.scheduleNotificationCheck()

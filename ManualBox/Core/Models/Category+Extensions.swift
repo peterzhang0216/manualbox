@@ -109,6 +109,15 @@ extension Category {
             .sorted { ($0.createdAt ?? Date.distantPast) > ($1.createdAt ?? Date.distantPast) }
         return Array(sorted.prefix(5))
     }
+
+    // 自定义排序优先级，确保"其他"分类显示在最下面
+    var sortPriority: Int {
+        if categoryName == "其他" {
+            return 999 // 最大值，确保排在最后
+        } else {
+            return 0 // 其他分类正常排序
+        }
+    }
 }
 
 // 默认分类列表
@@ -116,7 +125,7 @@ extension Category {
     static let defaultCategories = [
         "电子产品": "laptopcomputer",
         "家用电器": "oven",
-        "家具": "sofa",
+        "家具家私": "sofa",
         "厨房用品": "fork.knife",
         "健身器材": "dumbbell",
         "户外装备": "tent",
@@ -124,6 +133,67 @@ extension Category {
         "其他": "archivebox"
     ]
     
+    // 清空所有分类中的产品，但保留分类结构
+    static func clearAllCategoryProducts(in context: NSManagedObjectContext) {
+        context.performAndWait {
+            do {
+                // 1. 获取所有产品并清空其分类关联
+                let productFetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
+                let allProducts = try context.fetch(productFetchRequest)
+
+                for product in allProducts {
+                    product.category = nil
+                    print("[Category] 清空产品分类关联: \(product.name ?? "未知产品")")
+                }
+
+                // 2. 保存更改
+                try context.save()
+                print("[Category] 所有产品的分类关联已清空")
+
+            } catch {
+                print("[Category] 清空分类关联时出错: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // 重置到默认分类（删除现有分类并重新创建）
+    static func resetToDefaultCategories(in context: NSManagedObjectContext) {
+        context.performAndWait {
+            do {
+                // 1. 删除所有现有分类
+                let fetchRequest: NSFetchRequest<Category> = Category.fetchRequest()
+                let existingCategories = try context.fetch(fetchRequest)
+
+                for category in existingCategories {
+                    // 将该分类下的产品移动到"其他"分类（如果存在）
+                    if let products = category.products as? Set<Product> {
+                        for product in products {
+                            product.category = nil // 先清空分类关联
+                        }
+                    }
+                    context.delete(category)
+                    print("[Category] 删除分类: \(category.name ?? "未知")")
+                }
+
+                // 2. 创建新的默认分类
+                for (name, icon) in defaultCategories {
+                    let category = Category(context: context)
+                    category.id = UUID()
+                    category.name = name
+                    category.icon = icon
+                    print("[Category] 创建新分类: \(name)")
+                }
+
+                // 3. 保存更改
+                try context.save()
+                print("[Category] 分类重置完成")
+
+            } catch {
+                print("[Category] 重置分类时出错: \(error.localizedDescription)")
+            }
+        }
+    }
+
     // 在应用首次启动时创建默认分类
     static func createDefaultCategories(in context: NSManagedObjectContext) {
         // 添加线程安全检查

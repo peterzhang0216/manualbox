@@ -40,15 +40,18 @@ struct CategoryDetailView: View {
             
             // 产品列表
             if products.isEmpty {
-                ContentUnavailableView {
-                    Label("暂无产品", systemImage: "shippingbox")
-                } description: {
-                    Text("该分类下还没有产品")
-                } actions: {
-                    Button(action: { showAddProduct = true }) {
-                        Text("添加产品")
+                VStack {
+                    ContentUnavailableView {
+                        Label("暂无产品", systemImage: "shippingbox")
+                    } description: {
+                        Text("该分类下还没有产品")
+                    } actions: {
+                        Button(action: { showAddProduct = true }) {
+                            Text("添加产品")
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
-                    .buttonStyle(.borderedProminent)
+                    Spacer()
                 }
             } else {
                 List {
@@ -143,28 +146,26 @@ struct CategoryDetailView: View {
             }
             .padding()
             
-            // 统计信息
-            if products.count > 0 {
-                HStack(spacing: 24) {
-                    // 统计卡片
-                    StatisticCard(
-                        title: "最新添加",
-                        value: products.first?.productName ?? "-",
-                        icon: "clock",
-                        color: .blue
-                    )
-                    
-                    // 价值统计
-                    StatisticCard(
-                        title: "总价值",
-                        value: String(format: "¥%.2f", calculateTotalValue()),
-                        icon: "creditcard",
-                        color: .green
-                    )
-                }
-                .padding(.horizontal)
-                .padding(.bottom)
+            // 统计信息 - 始终显示
+            HStack(spacing: 24) {
+                // 统计卡片
+                StatisticCard(
+                    title: "最新添加",
+                    value: products.first?.productName ?? "暂无产品",
+                    icon: "clock",
+                    color: .blue
+                )
+
+                // 价值统计
+                StatisticCard(
+                    title: "总价值",
+                    value: products.count > 0 ? String(format: "¥%.2f", calculateTotalValue()) : "¥0.00",
+                    icon: "creditcard",
+                    color: .green
+                )
             }
+            .padding(.horizontal)
+            .padding(.bottom)
         }
         .background(Color.secondary.opacity(0.05))
     }

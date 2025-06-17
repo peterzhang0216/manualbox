@@ -19,7 +19,7 @@ class ImportService {
         progressCallback: ProgressCallback? = nil,
         warningCallback: WarningCallback? = nil
     ) async throws -> ImportResult {
-        var warnings: [String] = []
+        var _: [String] = []
         progressCallback?(0.1)
         
         // 读取CSV文件内容

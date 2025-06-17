@@ -39,7 +39,21 @@ struct MainTabView: View {
     @FetchRequest(
         entity: Category.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Category.name, ascending: true)]
-    ) private var categories: FetchedResults<Category>
+    ) private var categoriesRaw: FetchedResults<Category>
+
+    // 自定义排序的分类列表，确保"其他"在最后
+    private var categories: [Category] {
+        return categoriesRaw.sorted { category1, category2 in
+            let priority1 = category1.sortPriority
+            let priority2 = category2.sortPriority
+
+            if priority1 != priority2 {
+                return priority1 < priority2
+            } else {
+                return category1.categoryName < category2.categoryName
+            }
+        }
+    }
     
     @FetchRequest(
         entity: Tag.entity(),
@@ -137,8 +151,6 @@ struct MainTabView: View {
                                 }
                             case 3:
                                 RepairRecordsView()
-                            case 4:
-                                SettingsView()
                             default:
                                 ProductListView(
                                     filteredProducts: filteredProducts,
@@ -176,6 +188,8 @@ struct MainTabView: View {
                                     .environment(\.selectedProduct, $selectedProduct)
                                     .adaptiveLayout()
                             }
+                        case .settings(let panel):
+                            settingsDetailView(for: panel)
                         }
                     } else {
                         ProductListView(
@@ -209,11 +223,13 @@ struct MainTabView: View {
                             CategoryDetailView(category: categories.first ?? Category(context: viewContext))
                         case 2:
                             TagDetailView(tag: tags.first ?? Tag(context: viewContext))
-                        case 3, 4:
+                        case 3:
                             EmptyView()
                         default:
                             EmptyView()
                         }
+                    case .settings(_):
+                        EmptyView()
                     case .category(let id):
                         if let category = categories.first(where: { $0.id == id }) {
                             if let product = selectedProduct {
@@ -281,7 +297,13 @@ struct MainTabView: View {
             }
         }
     }
-    
+
+    // 设置详情视图
+    @ViewBuilder
+    private func settingsDetailView(for panel: SettingsPanel) -> some View {
+        SettingsDetailView(selectedPanel: panel)
+    }
+
     private func setupNotificationObservers() {
         // 产品导航通知
         notificationObserver.observe(.showProduct) { object in
@@ -331,11 +353,28 @@ struct AddProductSheet: View {
 struct SidebarView: View {
     @Binding var selection: SelectionValue?
     @Environment(\.managedObjectContext) private var viewContext
+
+    @State private var showingAddCategorySheet = false
+    @State private var showingAddTagSheet = false
     
     @FetchRequest(
         entity: Category.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Category.name, ascending: true)]
-    ) private var categories: FetchedResults<Category>
+    ) private var categoriesRaw: FetchedResults<Category>
+
+    // 自定义排序的分类列表，确保"其他"在最后
+    private var categories: [Category] {
+        return categoriesRaw.sorted { category1, category2 in
+            let priority1 = category1.sortPriority
+            let priority2 = category2.sortPriority
+
+            if priority1 != priority2 {
+                return priority1 < priority2
+            } else {
+                return category1.categoryName < category2.categoryName
+            }
+        }
+    }
     
     @FetchRequest(
         entity: Tag.entity(),
@@ -350,11 +389,6 @@ struct SidebarView: View {
                 .accessibilityHint("查看所有商品列表")
             
             Section(header: Text("分类")) {
-                Label("全部分类", systemImage: "folder")
-                    .tag(SelectionValue.main(1))
-                    .accessibilityLabel("全部分类")
-                    .accessibilityHint("管理商品分类")
-                
                 ForEach(categories) { category in
                     if let id = category.id {
                         Label(category.categoryName, systemImage: category.categoryIcon)
@@ -379,14 +413,18 @@ struct SidebarView: View {
                             }
                     }
                 }
+
+                // 添加分类按钮
+                Button(action: { showingAddCategorySheet = true }) {
+                    Label("添加分类", systemImage: "plus")
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("添加新分类")
+                .accessibilityHint("点击添加新的商品分类")
             }
             
             Section(header: Text("标签")) {
-                Label("全部标签", systemImage: "tag")
-                    .tag(SelectionValue.main(2))
-                    .accessibilityLabel("全部标签")
-                    .accessibilityHint("管理商品标签")
-                
                 ForEach(tags) { tag in
                     if let id = tag.id {
                         Label {
@@ -416,6 +454,15 @@ struct SidebarView: View {
                         }
                     }
                 }
+
+                // 添加标签按钮
+                Button(action: { showingAddTagSheet = true }) {
+                    Label("添加标签", systemImage: "plus")
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("添加新标签")
+                .accessibilityHint("点击添加新的商品标签")
             }
             
             Section(header: Text("维修管理")) {
@@ -426,16 +473,29 @@ struct SidebarView: View {
             }
             
             Section(header: Text("设置")) {
-                Label("设置与偏好", systemImage: "gear")
-                    .tag(SelectionValue.main(4))
-                    .accessibilityLabel("设置与偏好")
-                    .accessibilityHint("配置应用设置和个人偏好")
+                // 设置选项
+                ForEach(SettingsPanel.allCases, id: \.self) { panel in
+                    Label(panel.title, systemImage: panel.icon)
+                        .tag(SelectionValue.settings(panel))
+                        .accessibilityLabel(panel.title)
+                        .accessibilityHint("打开\(panel.title)设置")
+                }
             }
         }
         .listStyle(SidebarListStyle())
         .frame(minWidth: 200, idealWidth: 250, maxWidth: 320) // maxWidth 统一为 320
         .accessibilityLabel("主导航")
         .accessibilityHint("选择要浏览的内容分类")
+        .sheet(isPresented: $showingAddCategorySheet) {
+            AddCategorySheet(isPresented: $showingAddCategorySheet)
+                .frame(minWidth: 400, minHeight: 300)
+                .environment(\.managedObjectContext, viewContext)
+        }
+        .sheet(isPresented: $showingAddTagSheet) {
+            AddTagSheet(isPresented: $showingAddTagSheet)
+                .frame(minWidth: 400, minHeight: 300)
+                .environment(\.managedObjectContext, viewContext)
+        }
     }
 }
 #endif

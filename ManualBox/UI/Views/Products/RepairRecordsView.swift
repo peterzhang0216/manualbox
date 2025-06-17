@@ -11,19 +11,9 @@ struct RepairRecordsView: View {
         animation: .default
     ) private var repairRecords: FetchedResults<RepairRecord>
     
-    @State private var searchText = ""
-    
-    // 计算过滤后的维修记录
+    // 直接使用所有维修记录
     private var filteredRecords: [RepairRecord] {
-        if searchText.isEmpty {
-            return Array(repairRecords)
-        } else {
-            return repairRecords.filter { record in
-                guard let details = record.details else { return false }
-                let searchLower = searchText.lowercased()
-                return details.lowercased().contains(searchLower)
-            }
-        }
+        return Array(repairRecords)
     }
     
     // 按月份分组的维修记录
@@ -71,41 +61,11 @@ struct RepairRecordsView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // 搜索栏
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.secondary)
-                    TextField("搜索维修记录", text: $searchText)
-                    
-                    if !searchText.isEmpty {
-                        Button(action: {
-                            searchText = ""
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.secondary)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(8)
-#if os(iOS)
-                .background(Color(.secondarySystemBackground))
-#else
-                .background(Color(.windowBackgroundColor))
-#endif
-                .cornerRadius(10)
-                .padding(.horizontal)
-                .padding(.top, 8)
-                
                 if filteredRecords.isEmpty {
                     ContentUnavailableView {
                         Label("暂无维修记录", systemImage: "wrench.and.screwdriver")
                     } description: {
-                        if searchText.isEmpty {
-                            Text("您尚未添加任何维修记录")
-                        } else {
-                            Text("没有找到匹配的记录")
-                        }
+                        Text("您尚未添加任何维修记录")
                     }
                 } else {
                     List {

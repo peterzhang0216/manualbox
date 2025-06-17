@@ -19,6 +19,33 @@ enum SelectionValue: Hashable {
     case main(Int)
     case category(UUID)
     case tag(UUID)
+    case settings(SettingsPanel)
+}
+
+// MARK: - 设置面板枚举
+enum SettingsPanel: String, CaseIterable, Hashable {
+    case notification = "notification"
+    case theme = "theme"
+    case data = "data"
+    case about = "about"
+
+    var title: String {
+        switch self {
+        case .notification: return "通知与提醒"
+        case .theme: return "外观与主题"
+        case .data: return "数据与默认"
+        case .about: return "关于与支持"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .notification: return "bell.badge.fill"
+        case .theme: return "paintbrush"
+        case .data: return "tray.full"
+        case .about: return "info.circle"
+        }
+    }
 }
 
 // MARK: - 平台颜色适配
