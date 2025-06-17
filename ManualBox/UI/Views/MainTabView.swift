@@ -252,6 +252,14 @@ struct MainTabView: View {
         )
         .preferredColorScheme(colorScheme)
         .accentColor(accentColor)
+        .toolbar(content: {
+            SwiftUI.ToolbarItem(placement: .primaryAction) {
+                Button(action: { showingAddProduct = true }) {
+                    Label("添加产品", systemImage: "plus")
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        })
         .sheet(isPresented: $showingAddProduct) {
             QuickAddProductView(isPresented: $showingAddProduct)
                 #if os(iOS)
@@ -265,6 +273,12 @@ struct MainTabView: View {
         .onAppear {
             notificationManager.updateAllWarrantyReminders(in: viewContext)
             setupNotificationObservers()
+        }
+        .onChange(of: selectedTab) { oldValue, newValue in
+            // 当选中的标签页改变时，清空选中的商品
+            if oldValue != newValue {
+                selectedProduct = nil
+            }
         }
     }
     
@@ -348,6 +362,21 @@ struct SidebarView: View {
                             .tag(SelectionValue.category(id))
                             .accessibilityLabel("\(category.categoryName)分类")
                             .accessibilityHint("查看\(category.categoryName)分类下的商品，共\(category.productCount)个")
+                            .contextMenu {
+                                Button(action: {
+                                    // 编辑分类功能 - 这里需要实现
+                                }) {
+                                    Label("编辑分类", systemImage: "pencil")
+                                }
+
+                                Divider()
+
+                                Button(role: .destructive, action: {
+                                    // 删除分类功能 - 这里需要实现
+                                }) {
+                                    Label("删除分类", systemImage: "trash")
+                                }
+                            }
                     }
                 }
             }
@@ -370,6 +399,21 @@ struct SidebarView: View {
                         .tag(SelectionValue.tag(id))
                         .accessibilityLabel("\(tag.tagName)标签")
                         .accessibilityHint("查看\(tag.tagName)标签下的商品，共\(tag.productCount)个")
+                        .contextMenu {
+                            Button(action: {
+                                // 编辑标签功能 - 这里需要实现
+                            }) {
+                                Label("编辑标签", systemImage: "pencil")
+                            }
+
+                            Divider()
+
+                            Button(role: .destructive, action: {
+                                // 删除标签功能 - 这里需要实现
+                            }) {
+                                Label("删除标签", systemImage: "trash")
+                            }
+                        }
                     }
                 }
             }

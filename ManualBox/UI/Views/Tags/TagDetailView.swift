@@ -6,10 +6,14 @@ import CoreData
 struct TagDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     let tag: Tag
-    
+
     @State private var showingEditSheet = false
     @State private var showingDeleteAlert = false
     @State private var showAddProduct = false
+
+    #if os(macOS)
+    @Environment(\.selectedProduct) private var selectedProduct
+    #endif
     
     @FetchRequest private var products: FetchedResults<Product>
     
@@ -49,9 +53,17 @@ struct TagDetailView: View {
             } else {
                 List {
                     ForEach(products) { product in
+                        #if os(iOS)
                         NavigationLink(destination: ProductDetailView(product: product)) {
                             ProductRowView(product: product)
                         }
+                        #else
+                        ProductRowView(product: product)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedProduct.wrappedValue = product
+                            }
+                        #endif
                     }
                 }
                 #if os(iOS)
@@ -62,25 +74,6 @@ struct TagDetailView: View {
             }
         }
         .navigationTitle(tag.tagName)
-        .toolbar {
-            SwiftUI.ToolbarItem(placement: .primaryAction) {
-                Menu {
-                    Button(action: { showAddProduct = true }) {
-                        Label("添加产品", systemImage: "plus")
-                    }
-                    
-                    Button(action: { showingEditSheet = true }) {
-                        Label("编辑标签", systemImage: "pencil")
-                    }
-                    
-                    Button(role: .destructive, action: { showingDeleteAlert = true }) {
-                        Label("删除标签", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                }
-            }
-        }
         .sheet(isPresented: $showingEditSheet) {
             #if os(macOS)
             EditTagSheet(tag: tag)
@@ -116,22 +109,40 @@ struct TagDetailView: View {
                     Circle()
                         .fill(tag.uiColor)
                         .frame(width: 80, height: 80)
-                    
+
                     Image(systemName: "tag.fill")
                         .font(.system(size: 32))
                         .foregroundColor(.white)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 4) {
                     Text(tag.tagName)
                         .font(.title)
                         .bold()
-                    
+
                     Text("共 \(products.count) 个产品")
                         .foregroundColor(.secondary)
                 }
-                
+
                 Spacer()
+
+                // 标签管理按钮
+                HStack(spacing: 8) {
+                    Button(action: { showingEditSheet = true }) {
+                        Image(systemName: "pencil")
+                            .font(.system(size: 16, weight: .medium))
+                    }
+                    .buttonStyle(.bordered)
+                    .help("编辑标签")
+
+                    Button(action: { showingDeleteAlert = true }) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 16, weight: .medium))
+                    }
+                    .buttonStyle(.bordered)
+                    .foregroundColor(.red)
+                    .help("删除标签")
+                }
             }
             .padding()
             

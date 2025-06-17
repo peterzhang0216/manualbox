@@ -4,17 +4,25 @@ import CoreData
 /// 增强的产品列表视图 - 支持多选和批量操作
 struct EnhancedProductListView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+
     let filteredProducts: [Product]
     let searchText: String
     let deleteProducts: (IndexSet) -> Void
-    
+
     @State private var selectedProducts: Set<Product> = []
     @State private var isSelectionMode = false
     @State private var showingBatchOperations = false
-    
+
     // 列表显示模式
     @State private var viewMode: ViewMode = .list
+
+    #if os(macOS)
+    @Environment(\.selectedProduct) private var environmentSelectedProduct
+
+    private var selectedProduct: Binding<Product?> {
+        environmentSelectedProduct
+    }
+    #endif
     
     enum ViewMode: String, CaseIterable {
         case list = "列表"
@@ -112,6 +120,13 @@ struct EnhancedProductListView: View {
                     isSelectionMode: isSelectionMode,
                     onSelectionToggle: {
                         toggleProductSelection(product)
+                    },
+                    onTap: {
+                        #if os(macOS)
+                        if !isSelectionMode {
+                            selectedProduct.wrappedValue = product
+                        }
+                        #endif
                     }
                 )
             }
@@ -137,6 +152,13 @@ struct EnhancedProductListView: View {
                         isSelectionMode: isSelectionMode,
                         onSelectionToggle: {
                             toggleProductSelection(product)
+                        },
+                        onTap: {
+                            #if os(macOS)
+                            if !isSelectionMode {
+                                selectedProduct.wrappedValue = product
+                            }
+                            #endif
                         }
                     )
                 }
@@ -155,6 +177,13 @@ struct EnhancedProductListView: View {
                     isSelectionMode: isSelectionMode,
                     onSelectionToggle: {
                         toggleProductSelection(product)
+                    },
+                    onTap: {
+                        #if os(macOS)
+                        if !isSelectionMode {
+                            selectedProduct.wrappedValue = product
+                        }
+                        #endif
                     }
                 )
             }
@@ -241,6 +270,21 @@ struct ProductListRow: View {
     let isSelected: Bool
     let isSelectionMode: Bool
     let onSelectionToggle: () -> Void
+    let onTap: (() -> Void)?
+
+    init(
+        product: Product,
+        isSelected: Bool,
+        isSelectionMode: Bool,
+        onSelectionToggle: @escaping () -> Void,
+        onTap: (() -> Void)? = nil
+    ) {
+        self.product = product
+        self.isSelected = isSelected
+        self.isSelectionMode = isSelectionMode
+        self.onSelectionToggle = onSelectionToggle
+        self.onTap = onTap
+    }
     
     var body: some View {
         HStack(spacing: 16) {
@@ -312,6 +356,12 @@ struct ProductListRow: View {
         .padding(.vertical, 8)
         .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
         .animation(.easeInOut(duration: 0.2), value: isSelected)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if !isSelectionMode {
+                onTap?()
+            }
+        }
     }
     
     @ViewBuilder
@@ -336,6 +386,21 @@ struct ProductGridCard: View {
     let isSelected: Bool
     let isSelectionMode: Bool
     let onSelectionToggle: () -> Void
+    let onTap: (() -> Void)?
+
+    init(
+        product: Product,
+        isSelected: Bool,
+        isSelectionMode: Bool,
+        onSelectionToggle: @escaping () -> Void,
+        onTap: (() -> Void)? = nil
+    ) {
+        self.product = product
+        self.isSelected = isSelected
+        self.isSelectionMode = isSelectionMode
+        self.onSelectionToggle = onSelectionToggle
+        self.onTap = onTap
+    }
     
     var body: some View {
         VStack(spacing: 12) {
@@ -386,6 +451,12 @@ struct ProductGridCard: View {
         )
         .scaleEffect(isSelected ? 1.05 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: isSelected)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if !isSelectionMode {
+                onTap?()
+            }
+        }
     }
 }
 
@@ -395,6 +466,21 @@ struct ProductCompactRow: View {
     let isSelected: Bool
     let isSelectionMode: Bool
     let onSelectionToggle: () -> Void
+    let onTap: (() -> Void)?
+
+    init(
+        product: Product,
+        isSelected: Bool,
+        isSelectionMode: Bool,
+        onSelectionToggle: @escaping () -> Void,
+        onTap: (() -> Void)? = nil
+    ) {
+        self.product = product
+        self.isSelected = isSelected
+        self.isSelectionMode = isSelectionMode
+        self.onSelectionToggle = onSelectionToggle
+        self.onTap = onTap
+    }
     
     var body: some View {
         HStack(spacing: 12) {
@@ -436,6 +522,12 @@ struct ProductCompactRow: View {
         .padding(.vertical, 6)
         .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
         .animation(.easeInOut(duration: 0.2), value: isSelected)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if !isSelectionMode {
+                onTap?()
+            }
+        }
     }
 }
 
