@@ -129,10 +129,11 @@ extension Category {
         // 添加线程安全检查
         context.performAndWait {
             for (name, icon) in defaultCategories {
+                // 使用更严格的查询条件，同时检查名称和图标
                 let fetchRequest: NSFetchRequest<Category> = Category.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+                fetchRequest.predicate = NSPredicate(format: "name == %@ OR (name == %@ AND icon == %@)", name, name, icon)
                 fetchRequest.fetchLimit = 1
-                
+
                 do {
                     // 使用更严格的存在性检查
                     let existingCategories = try context.fetch(fetchRequest)
@@ -141,22 +142,27 @@ extension Category {
                         category.id = UUID()
                         category.name = name
                         category.icon = icon
-                        print("创建默认分类: \(name)")
+                        print("[Category] 创建默认分类: \(name)")
                     } else {
-                        print("分类已存在，跳过创建: \(name)")
+                        print("[Category] 分类已存在，跳过创建: \(name)")
+                        // 如果存在但图标不同，更新图标
+                        if let existing = existingCategories.first, existing.icon != icon {
+                            existing.icon = icon
+                            print("[Category] 更新分类图标: \(name) -> \(icon)")
+                        }
                     }
                 } catch {
-                    print("检查分类存在性时出错: \(error.localizedDescription)")
+                    print("[Category] 检查分类存在性时出错: \(error.localizedDescription)")
                 }
             }
-            
+
             // 保存上下文
             if context.hasChanges {
                 do {
                     try context.save()
-                    print("默认分类创建完成")
+                    print("[Category] 默认分类创建完成")
                 } catch {
-                    print("保存默认分类时出错: \(error.localizedDescription)")
+                    print("[Category] 保存默认分类时出错: \(error.localizedDescription)")
                 }
             }
         }

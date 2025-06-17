@@ -123,10 +123,11 @@ extension Tag {
         // 添加线程安全检查
         context.performAndWait {
             for (name, color) in defaultTags {
+                // 使用更严格的查询条件，同时检查名称和颜色
                 let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+                fetchRequest.predicate = NSPredicate(format: "name == %@ OR (name == %@ AND color == %@)", name, name, color)
                 fetchRequest.fetchLimit = 1
-                
+
                 do {
                     // 使用更严格的存在性检查
                     let existingTags = try context.fetch(fetchRequest)
@@ -135,22 +136,27 @@ extension Tag {
                         tag.id = UUID()
                         tag.name = name
                         tag.color = color
-                        print("创建默认标签: \(name)")
+                        print("[Tag] 创建默认标签: \(name)")
                     } else {
-                        print("标签已存在，跳过创建: \(name)")
+                        print("[Tag] 标签已存在，跳过创建: \(name)")
+                        // 如果存在但颜色不同，更新颜色
+                        if let existing = existingTags.first, existing.color != color {
+                            existing.color = color
+                            print("[Tag] 更新标签颜色: \(name) -> \(color)")
+                        }
                     }
                 } catch {
-                    print("检查标签存在性时出错: \(error.localizedDescription)")
+                    print("[Tag] 检查标签存在性时出错: \(error.localizedDescription)")
                 }
             }
-            
+
             // 保存上下文
             if context.hasChanges {
                 do {
                     try context.save()
-                    print("默认标签创建完成")
+                    print("[Tag] 默认标签创建完成")
                 } catch {
-                    print("保存默认标签时出错: \(error.localizedDescription)")
+                    print("[Tag] 保存默认标签时出错: \(error.localizedDescription)")
                 }
             }
         }

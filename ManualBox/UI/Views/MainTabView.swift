@@ -220,7 +220,11 @@ struct MainTabView: View {
                                 ProductDetailView(product: product)
                                     .id(product.id?.uuidString ?? "unknown")
                             } else {
-                                CategoryDetailView(category: category)
+                                ContentUnavailableView {
+                                    Label("请选择产品", systemImage: "hand.tap")
+                                } description: {
+                                    Text("从左侧\"\(category.categoryName)\"分类中选择一个产品查看详情")
+                                }
                             }
                         }
                     case .tag(let id):
@@ -229,7 +233,11 @@ struct MainTabView: View {
                                 ProductDetailView(product: product)
                                     .id(product.id?.uuidString ?? "unknown")
                             } else {
-                                TagDetailView(tag: tag)
+                                ContentUnavailableView {
+                                    Label("请选择产品", systemImage: "hand.tap")
+                                } description: {
+                                    Text("从左侧\"\(tag.tagName)\"标签中选择一个产品查看详情")
+                                }
                             }
                         }
                     }

@@ -253,16 +253,19 @@ class PersistenceController {
     // 初始化默认数据
     func initializeDefaultData() {
         let context = container.viewContext
-        
+
+        // 先清理重复数据
+        removeDuplicateData()
+
         // 分别检查分类和标签是否为空
         let categoriesRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
         let categoriesCount = (try? context.count(for: categoriesRequest)) ?? 0
-        
+
         let tagsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Tag")
         let tagsCount = (try? context.count(for: tagsRequest)) ?? 0
-        
+
         var needsSave = false
-        
+
         // 只有当分类表为空时才创建默认分类
         if categoriesCount == 0 {
             print("[Persistence] 创建默认分类...")
@@ -271,7 +274,7 @@ class PersistenceController {
         } else {
             print("[Persistence] 分类已存在，跳过创建默认分类")
         }
-        
+
         // 只有当标签表为空时才创建默认标签
         if tagsCount == 0 {
             print("[Persistence] 创建默认标签...")
@@ -280,7 +283,7 @@ class PersistenceController {
         } else {
             print("[Persistence] 标签已存在，跳过创建默认标签")
         }
-        
+
         // 只有在需要时才保存
         if needsSave {
             Task { @MainActor in
@@ -288,7 +291,104 @@ class PersistenceController {
             }
         }
     }
-    
+
+    // MARK: - 数据清理
+
+    /// 清理重复的分类和标签数据
+    private func removeDuplicateData() {
+        let context = container.viewContext
+
+        context.performAndWait {
+            // 清理重复分类
+            removeDuplicateCategories(in: context)
+
+            // 清理重复标签
+            removeDuplicateTags(in: context)
+
+            // 保存清理结果
+            if context.hasChanges {
+                do {
+                    try context.save()
+                    print("[Persistence] 重复数据清理完成")
+                } catch {
+                    print("[Persistence] 清理重复数据时出错: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    /// 清理重复分类
+    private func removeDuplicateCategories(in context: NSManagedObjectContext) {
+        let request: NSFetchRequest<Category> = Category.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Category.name, ascending: true)]
+
+        do {
+            let categories = try context.fetch(request)
+            var seenNames = Set<String>()
+            var duplicates: [Category] = []
+
+            for category in categories {
+                let name = category.name ?? ""
+                if seenNames.contains(name) {
+                    duplicates.append(category)
+                    print("[Persistence] 发现重复分类: \(name)")
+                } else {
+                    seenNames.insert(name)
+                }
+            }
+
+            // 删除重复项
+            for duplicate in duplicates {
+                context.delete(duplicate)
+            }
+
+            if !duplicates.isEmpty {
+                print("[Persistence] 已删除 \(duplicates.count) 个重复分类")
+            }
+        } catch {
+            print("[Persistence] 清理重复分类时出错: \(error.localizedDescription)")
+        }
+    }
+
+    /// 清理重复标签
+    private func removeDuplicateTags(in context: NSManagedObjectContext) {
+        let request: NSFetchRequest<Tag> = Tag.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Tag.name, ascending: true)]
+
+        do {
+            let tags = try context.fetch(request)
+            var seenNames = Set<String>()
+            var duplicates: [Tag] = []
+
+            for tag in tags {
+                let name = tag.name ?? ""
+                if seenNames.contains(name) {
+                    duplicates.append(tag)
+                    print("[Persistence] 发现重复标签: \(name)")
+                } else {
+                    seenNames.insert(name)
+                }
+            }
+
+            // 删除重复项
+            for duplicate in duplicates {
+                context.delete(duplicate)
+            }
+
+            if !duplicates.isEmpty {
+                print("[Persistence] 已删除 \(duplicates.count) 个重复标签")
+            }
+        } catch {
+            print("[Persistence] 清理重复标签时出错: \(error.localizedDescription)")
+        }
+    }
+
+    /// 公开的清理重复数据方法，可以在设置中调用
+    @MainActor
+    func cleanupDuplicateData() async {
+        removeDuplicateData()
+    }
+
     // MARK: - 上下文管理
     
     // 保存上下文

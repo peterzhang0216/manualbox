@@ -1,9 +1,16 @@
 import SwiftUI
+import CoreData
 
 // MARK: - 数据与默认设置面板
 struct DataSettingsPanel: View {
     @Binding var defaultWarrantyPeriod: Int
     @Binding var enableOCRByDefault: Bool
+    @Environment(\.managedObjectContext) private var viewContext
+    @State private var showCleanupAlert = false
+    @State private var isCleaningUp = false
+    @State private var cleanupMessage = ""
+    @State private var diagnosticResult: DataDiagnostics.DiagnosticResult?
+    @State private var isDiagnosing = false
     
     var body: some View {
         ScrollView {
@@ -69,6 +76,34 @@ struct DataSettingsPanel: View {
                         Spacer()
                     }
                     
+                    Button {
+                        Task {
+                            await runDiagnostics()
+                        }
+                    } label: {
+                        SettingRow(
+                            icon: "stethoscope",
+                            iconColor: .blue,
+                            title: "数据诊断",
+                            subtitle: isDiagnosing ? "正在检查..." : (diagnosticResult?.summary ?? "检查数据完整性")
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(isDiagnosing)
+
+                    Button {
+                        showCleanupAlert = true
+                    } label: {
+                        SettingRow(
+                            icon: "arrow.triangle.2.circlepath",
+                            iconColor: .orange,
+                            title: "清理重复数据",
+                            subtitle: "清理重复的分类和标签数据"
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(isCleaningUp || (diagnosticResult?.hasIssues == false))
+
                     NavigationLink(destination: DataExportView()) {
                         SettingRow(
                             icon: "arrow.up.doc.fill",
@@ -121,6 +156,62 @@ struct DataSettingsPanel: View {
             .padding(.bottom, 32)
             .frame(maxWidth: 600, alignment: .leading)
         }
+        .onAppear {
+            Task {
+                await runDiagnostics()
+            }
+        }
+        .alert("清理重复数据", isPresented: $showCleanupAlert) {
+            Button("取消", role: .cancel) { }
+            Button("清理", role: .destructive) {
+                Task {
+                    await cleanupDuplicateData()
+                }
+            }
+        } message: {
+            Text("这将删除重复的分类和标签数据。此操作不可撤销，确定要继续吗？")
+        }
+        .alert("清理完成", isPresented: .constant(!cleanupMessage.isEmpty)) {
+            Button("确定") {
+                cleanupMessage = ""
+            }
+        } message: {
+            Text(cleanupMessage)
+        }
+    }
+
+    // MARK: - 清理重复数据
+    @MainActor
+    private func cleanupDuplicateData() async {
+        isCleaningUp = true
+
+        do {
+            if let persistenceController = try? PersistenceController.shared {
+                await persistenceController.cleanupDuplicateData()
+                cleanupMessage = "重复数据清理完成！"
+            } else {
+                cleanupMessage = "清理失败：无法访问数据库"
+            }
+        } catch {
+            cleanupMessage = "清理失败：\(error.localizedDescription)"
+        }
+
+        isCleaningUp = false
+    }
+
+    // MARK: - 数据诊断
+    @MainActor
+    private func runDiagnostics() async {
+        isDiagnosing = true
+
+        do {
+            let persistenceController = PersistenceController.shared
+            diagnosticResult = await persistenceController.quickDiagnose()
+        } catch {
+            print("诊断失败：\(error.localizedDescription)")
+        }
+
+        isDiagnosing = false
     }
 }
 

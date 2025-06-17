@@ -90,12 +90,32 @@ struct UnifiedSplitView<Sidebar: View, Content: View, Detail: View, SelectedItem
             #if os(macOS)
             // macOS：始终使用NavigationSplitView
             macOSSplitView
+                .onAppear {
+                    // 注册键盘快捷键
+                    _ = PlatformInputHandler.keyboardShortcuts()
+                    
+                    // 注册侧边栏切换快捷键
+                    #if os(macOS)
+                    NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+                        // Command+Option+S 切换侧边栏 (键码 1 = S)
+                        if event.modifierFlags.contains([.command, .option]) && event.keyCode == 1 {
+                            withAnimation(PlatformAnimations.quickTransition) {
+                                columnVisibility = columnVisibility == .all ? .detailOnly : .all
+                            }
+                            return nil // 事件已处理
+                        }
+                        return event // 继续传递事件
+                    }
+                    #endif
+                }
+                .animation(PlatformAnimations.defaultSpring, value: columnVisibility)
             #elseif os(iOS)
             // iOS：根据设备类型和系统版本决定
             if UIDevice.current.userInterfaceIdiom == .pad {
                 // iPad：优先使用NavigationSplitView（iOS 16+）
                 if #available(iOS 16.0, *) {
                     iPadSplitView
+                        .animation(PlatformAnimations.defaultSpring, value: columnVisibility)
                 } else {
                     // iPad iOS 15及以下：使用TabView降级
                     iPhoneFallbackView
@@ -115,6 +135,13 @@ struct UnifiedSplitView<Sidebar: View, Content: View, Detail: View, SelectedItem
             } else {
                 preferredCompactColumn = .content
             }
+        }
+        .accessibilityAction(named: Text("切换侧边栏")) {
+            #if os(macOS)
+            withAnimation(PlatformAnimations.quickTransition) {
+                columnVisibility = columnVisibility == .all ? .detailOnly : .all
+            }
+            #endif
         }
     }
     
@@ -172,6 +199,7 @@ struct UnifiedSplitView<Sidebar: View, Content: View, Detail: View, SelectedItem
                 }
         } content: {
             content()
+                .navigationSplitViewColumnWidth(min: 300, ideal: 400, max: 600)
                 .if(enableAccessibilityFeatures) { view in
                     view.accessibilityLabel("内容列表")
                         .accessibilityHint("浏览所选分类的内容项目")
