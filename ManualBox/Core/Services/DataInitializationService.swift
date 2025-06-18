@@ -58,12 +58,12 @@ class DataInitializationService {
     }
     
     /// 智能初始化 - 根据应用状态决定是否需要初始化
-    func performSmartInitialization(createSampleData: Bool = true) async -> InitializationResult {
+    func performSmartInitialization(createSampleData: Bool = false) async -> InitializationResult {
         return await withCheckedContinuation { continuation in
             context.perform {
-                var categoriesCreated = 0
-                var tagsCreated = 0
-                var sampleProductsCreated = 0
+                let categoriesCreated = 0
+                let tagsCreated = 0
+                let sampleProductsCreated = 0
                 var success = true
                 var message = ""
                 
@@ -75,24 +75,28 @@ class DataInitializationService {
                     
                     if isFirstLaunch || needsDataMigration {
                         // 首次启动或需要数据迁移
-                        
-                        // 1. 检查并创建默认分类
-                        if self.shouldCreateDefaultCategories() {
-                            categoriesCreated = self.createDefaultCategories()
-                            print("[DataInit] 创建默认分类: \(categoriesCreated) 个")
-                        }
-                        
-                        // 2. 检查并创建默认标签
-                        if self.shouldCreateDefaultTags() {
-                            tagsCreated = self.createDefaultTags()
-                            print("[DataInit] 创建默认标签: \(tagsCreated) 个")
-                        }
-                        
-                        // 3. 创建示例数据（可选）
-                        if createSampleData && self.shouldCreateSampleData() {
-                            sampleProductsCreated = self.createSampleProducts()
-                            print("[DataInit] 创建示例产品: \(sampleProductsCreated) 个")
-                        }
+
+                        // 发布版本：不自动创建任何默认数据，保持应用完全干净
+                        print("[DataInit] 发布版本：跳过默认数据创建，保持应用干净状态")
+
+                        // 如果需要默认数据，用户可以通过设置手动创建
+                        // 1. 检查并创建默认分类（已禁用）
+                        // if self.shouldCreateDefaultCategories() {
+                        //     categoriesCreated = self.createDefaultCategories()
+                        //     print("[DataInit] 创建默认分类: \(categoriesCreated) 个")
+                        // }
+
+                        // 2. 检查并创建默认标签（已禁用）
+                        // if self.shouldCreateDefaultTags() {
+                        //     tagsCreated = self.createDefaultTags()
+                        //     print("[DataInit] 创建默认标签: \(tagsCreated) 个")
+                        // }
+
+                        // 3. 创建示例数据（已禁用）
+                        // if createSampleData && self.shouldCreateSampleData() {
+                        //     sampleProductsCreated = self.createSampleProducts()
+                        //     print("[DataInit] 创建示例产品: \(sampleProductsCreated) 个")
+                        // }
                         
                         // 4. 保存更改
                         if self.context.hasChanges {
@@ -133,9 +137,9 @@ class DataInitializationService {
     func forceReinitialize(includeSampleData: Bool = false) async -> InitializationResult {
         return await withCheckedContinuation { continuation in
             context.perform {
-                var categoriesCreated = 0
-                var tagsCreated = 0
-                var sampleProductsCreated = 0
+                let categoriesCreated = 0
+                let tagsCreated = 0
+                let sampleProductsCreated = 0
                 var success = true
                 var message = ""
                 
@@ -145,19 +149,22 @@ class DataInitializationService {
                     // 1. 重置初始化标记
                     self.resetInitializationFlag()
                     
-                    // 2. 创建默认分类
-                    categoriesCreated = self.createDefaultCategories()
-                    print("[DataInit] 强制创建默认分类: \(categoriesCreated) 个")
-                    
-                    // 3. 创建默认标签
-                    tagsCreated = self.createDefaultTags()
-                    print("[DataInit] 强制创建默认标签: \(tagsCreated) 个")
-                    
-                    // 4. 创建示例数据（可选）
-                    if includeSampleData {
-                        sampleProductsCreated = self.createSampleProducts()
-                        print("[DataInit] 强制创建示例产品: \(sampleProductsCreated) 个")
-                    }
+                    // 发布版本：不创建任何默认数据
+                    print("[DataInit] 发布版本：强制重新初始化时不创建默认数据")
+
+                    // 2. 创建默认分类（已禁用）
+                    // categoriesCreated = self.createDefaultCategories()
+                    // print("[DataInit] 强制创建默认分类: \(categoriesCreated) 个")
+
+                    // 3. 创建默认标签（已禁用）
+                    // tagsCreated = self.createDefaultTags()
+                    // print("[DataInit] 强制创建默认标签: \(tagsCreated) 个")
+
+                    // 4. 创建示例数据（已禁用）
+                    // if includeSampleData {
+                    //     sampleProductsCreated = self.createSampleProducts()
+                    //     print("[DataInit] 强制创建示例产品: \(sampleProductsCreated) 个")
+                    // }
                     
                     // 5. 保存更改
                     if self.context.hasChanges {
@@ -306,7 +313,7 @@ extension PersistenceController {
     }
     
     /// 执行智能初始化
-    func performSmartInitialization(createSampleData: Bool = true) async -> DataInitializationService.InitializationResult {
+    func performSmartInitialization(createSampleData: Bool = false) async -> DataInitializationService.InitializationResult {
         return await initializationService.performSmartInitialization(createSampleData: createSampleData)
     }
     

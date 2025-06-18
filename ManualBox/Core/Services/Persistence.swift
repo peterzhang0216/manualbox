@@ -249,11 +249,15 @@ class PersistenceController {
     
     // 初始化默认数据（兼容旧版本，会清理重复数据）
     // 注意：此方法主要用于数据修复和兼容性，不会检查初始化标记
+    // 发布版本：已禁用默认数据创建
     func initializeDefaultData() {
-        let context = container.viewContext
+        print("[Persistence] 发布版本：默认数据创建已禁用")
 
-        // 先清理重复数据
+        // 只清理重复数据，不创建新数据
         removeDuplicateData()
+
+        /* 以下代码仅用于开发和测试
+        let context = container.viewContext
 
         // 分别检查分类和标签是否为空
         let categoriesRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
@@ -288,10 +292,19 @@ class PersistenceController {
                 await saveContext()
             }
         }
+        */
     }
 
     // 只在需要时初始化默认数据（不清理重复数据，更温和的方式）
+    // 发布版本：已禁用默认数据创建
     func initializeDefaultDataIfNeeded() {
+        print("[Persistence] 发布版本：默认数据创建已禁用")
+
+        // 标记为已完成首次初始化（避免重复调用）
+        UserDefaults.standard.set(true, forKey: "ManualBox_HasInitializedDefaultData")
+        print("[Persistence] 首次初始化完成，已设置标记")
+
+        /* 以下代码仅用于开发和测试
         let context = container.viewContext
 
         // 检查是否已经进行过首次初始化
@@ -342,6 +355,7 @@ class PersistenceController {
         // 标记已完成首次初始化
         UserDefaults.standard.set(true, forKey: "ManualBox_HasInitializedDefaultData")
         print("[Persistence] 首次初始化完成，已设置标记")
+        */
     }
 
     // 重置初始化标记（用于重置应用数据时）
@@ -762,7 +776,13 @@ extension PersistenceController {
 extension PersistenceController {
 
     /// 创建示例产品数据（用于测试和演示）
+    /// 发布版本中禁用自动创建示例数据
     func createSampleData() {
+        // 发布版本不创建示例数据，保持应用干净状态
+        print("[Persistence] 示例数据创建已禁用（发布版本）")
+        return
+
+        /* 以下代码仅用于开发和测试
         let context = container.viewContext
 
         context.performAndWait {
@@ -796,6 +816,7 @@ extension PersistenceController {
                 print("[Persistence] 创建示例数据时出错: \(error.localizedDescription)")
             }
         }
+        */
     }
 
     /// 删除所有示例数据
@@ -1056,5 +1077,85 @@ extension PersistenceController {
         )
 
         print("[Persistence] 为产品 \(product.name ?? "") 创建订单: \(orderNumber)")
+    }
+
+    /// 完全重置数据库（包括删除物理文件）
+    func completelyResetDatabase() async -> (success: Bool, message: String) {
+        return await withCheckedContinuation { continuation in
+            Task {
+                do {
+                    print("[Persistence] 开始完全重置数据库...")
+
+                    // 1. 先清理内存中的数据
+                    let context = container.viewContext
+                    await context.perform {
+                        do {
+                            // 删除所有实体的数据
+                            let entityNames = ["Product", "Category", "Tag", "Order", "Manual", "RepairRecord"]
+                            var totalDeleted = 0
+
+                            for entityName in entityNames {
+                                let request = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+                                let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
+                                let result = try context.execute(deleteRequest) as? NSBatchDeleteResult
+                                let deletedCount = result?.result as? Int ?? 0
+                                totalDeleted += deletedCount
+                                print("[Persistence] 删除 \(entityName): \(deletedCount) 个")
+                            }
+
+                            // 保存更改
+                            if context.hasChanges {
+                                try context.save()
+                            }
+
+                        } catch {
+                            print("[Persistence] 清理内存数据时出错: \(error.localizedDescription)")
+                        }
+                    }
+
+                    // 2. 删除物理数据库文件
+                    let fileManager = FileManager.default
+                    let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                    let appDataURL = appSupportURL.appendingPathComponent("ManualBox")
+
+                    // 删除所有相关文件
+                    let filesToDelete = [
+                        "ManualBox.sqlite",
+                        "ManualBox.sqlite-wal",
+                        "ManualBox.sqlite-shm"
+                    ]
+
+                    var deletedFiles = 0
+                    for fileName in filesToDelete {
+                        let fileURL = appDataURL.appendingPathComponent(fileName)
+                        if fileManager.fileExists(atPath: fileURL.path) {
+                            try fileManager.removeItem(at: fileURL)
+                            deletedFiles += 1
+                            print("[Persistence] 删除文件: \(fileName)")
+                        }
+                    }
+
+                    // 3. 重置所有UserDefaults标记
+                    let keysToReset = [
+                        "ManualBox_HasInitializedDefaultData",
+                        "ManualBox_LastInitializedVersion"
+                    ]
+
+                    for key in keysToReset {
+                        UserDefaults.standard.removeObject(forKey: key)
+                    }
+                    UserDefaults.standard.synchronize()
+
+                    let message = "数据库完全重置成功，删除了 \(deletedFiles) 个文件"
+                    print("[Persistence] \(message)")
+                    continuation.resume(returning: (true, message))
+
+                } catch {
+                    let message = "完全重置数据库时出错: \(error.localizedDescription)"
+                    print("[Persistence] 错误: \(message)")
+                    continuation.resume(returning: (false, message))
+                }
+            }
+        }
     }
 }

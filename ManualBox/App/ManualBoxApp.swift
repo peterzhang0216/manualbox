@@ -45,8 +45,8 @@ struct ManualBoxApp: App {
                             print("[App] 自动修复结果: \(fixResult.message)")
                         }
 
-                        // 3. 执行智能初始化
-                        let initResult = await persistenceController.performSmartInitialization(createSampleData: true)
+                        // 3. 执行智能初始化（发布版本不创建示例数据）
+                        let initResult = await persistenceController.performSmartInitialization(createSampleData: false)
                         print("[App] 初始化结果: \(initResult.summary)")
 
                         // 4. 最终验证数据完整性

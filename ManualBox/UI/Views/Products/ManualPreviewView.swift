@@ -194,9 +194,9 @@ extension PersistenceController {
         let context = container.viewContext
         let manual = Manual(context: context)
         manual.id = UUID()
-        manual.fileName = "示例说明书.pdf"
+        manual.fileName = "说明书.pdf"
         manual.fileType = "pdf"
-        manual.content = "这是OCR识别的内容示例。"
+        manual.content = "OCR识别的内容将显示在这里。"
         return manual
     }
 }

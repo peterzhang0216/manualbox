@@ -325,9 +325,9 @@ extension PersistenceController {
         let context = container.viewContext
         let product = Product(context: context)
         product.id = UUID()
-        product.name = "示例产品"
-        product.brand = "示例品牌"
-        product.model = "X-1000"
+        product.name = "产品名称"
+        product.brand = "品牌"
+        product.model = "型号"
         return product
     }
 }

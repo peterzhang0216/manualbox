@@ -11,6 +11,9 @@ struct DataSettingsPanel: View {
     @State private var cleanupMessage = ""
     @State private var diagnosticResult: DataDiagnostics.DiagnosticResult?
     @State private var isDiagnosing = false
+    @State private var showResetAlert = false
+    @State private var isResetting = false
+    @State private var resetMessage = ""
     
     var body: some View {
         ScrollView {
@@ -135,7 +138,7 @@ struct DataSettingsPanel: View {
                     .buttonStyle(.plain)
                     
                     Button(role: .destructive) {
-                        // showResetAlert = true
+                        showResetAlert = true
                     } label: {
                         SettingRow(
                             icon: "trash.fill",
@@ -145,6 +148,7 @@ struct DataSettingsPanel: View {
                             warning: true
                         )
                     }
+                    .disabled(isResetting)
                 }
                 .padding()
                 .background(Color.secondary.opacity(0.05))
@@ -178,6 +182,23 @@ struct DataSettingsPanel: View {
         } message: {
             Text(cleanupMessage)
         }
+        .alert("重置所有数据", isPresented: $showResetAlert) {
+            Button("取消", role: .cancel) { }
+            Button("重置", role: .destructive) {
+                Task {
+                    await resetAllData()
+                }
+            }
+        } message: {
+            Text("⚠️ 此操作将删除所有数据，包括产品、分类、标签、订单、说明书等。此操作不可撤销，确定要继续吗？")
+        }
+        .alert("重置完成", isPresented: .constant(!resetMessage.isEmpty)) {
+            Button("确定") {
+                resetMessage = ""
+            }
+        } message: {
+            Text(resetMessage)
+        }
     }
 
     // MARK: - 清理重复数据
@@ -197,6 +218,29 @@ struct DataSettingsPanel: View {
         }
 
         isCleaningUp = false
+    }
+
+    // MARK: - 重置所有数据
+    @MainActor
+    private func resetAllData() async {
+        isResetting = true
+
+        do {
+            let persistenceController = PersistenceController.shared
+            let result = await persistenceController.completelyResetDatabase()
+
+            if result.success {
+                resetMessage = "✅ 数据库已完全清零！应用已重置为初始状态。\n\n请重启应用以完成重置。"
+                // 重新运行诊断
+                await runDiagnostics()
+            } else {
+                resetMessage = "❌ 重置失败：\(result.message)"
+            }
+        } catch {
+            resetMessage = "❌ 重置失败：\(error.localizedDescription)"
+        }
+
+        isResetting = false
     }
 
     // MARK: - 数据诊断
