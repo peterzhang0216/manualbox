@@ -1,6 +1,4 @@
 import Foundation
-import ManualBox
-
 // MARK: - 文件处理任务
 struct FileProcessingTask: Identifiable {
     let id = UUID()
