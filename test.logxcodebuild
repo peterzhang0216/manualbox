@@ -1,0 +1,1245 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project ManualBox.xcodeproj -scheme ManualBox -destination platform=macOS test
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00006040-000A29881404801C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00006040-000A29881404801C, name:My Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (3 targets)
+    Target 'ManualBoxTests' in project 'ManualBox'
+        ➜ Explicit dependency on target 'ManualBox' in project 'ManualBox'
+    Target 'ManualBoxUITests' in project 'ManualBox'
+        ➜ Explicit dependency on target 'ManualBox' in project 'ManualBox'
+    Target 'ManualBox' in project 'ManualBox' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/momc --dry-run --action generate --swift-version 5.0 --sdkroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk --macosx-deployment-target 15.0 --module ManualBox /Users/peter_us/Desktop/Github/manualbox/ManualBox/ManualBox.xcdatamodeld /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: c159936da3bccc88b9e4e05540f1f695
+Build description path: /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/XCBuildData/c159936da3bccc88b9e4e05540f1f695.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk /Users/peter_us/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache
+    cd /Users/peter_us/Desktop/Github/manualbox/ManualBox.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o /Users/peter_us/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache
+
+CreateBuildDirectory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products
+    cd /Users/peter_us/Desktop/Github/manualbox/ManualBox.xcodeproj
+    builtin-create-build-directory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products
+
+CreateBuildDirectory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex
+    cd /Users/peter_us/Desktop/Github/manualbox/ManualBox.xcodeproj
+    builtin-create-build-directory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug
+    cd /Users/peter_us/Desktop/Github/manualbox/ManualBox.xcodeproj
+    builtin-create-build-directory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug
+
+CreateBuildDirectory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+    cd /Users/peter_us/Desktop/Github/manualbox/ManualBox.xcodeproj
+    builtin-create-build-directory /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox-f6ec571585fd36b7474a360e097162bb-VFS/all-product-headers.yaml
+    cd /Users/peter_us/Desktop/Github/manualbox/ManualBox.xcodeproj
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox-f6ec571585fd36b7474a360e097162bb-VFS/all-product-headers.yaml
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-own-target-headers.hmap (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests.DependencyMetadataFileList (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests.DependencyStaticMetadataFileList (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ProductTypeInfoPlistAdditions.plist (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ProductTypeInfoPlistAdditions.plist
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/empty-ManualBoxUITests.plist (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/empty-ManualBoxUITests.plist
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-generated-files.hmap (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-generated-files.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests.hmap (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-project-headers.hmap (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-project-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests_const_extract_protocols.json (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests.SwiftFileList (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests.SwiftFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests-OutputFileMap.json (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests.LinkFileList (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests.LinkFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests.SwiftConstValuesFileList (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/Objects-normal/arm64/ManualBoxUITests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-all-target-headers.hmap (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-all-non-framework-target-headers.hmap (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/ManualBoxUITests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/empty-ManualBoxTests.plist (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/empty-ManualBoxTests.plist
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/DerivedSources/Entitlements.plist (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxUITests.build/DerivedSources/Entitlements.plist
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests.LinkFileList (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests.LinkFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests.SwiftFileList (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests.SwiftFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests_const_extract_protocols.json (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests.SwiftConstValuesFileList (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests-OutputFileMap.json (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/Objects-normal/arm64/ManualBoxTests-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests.hmap (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests.DependencyStaticMetadataFileList (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests.DependencyMetadataFileList (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-project-headers.hmap (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-project-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-own-target-headers.hmap (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-generated-files.hmap (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-generated-files.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-all-target-headers.hmap (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-all-non-framework-target-headers.hmap (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBoxTests.build/ManualBoxTests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox_const_extract_protocols.json (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.SwiftFileList (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.SwiftFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.SwiftConstValuesFileList (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.LinkFileList (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.LinkFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox-OutputFileMap.json (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.hmap (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.DependencyStaticMetadataFileList (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.DependencyMetadataFileList (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-project-headers.hmap (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-project-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-own-target-headers.hmap (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-generated-files.hmap (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-generated-files.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-all-target-headers.hmap (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-all-non-framework-target-headers.hmap (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-DebugDylibPath-normal-arm64.txt (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-DebugDylibInstallName-normal-arm64.txt (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-DebugDylibInstallName-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/Entitlements.plist (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    write-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/Entitlements.plist
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBoxUITests-Runner.app/Contents/PlugIns/ManualBoxUITests.xctest/Contents/MacOS (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBoxUITests-Runner.app/Contents/PlugIns/ManualBoxUITests.xctest/Contents/MacOS
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBoxUITests-Runner.app/Contents/PlugIns/ManualBoxUITests.xctest/Contents (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBoxUITests-Runner.app/Contents/PlugIns/ManualBoxUITests.xctest/Contents
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBoxUITests-Runner.app/Contents/PlugIns/ManualBoxUITests.xctest (in target 'ManualBoxUITests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBoxUITests-Runner.app/Contents/PlugIns/ManualBoxUITests.xctest
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns/ManualBoxTests.xctest (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns/ManualBoxTests.xctest
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/MacOS (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/MacOS
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns/ManualBoxTests.xctest/Contents (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns/ManualBoxTests.xctest/Contents
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns/ManualBoxTests.xctest/Contents/MacOS (in target 'ManualBoxTests' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PlugIns/ManualBoxTests.xctest/Contents/MacOS
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app
+
+ProcessProductPackaging /Users/peter_us/Library/Developer/Xcode/UserData/Provisioning\ Profiles/7643d90c-1a6a-454a-ae79-61fea383b856.provisionprofile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/embedded.provisionprofile (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-productPackagingUtility /Users/peter_us/Library/Developer/Xcode/UserData/Provisioning\ Profiles/7643d90c-1a6a-454a-ae79-61fea383b856.provisionprofile -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/embedded.provisionprofile
+
+ProcessProductPackaging /Users/peter_us/Desktop/Github/manualbox/ManualBox/ManualBox.entitlements /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.app.xcent (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Entitlements:
+    
+    {
+    "com.apple.application-identifier" = "F883XBKWR3.com.peter.ManualBox";
+    "com.apple.developer.aps-environment" = development;
+    "com.apple.developer.icloud-container-identifiers" =     (
+        "iCloud.com.peter.ManualBox"
+    );
+    "com.apple.developer.icloud-services" =     (
+        CloudKit
+    );
+    "com.apple.developer.team-identifier" = F883XBKWR3;
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.files.user-selected.read-only" = 1;
+    "com.apple.security.get-task-allow" = 1;
+    "com.apple.security.network.client" = 1;
+    "com.apple.security.network.notifications" = 1;
+    "com.apple.security.personal-information.calendars" = 1;
+    "com.apple.security.personal-information.location" = 1;
+}
+    
+    builtin-productPackagingUtility /Users/peter_us/Desktop/Github/manualbox/ManualBox/ManualBox.entitlements -entitlements -format xml -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.app.xcent
+
+ProcessProductPackagingDER /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.app.xcent /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.app.xcent.der (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /usr/bin/derq query -f xml -i /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.app.xcent -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox.app.xcent.der --raw
+
+DataModelCompile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/ /Users/peter_us/Desktop/Github/manualbox/ManualBox/ManualBox.xcdatamodeld (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /Applications/Xcode.app/Contents/Developer/usr/bin/momc --sdkroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk --macosx-deployment-target 15.0 --module ManualBox /Users/peter_us/Desktop/Github/manualbox/ManualBox/ManualBox.xcdatamodeld /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/
+ManualBox.xcdatamodel: note: Model ManualBox version checksum: D2KIlgbKD4UmZp74y6AfVurxuL9jh9fN0U5jF2ynMBg=
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/thinned (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/thinned
+
+MkDir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/unthinned (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /bin/mkdir -p /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/unthinned
+
+CopyStringsFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/zh-Hans.lproj/Localizable.strings /Users/peter_us/Desktop/Github/manualbox/ManualBox/zh-Hans.lproj/Localizable.strings (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copyStrings --validate --outputencoding UTF-16 --outfilename Localizable.strings --outdir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/zh-Hans.lproj -- /Users/peter_us/Desktop/Github/manualbox/ManualBox/zh-Hans.lproj/Localizable.strings
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/zh-Hans.lproj/Localizable.strings:1:1: note: detected encoding of input file as Unicode (UTF-8) (in target 'ManualBox' from project 'ManualBox')
+
+CopyStringsFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/zh-Hans.lproj/InfoPlist.strings /Users/peter_us/Desktop/Github/manualbox/ManualBox/zh-Hans.lproj/InfoPlist.strings (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copyStrings --validate --outputencoding UTF-16 --outfilename InfoPlist.strings --outdir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/zh-Hans.lproj -- /Users/peter_us/Desktop/Github/manualbox/ManualBox/zh-Hans.lproj/InfoPlist.strings
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/zh-Hans.lproj/InfoPlist.strings:1:1: note: detected encoding of input file as Unicode (UTF-8) (in target 'ManualBox' from project 'ManualBox')
+
+CopyStringsFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/en.lproj/Localizable.strings /Users/peter_us/Desktop/Github/manualbox/ManualBox/en.lproj/Localizable.strings (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copyStrings --validate --outputencoding UTF-16 --outfilename Localizable.strings --outdir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/en.lproj -- /Users/peter_us/Desktop/Github/manualbox/ManualBox/en.lproj/Localizable.strings
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/en.lproj/Localizable.strings:1:1: note: detected encoding of input file as Unicode (UTF-8) (in target 'ManualBox' from project 'ManualBox')
+
+GenerateAssetSymbols /Users/peter_us/Desktop/Github/manualbox/ManualBox/Assets.xcassets (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/peter_us/Desktop/Github/manualbox/ManualBox/Assets.xcassets --compile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources --output-format human-readable-text --notices --warnings --export-dependency-info /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_dependencies --output-partial-info-plist /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_generated_info.plist --app-icon AppIcon --accent-color AccentColor --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 15.0 --platform macosx --bundle-identifier com.peter.ManualBox --generate-swift-asset-symbols /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestSwiftSupport.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestBundleInject.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestBundleInject.dylib (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestBundleInject.dylib /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUnit.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCUnit.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCUnit.framework /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUIAutomation.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCUIAutomation.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCUIAutomation.framework /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+CopyStringsFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/en.lproj/InfoPlist.strings /Users/peter_us/Desktop/Github/manualbox/ManualBox/en.lproj/InfoPlist.strings (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copyStrings --validate --outputencoding UTF-16 --outfilename InfoPlist.strings --outdir /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/en.lproj -- /Users/peter_us/Desktop/Github/manualbox/ManualBox/en.lproj/InfoPlist.strings
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/en.lproj/InfoPlist.strings:1:1: note: detected encoding of input file as Unicode (UTF-8) (in target 'ManualBox' from project 'ManualBox')
+
+Ld /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/MacOS/__preview.dylib normal (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos15.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -O0 -L/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug -F/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug -install_name @rpath/ManualBox.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox_dependency_info.dat -Xlinker -no_adhoc_codesign -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/MacOS/__preview.dylib
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestSupport.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+DataModelCodegen /Users/peter_us/Desktop/Github/manualbox/ManualBox/ManualBox.xcdatamodeld (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /Applications/Xcode.app/Contents/Developer/usr/bin/momc --action generate --swift-version 5.0 --sdkroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk --macosx-deployment-target 15.0 --module ManualBox /Users/peter_us/Desktop/Github/manualbox/ManualBox/ManualBox.xcdatamodeld /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestCore.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTest.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTAutomationSupport.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+Copy /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/Testing.framework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/Testing.framework /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks
+
+CompileMetalFile /Users/peter_us/Desktop/Github/manualbox/ManualBox/Shaders/default.metal (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/metal -c -target air64-apple-macos15.0 -gline-tables-only -frecord-sources -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/include -F/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -fmetal-math-mode\=fast -fmetal-math-fp32-functions\=fast -serialize-diagnostics /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Metal/default.dia -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Metal/default.air -index-store-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Index.noindex/DataStore -MMD -MT dependencies -MF /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Metal/default.dat /Users/peter_us/Desktop/Github/manualbox/ManualBox/Shaders/default.metal
+
+CompileAssetCatalogVariant thinned /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources /Users/peter_us/Desktop/Github/manualbox/ManualBox/Assets.xcassets (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/peter_us/Desktop/Github/manualbox/ManualBox/Assets.xcassets --compile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --accent-color AccentColor --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 15.0 --platform macosx
+2025-06-19 01:40:32.137 ibtoold[47669:808629] NSFileCoordinator is doing nothing.
+/* com.apple.actool.compilation-results */
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_generated_info.plist_thinned
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/thinned/AppIcon.icns
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/thinned/Assets.car
+
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestBundleInject.dylib (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestBundleInject.dylib
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestBundleInject.dylib: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestSwiftSupport.dylib (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestSwiftSupport.dylib
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/libXCTestSwiftSupport.dylib: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUnit.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUnit.framework
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUnit.framework: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestSupport.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestSupport.framework
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestSupport.framework: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestCore.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestCore.framework
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTestCore.framework: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTest.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTest.framework
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTest.framework: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUIAutomation.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUIAutomation.framework
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCUIAutomation.framework: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTAutomationSupport.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTAutomationSupport.framework
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/XCTAutomationSupport.framework: replacing existing signature
+
+CodeSign /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/Testing.framework (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+    Signing Identity:     "Apple Development: YONG ZHANG (XXBYV392XY)"
+    Provisioning Profile: "Mac Team Provisioning Profile: com.peter.ManualBox"
+                          (7643d90c-1a6a-454a-ae79-61fea383b856)
+    
+    /usr/bin/codesign --force --sign 8B788B0751882B455F252C0BE7C6E82CF3F897FF -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/Testing.framework
+/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Frameworks/Testing.framework: replacing existing signature
+
+MetalLink /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/default.metallib (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/metal -target air64-apple-macos15.0 -frecord-sources -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/default.metallib /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Metal/default.air
+
+LinkAssetCatalog /Users/peter_us/Desktop/Github/manualbox/ManualBox/Assets.xcassets (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-linkAssetCatalog --thinned /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/thinned --thinned-dependencies /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_generated_info.plist_thinned --unthinned /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_output/unthinned --unthinned-dependencies /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_generated_info.plist_unthinned --output /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources --plist-output /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_generated_info.plist
+note: Emplaced /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/AppIcon.icns (in target 'ManualBox' from project 'ManualBox')
+note: Emplaced /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Resources/Assets.car (in target 'ManualBox' from project 'ManualBox')
+
+ProcessInfoPlistFile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Info.plist /Users/peter_us/Desktop/Github/manualbox/ManualBox/Info.plist (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-infoPlistUtility /Users/peter_us/Desktop/Github/manualbox/ManualBox/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/assetcatalog_generated_info.plist -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/ManualBox.app/Contents/Info.plist
+removing value "remote-notification" for "UIBackgroundModes" - not supported on macOS
+
+SwiftDriver ManualBox normal arm64 com.apple.xcode.tools.swift.compiler (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name ManualBox -Onone -enforce-exclusivity\=checked @/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos15.0 -g -module-cache-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Index.noindex/DataStore -swift-version 5 -I /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug -F /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/peter_us/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -output-file-map /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox_const_extract_protocols.json -Xcc -iquote -Xcc /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-generated-files.hmap -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-own-target-headers.hmap -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-all-target-headers.hmap -Xcc -iquote -Xcc /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-project-headers.hmap -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/include -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources-normal/arm64 -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/arm64 -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox-Swift.h -working-directory /Users/peter_us/Desktop/Github/manualbox -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ ManualSearchService.swift,\ ProductFilterLogic.swift,\ ProductListContentView.swift,\ PersistencePlatformExtensions.swift,\ ManualBoxApp.swift,\ AccentColorPickerView.swift,\ ManualSearchView.swift,\ ImportService.swift,\ SettingRow.swift,\ Tag+Extensions.swift,\ PlatformToolbar.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductFilterLogic.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListContentView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistencePlatformExtensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/App/ManualBoxApp.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AccentColorPickerView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Common/ManualSearchView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/ImportService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingRow.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Tag+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformToolbar.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductFilterLogic.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListContentView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistencePlatformExtensions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/App/ManualBoxApp.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AccentColorPickerView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Common/ManualSearchView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/ImportService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingRow.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Tag+Extensions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformToolbar.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ TagDetailView.swift,\ FileProcessingResult.swift,\ AdaptiveInfoLayout.swift,\ EnhancedProductListView.swift,\ OCRModels.swift,\ ViewModelProtocol.swift,\ RepairRecordDetailView.swift,\ DataDiagnostics.swift,\ AppConfiguration.swift,\ DataImportView.swift,\ RepairRecord+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingResult.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/AdaptiveInfoLayout.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EnhancedProductListView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRModels.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocol.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/DataDiagnostics.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Configuration/AppConfiguration.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataImportView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/RepairRecord+Extensions.swift (in target 'ManualBox' from project 'ManualBox')
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagDetailView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingResult.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/AdaptiveInfoLayout.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EnhancedProductListView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRModels.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocol.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordDetailView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/DataDiagnostics.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Configuration/AppConfiguration.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataImportView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/RepairRecord+Extensions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ PlatformButton.swift,\ AddProductViewModel.swift,\ OCRImageExtractor.swift,\ ProductDeletionLogic.swift,\ ProductListViewModel.swift,\ DataBackupView.swift,\ MetalManager.swift,\ SettingsView.swift,\ DataExportService.swift,\ EditProductView.swift,\ PlatformModal.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformButton.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRImageExtractor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductDeletionLogic.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataBackupView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/MetalManager.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditProductView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformModal.swift (in target 'ManualBox' from project 'ManualBox')
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformButton.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductViewModel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRImageExtractor.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductDeletionLogic.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListViewModel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataBackupView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/MetalManager.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditProductView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformModal.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ SettingsViewModel.swift,\ DataInitializationService.swift,\ PlatformLayout.swift,\ ManualSearchPredicates.swift,\ ProductRowView.swift,\ ProductGridItem.swift,\ PersistenceDataInitialization.swift,\ ContentView.swift,\ Category+Extensions.swift,\ OCRDefaultView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataInitializationService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformLayout.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchPredicates.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductRowView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridItem.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceDataInitialization.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ContentView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Category+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/OCRDefaultView.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsViewModel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataInitializationService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformLayout.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchPredicates.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductRowView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridItem.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceDataInitialization.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ContentView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Category+Extensions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/OCRDefaultView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ FilterView.swift,\ OCRService.swift,\ ViewModelFactory.swift,\ RepairRecordRow.swift,\ PlatformAdapter.swift,\ DataManagementView.swift,\ Product+Extensions.swift,\ CategoriesViewModel.swift,\ ThemeSettingsPanel.swift,\ FileMetadata.swift,\ PlatformFileHandler.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/FilterView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelFactory.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordRow.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformAdapter.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataManagementView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Product+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemeSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileMetadata.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFileHandler.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/FilterView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelFactory.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordRow.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformAdapter.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataManagementView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Product+Extensions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesViewModel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemeSettingsPanel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileMetadata.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFileHandler.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ MainTabView.swift,\ FileValidationService.swift,\ ProductDetailView.swift,\ OCRVisionProcessor.swift,\ EntityRepositories.swift,\ SearchFilterView.swift,\ PlatformPerformance.swift,\ ServiceContainer.swift,\ LanguagePickerView.swift,\ NotificationScheduler.swift,\ FileProcessingError.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/MainTabView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileValidationService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRVisionProcessor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/EntityRepositories.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SearchFilterView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformPerformance.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceContainer.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/LanguagePickerView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationScheduler.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingError.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/MainTabView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileValidationService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRVisionProcessor.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/EntityRepositories.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SearchFilterView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformPerformance.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceContainer.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/LanguagePickerView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationScheduler.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingError.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ CategoryDetailView.swift,\ ThemePickerView.swift,\ DataValidationService.swift,\ PlatformInput.swift,\ ManualSearchRelevance.swift,\ ProductListView.swift,\ ProductGridView.swift,\ PersistenceMaintenance.swift,\ AboutSettingsPanel.swift,\ EnhancedFileUploadView.swift,\ ExportService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoryDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemePickerView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataValidationService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformInput.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchRelevance.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductListView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceMaintenance.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AboutSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Common/EnhancedFileUploadView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/ExportService.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoryDetailView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemePickerView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataValidationService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformInput.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchRelevance.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductListView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceMaintenance.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AboutSettingsPanel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Common/EnhancedFileUploadView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/ExportService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ PolicySheetView.swift,\ ProductRow.swift,\ TagsViewModel.swift,\ FileProcessingTask.swift,\ ManualPreviewView.swift,\ OCRTextPostprocessor.swift,\ ServiceProtocol.swift,\ RepairRecordsView.swift,\ PlatformImage.swift,\ ServiceRegistration.swift,\ EditCategorySheet.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/PolicySheetView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/ProductRow.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingTask.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ManualPreviewView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRTextPostprocessor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ServiceProtocol.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformImage.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceRegistration.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/EditCategorySheet.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/PolicySheetView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/ProductRow.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsViewModel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingTask.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ManualPreviewView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRTextPostprocessor.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ServiceProtocol.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordsView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformImage.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceRegistration.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/EditCategorySheet.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ ManualBox (in target 'ManualBox' from project 'ManualBox')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/FilterView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelFactory.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordRow.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformAdapter.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataManagementView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Product+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemeSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileMetadata.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFileHandler.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductFilterLogic.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListContentView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistencePlatformExtensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/App/ManualBoxApp.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AccentColorPickerView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Common/ManualSearchView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/ImportService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingRow.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Tag+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformToolbar.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/MainTabView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileValidationService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRVisionProcessor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/EntityRepositories.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SearchFilterView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformPerformance.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceContainer.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/LanguagePickerView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationScheduler.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingError.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformButton.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRImageExtractor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductDeletionLogic.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataBackupView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/MetalManager.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditProductView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformModal.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchModels.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/SearchBarView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductFilterView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceDataCleanup.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/BaseRepository.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ViewStyle.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/AppNotification.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationSettingsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataCleanupService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/UnifiedSplitViewExample.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingResult.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/AdaptiveInfoLayout.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EnhancedProductListView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRModels.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocol.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/DataDiagnostics.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Configuration/AppConfiguration.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataImportView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/RepairRecord+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoryDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/ThemePickerView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataValidationService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformInput.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchRelevance.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductListView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceMaintenance.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AboutSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Common/EnhancedFileUploadView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/ExportService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/PolicySheetView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/ProductRow.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingTask.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ManualPreviewView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRTextPostprocessor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ServiceProtocol.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/RepairRecordsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/PlatformImage.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/DependencyInjection/ServiceRegistration.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/EditCategorySheet.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Order+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/WarrantyDefaultView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileMetadataExtractor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFeedback.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchSuggestions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductDetailPlaceholderView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListItem.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceSampleData.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AppInfoView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Manual+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddRepairRecordView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformNavigation.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ImageCompressionService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditRepairRecordView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceController.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/DataAccessProtocol.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SortOption.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationAdvancedSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/SearchFilters.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/EditTagSheet.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingOptions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/BatchOperationsToolbar.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRImagePreprocessor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocolExtensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/QuickAddProductView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/Calendar+Extension.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataExportView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationManager.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataInitializationService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformLayout.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchPredicates.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductRowView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductGridItem.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceDataInitialization.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ContentView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Category+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/OCRDefaultView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/CloudKitSyncService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/UnifiedSplitView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingService.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/ManualBox+CoreDataModel.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.swift -target arm64-apple-macos15.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -I /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug -F /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug -no-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -profile-generate -profile-coverage-mapping -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/peter_us/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/peter_us/Desktop/Github/manualbox -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift -enable-anonymous-context-mangled-names -file-compilation-dir /Users/peter_us/Desktop/Github/manualbox -Xcc -ivfsstatcache -Xcc /Users/peter_us/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.5-24F74-8254517eb8b97d462ccbc072ba9094c9.sdkstatcache -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-generated-files.hmap -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-own-target-headers.hmap -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-all-target-headers.hmap -Xcc -iquote -Xcc /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/ManualBox-project-headers.hmap -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Products/Debug/include -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources-normal/arm64 -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/arm64 -Xcc -I/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources -Xcc -DDEBUG\=1 -module-name ManualBox -frontend-parseable-output -disable-clang-spi -target-sdk-version 15.5 -target-sdk-name macosx15.5 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -emit-module-doc-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.swiftdoc -emit-module-source-info-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.swiftsourceinfo -emit-objc-header-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox-Swift.h -serialize-diagnostics-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox-master-emit-module.dia -emit-dependencies-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox-master-emit-module.d -o /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.swiftmodule -emit-abi-descriptor-path /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/Objects-normal/arm64/ManualBox.abi.json
+
+EmitSwiftModule normal arm64 (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingTask.swift:2:8: warning: file 'FileProcessingTask.swift' is part of module 'ManualBox'; ignoring import
+import ManualBox
+       ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:96:18: error: invalid redeclaration of 'generateJSONData(from:)'
+    private func generateJSONData(from products: [Product]) async throws -> [ProductImportData] {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:113:10: note: 'generateJSONData(from:)' previously declared here
+    func generateJSONData(from products: [Product]) async throws -> [ProductImportData] {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:113:10: note: 'generateJSONData(from:)' previously declared here
+    func generateJSONData(from products: [Product]) async throws -> [ProductImportData] {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:100:18: error: invalid redeclaration of 'generateCSVContent(from:)'
+    private func generateCSVContent(from products: [Product]) -> String {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:69:10: note: 'generateCSVContent(from:)' previously declared here
+    func generateCSVContent(from products: [Product]) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:69:10: note: 'generateCSVContent(from:)' previously declared here
+    func generateCSVContent(from products: [Product]) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:130:18: error: invalid redeclaration of 'generateRepairRecordsCSV(from:productName:)'
+    private func generateRepairRecordsCSV(from records: [RepairRecord], productName: String) -> String {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:94:10: note: 'generateRepairRecordsCSV(from:productName:)' previously declared here
+    func generateRepairRecordsCSV(from records: [RepairRecord], productName: String) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:94:10: note: 'generateRepairRecordsCSV(from:productName:)' previously declared here
+    func generateRepairRecordsCSV(from records: [RepairRecord], productName: String) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:154:18: error: invalid redeclaration of 'generatePDFContent(from:)'
+    private func generatePDFContent(from products: [Product]) async throws -> Data {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:117:10: note: 'generatePDFContent(from:)' previously declared here
+    func generatePDFContent(from products: [Product]) async throws -> Data {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:117:10: note: 'generatePDFContent(from:)' previously declared here
+    func generatePDFContent(from products: [Product]) async throws -> Data {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:255:18: error: invalid redeclaration of 'buildProductInfoText'
+    private func buildProductInfoText(_ product: Product) -> String {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:41:10: note: 'buildProductInfoText' previously declared here
+    func buildProductInfoText(_ product: Product) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:41:10: note: 'buildProductInfoText' previously declared here
+    func buildProductInfoText(_ product: Product) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:292:18: error: invalid redeclaration of 'csvEscape'
+    private func csvEscape(_ string: String) -> String {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:13:10: note: 'csvEscape' previously declared here
+    func csvEscape(_ string: String) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:13:10: note: 'csvEscape' previously declared here
+    func csvEscape(_ string: String) -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:300:18: error: invalid redeclaration of 'dateStamp()'
+    private func dateStamp() -> String {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:21:10: note: 'dateStamp()' previously declared here
+    func dateStamp() -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:21:10: note: 'dateStamp()' previously declared here
+    func dateStamp() -> String {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:306:18: error: invalid redeclaration of 'saveToTemporaryFile(content:fileName:)'
+    private func saveToTemporaryFile(content: String, fileName: String) async throws -> URL {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:27:10: note: 'saveToTemporaryFile(content:fileName:)' previously declared here
+    func saveToTemporaryFile(content: String, fileName: String) async throws -> URL {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:27:10: note: 'saveToTemporaryFile(content:fileName:)' previously declared here
+    func saveToTemporaryFile(content: String, fileName: String) async throws -> URL {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportService.swift:314:18: error: invalid redeclaration of 'saveToTemporaryFile(data:fileName:)'
+    private func saveToTemporaryFile(data: Data, fileName: String) async throws -> URL {
+                 ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:34:10: note: 'saveToTemporaryFile(data:fileName:)' previously declared here
+    func saveToTemporaryFile(data: Data, fileName: String) async throws -> URL {
+         ^
+/Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift:34:10: note: 'saveToTemporaryFile(data:fileName:)' previously declared here
+    func saveToTemporaryFile(data: Data, fileName: String) async throws -> URL {
+         ^
+
+SwiftCompile normal arm64 Compiling\ AddProductView.swift,\ ManualSearchModels.swift,\ SearchBarView.swift,\ ProductFilterView.swift,\ PersistenceDataCleanup.swift,\ BaseRepository.swift,\ ViewStyle.swift,\ AppNotification.swift,\ NotificationSettingsView.swift,\ DataCleanupService.swift,\ UnifiedSplitViewExample.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchModels.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/SearchBarView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductFilterView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceDataCleanup.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/BaseRepository.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ViewStyle.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/AppNotification.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationSettingsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataCleanupService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/UnifiedSplitViewExample.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddProductView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchModels.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/SearchBarView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductFilterView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceDataCleanup.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/BaseRepository.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ViewStyle.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/AppNotification.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationSettingsView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataCleanupService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/UnifiedSplitViewExample.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ Manual+Extensions.swift,\ SettingsDetailView.swift,\ DataExportHelpers.swift,\ AddRepairRecordView.swift,\ PlatformNavigation.swift,\ ImageCompressionService.swift,\ EditRepairRecordView.swift,\ ProductDetailViewModel.swift,\ PersistenceController.swift,\ DataAccessProtocol.swift,\ SortOption.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Manual+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsDetailView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddRepairRecordView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformNavigation.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ImageCompressionService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditRepairRecordView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailViewModel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceController.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/DataAccessProtocol.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SortOption.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Manual+Extensions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/SettingsDetailView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/DataExportHelpers.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/AddRepairRecordView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformNavigation.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ImageCompressionService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/EditRepairRecordView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductDetailViewModel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceController.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/DataAccessProtocol.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/SortOption.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ CloudKitSyncService.swift,\ UnifiedSplitView.swift,\ TagsView.swift,\ FileProcessingService.swift,\ Category+CoreDataClass.swift,\ Category+CoreDataProperties.swift,\ Item+CoreDataClass.swift,\ Item+CoreDataProperties.swift,\ Manual+CoreDataClass.swift,\ Manual+CoreDataProperties.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/CloudKitSyncService.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/UnifiedSplitView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingService.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/CloudKitSyncService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/UnifiedSplitView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/TagsView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingService.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataClass.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Category+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataClass.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Item+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataClass.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Manual+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ NotificationAdvancedSettingsPanel.swift,\ SearchFilters.swift,\ EditTagSheet.swift,\ FileProcessingOptions.swift,\ BatchOperationsToolbar.swift,\ OCRImagePreprocessor.swift,\ ViewModelProtocolExtensions.swift,\ QuickAddProductView.swift,\ Calendar+Extension.swift,\ DataExportView.swift,\ NotificationManager.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationAdvancedSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/SearchFilters.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/EditTagSheet.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingOptions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/BatchOperationsToolbar.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRImagePreprocessor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocolExtensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/QuickAddProductView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/Calendar+Extension.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataExportView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationManager.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/NotificationAdvancedSettingsPanel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/SearchFilters.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Tags/EditTagSheet.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileProcessingOptions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/BatchOperationsToolbar.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/OCRImagePreprocessor.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Architecture/ViewModelProtocolExtensions.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/QuickAddProductView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Utils/Calendar+Extension.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataExportView.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/NotificationManager.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ Order+CoreDataClass.swift,\ Order+CoreDataProperties.swift,\ Product+CoreDataClass.swift,\ Product+CoreDataProperties.swift,\ RepairRecord+CoreDataClass.swift,\ RepairRecord+CoreDataProperties.swift,\ Tag+CoreDataClass.swift,\ Tag+CoreDataProperties.swift,\ ManualBox+CoreDataModel.swift,\ GeneratedAssetSymbols.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataClass.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataProperties.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/ManualBox+CoreDataModel.swift /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'ManualBox' from project 'ManualBox')
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataClass.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Order+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataClass.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Product+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataClass.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/RepairRecord+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataClass.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/Tag+CoreDataProperties.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/CoreDataGenerated/ManualBox/ManualBox+CoreDataModel.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 /Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Build/Intermediates.noindex/ManualBox.build/Debug/ManualBox.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'ManualBox' from project 'ManualBox')
+    cd /Users/peter_us/Desktop/Github/manualbox
+    
+
+SwiftCompile normal arm64 Compiling\ DataSettingsPanel.swift,\ Order+Extensions.swift,\ CategoriesView.swift,\ WarrantyDefaultView.swift,\ FileMetadataExtractor.swift,\ PlatformFeedback.swift,\ ManualSearchSuggestions.swift,\ ProductDetailPlaceholderView.swift,\ ProductListItem.swift,\ PersistenceSampleData.swift,\ AppInfoView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Order+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/WarrantyDefaultView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileMetadataExtractor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFeedback.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchSuggestions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductDetailPlaceholderView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListItem.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceSampleData.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AppInfoView.swift (in target 'ManualBox' from project 'ManualBox')
+Command SwiftCompile failed with a nonzero exit code
+
+
+Testing failed:
+Test session results, code coverage, and logs:
+	/Users/peter_us/Library/Developer/Xcode/DerivedData/ManualBox-deaeebpyffrazpbischepzonjpmw/Logs/Test/Test-ManualBox-2025.06.19_01-40-25-+0800.xcresult
+
+	Invalid redeclaration of 'generateJSONData(from:)'
+	Invalid redeclaration of 'generateCSVContent(from:)'
+	Invalid redeclaration of 'generateRepairRecordsCSV(from:productName:)'
+	Invalid redeclaration of 'generatePDFContent(from:)'
+	Invalid redeclaration of 'buildProductInfoText'
+	Invalid redeclaration of 'csvEscape'
+	Invalid redeclaration of 'dateStamp()'
+	Invalid redeclaration of 'saveToTemporaryFile(content:fileName:)'
+	Invalid redeclaration of 'saveToTemporaryFile(data:fileName:)'
+	Command SwiftCompile failed with a nonzero exit code
+	Testing cancelled because the build failed.
+
+** TEST FAILED **
+
+
+The following build commands failed:
+	SwiftEmitModule normal arm64 Emitting\ module\ for\ ManualBox (in target 'ManualBox' from project 'ManualBox')
+	EmitSwiftModule normal arm64 (in target 'ManualBox' from project 'ManualBox')
+	SwiftCompile normal arm64 Compiling\ DataSettingsPanel.swift,\ Order+Extensions.swift,\ CategoriesView.swift,\ WarrantyDefaultView.swift,\ FileMetadataExtractor.swift,\ PlatformFeedback.swift,\ ManualSearchSuggestions.swift,\ ProductDetailPlaceholderView.swift,\ ProductListItem.swift,\ PersistenceSampleData.swift,\ AppInfoView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/DataSettingsPanel.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Models/Order+Extensions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Categories/CategoriesView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/WarrantyDefaultView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/FileMetadataExtractor.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Components/PlatformFeedback.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/ManualSearchSuggestions.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Features/Products/ProductDetailPlaceholderView.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Products/ProductListItem.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/Core/Services/PersistenceSampleData.swift /Users/peter_us/Desktop/Github/manualbox/ManualBox/UI/Views/Settings/AppInfoView.swift (in target 'ManualBox' from project 'ManualBox')
+	Testing project ManualBox with scheme ManualBox
+(4 failures)
