@@ -31,7 +31,7 @@ struct EnhancedFileUploadView: View {
     
     @State private var showFileImporter = false
     @State private var showProcessingOptions = false
-    @State private var processingOptions = FileProcessingService.ProcessingOptions.default
+    @State private var processingOptions = FileProcessingOptions.default
     @State private var dragOver = false
     
     var body: some View {
@@ -219,7 +219,7 @@ struct EnhancedFileUploadView: View {
                         value: Binding(
                             get: { processingOptions.compressionQuality },
                             set: { newValue in
-                                processingOptions = FileProcessingService.ProcessingOptions(
+                                processingOptions = FileProcessingOptions(
                                     shouldCompress: processingOptions.shouldCompress,
                                     compressionQuality: newValue,
                                     shouldExtractMetadata: processingOptions.shouldExtractMetadata,
@@ -465,14 +465,14 @@ class FileUploadViewModel: ObservableObject {
     
     struct ProcessedFile {
         let url: URL
-        let result: FileProcessingService.ProcessingResult?
+        let result: FileProcessingResult?
         let error: Error?
         var success: Bool { result != nil && error == nil }
     }
     
     func processFiles(
         urls: [URL],
-        options: FileProcessingService.ProcessingOptions,
+        options: FileProcessingOptions,
         for product: Product?
     ) async {
         isProcessing = true
