@@ -13,7 +13,7 @@ struct ManualSearchView: View {
     @StateObject private var searchService = ManualSearchService.shared
     @State private var searchText = ""
     @State private var showSearchSuggestions = false
-    @State private var selectedSearchResult: ManualSearchService.ManualSearchResult?
+    @State private var selectedSearchResult: ManualSearchResult?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -29,7 +29,7 @@ struct ManualSearchView: View {
             searchResultsContent
         }
         .navigationTitle("说明书搜索")
-        .sheet(item: $selectedSearchResult) { result in
+        .sheet(item: $selectedSearchResult) { (result: ManualSearchResult) in
             ManualDetailSheet(searchResult: result)
         }
     }
@@ -272,7 +272,7 @@ struct ManualSearchView: View {
 
 // MARK: - 搜索结果卡片
 struct SearchResultCard: View {
-    let result: ManualSearchService.ManualSearchResult
+    let result: ManualSearchResult
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -369,7 +369,7 @@ struct SearchResultCard: View {
 
 // MARK: - 说明书详情弹窗
 struct ManualDetailSheet: View {
-    let searchResult: ManualSearchService.ManualSearchResult
+    let searchResult: ManualSearchResult
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
