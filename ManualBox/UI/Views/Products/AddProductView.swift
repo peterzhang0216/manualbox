@@ -3,6 +3,13 @@ import PhotosUI
 import CoreData
 import UniformTypeIdentifiers
 
+// 确保导入必要的类型
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
 
 
 struct AddProductView: View {

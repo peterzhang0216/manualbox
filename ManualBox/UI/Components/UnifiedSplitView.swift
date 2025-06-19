@@ -283,34 +283,34 @@ struct UnifiedSplitView<Sidebar: View, Content: View, Detail: View, SelectedItem
             
             // 分类Tab
             NavigationStack {
-                CategoryTabContent()
+                CategoriesView()
             }
             .tabItem {
                 Label("分类", systemImage: "folder")
             }
             .tag(1)
-            
+
             // 标签Tab
             NavigationStack {
-                TagTabContent()
+                TagsView()
             }
             .tabItem {
                 Label("标签", systemImage: "tag")
             }
             .tag(2)
-            
+
             // 维修Tab
             NavigationStack {
-                RepairTabContent()
+                RepairRecordsView()
             }
             .tabItem {
                 Label("维修", systemImage: "wrench.and.screwdriver")
             }
             .tag(3)
-            
+
             // 设置Tab
             NavigationStack {
-                SettingsTabContent()
+                SettingsView()
             }
             .tabItem {
                 Label("设置", systemImage: "gear")
@@ -321,34 +321,11 @@ struct UnifiedSplitView<Sidebar: View, Content: View, Detail: View, SelectedItem
 }
 
 // MARK: - iPhone Tab内容占位符
-// 这些组件需要根据实际项目中的视图进行替换
-struct CategoryTabContent: View {
-    var body: some View {
-        Text("分类管理")
-            .navigationTitle("分类")
-    }
-}
-
-struct TagTabContent: View {
-    var body: some View {
-        Text("标签管理")
-            .navigationTitle("标签")
-    }
-}
-
-struct RepairTabContent: View {
-    var body: some View {
-        Text("维修记录")
-            .navigationTitle("维修")
-    }
-}
-
-struct SettingsTabContent: View {
-    var body: some View {
-        Text("设置")
-            .navigationTitle("设置")
-    }
-}
+// 注意：实际的视图组件已在各自的目录中实现
+// - CategoriesView 在 UI/Views/Categories/
+// - TagsView 在 UI/Views/Tags/
+// - RepairRecordsView 在 UI/Views/Products/
+// - SettingsView 在 UI/Views/Settings/
 
 // MARK: - 扩展功能
 extension UnifiedSplitView {

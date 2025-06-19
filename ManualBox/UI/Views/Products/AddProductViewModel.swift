@@ -4,6 +4,13 @@ import CoreData
 import Combine
 import Vision
 
+// 确保导入必要的类型和协议
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
 // MARK: - AddProduct State
 struct AddProductState: StateProtocol {
     var isLoading: Bool = false

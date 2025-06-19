@@ -157,15 +157,14 @@ struct MainTabView: View {
                                 RepairRecordsView()
                             default:
                                 #if os(macOS)
-                                ProductListView(
+                                EnhancedProductListView(
                                     filteredProducts: filteredProducts,
                                     searchText: searchText,
-                                    deleteProducts: deleteProducts,
-                                    isEditing: isEditing
+                                    deleteProducts: deleteProducts
                                 )
                                     .environment(\.selectedProduct, $selectedProduct)
                                 #else
-                                ProductListView(
+                                EnhancedProductListView(
                                     filteredProducts: filteredProducts,
                                     searchText: searchText,
                                     deleteProducts: deleteProducts
@@ -206,15 +205,14 @@ struct MainTabView: View {
                         }
                     } else {
                         #if os(macOS)
-                        ProductListView(
+                        EnhancedProductListView(
                             filteredProducts: filteredProducts,
                             searchText: searchText,
-                            deleteProducts: deleteProducts,
-                            isEditing: isEditing
+                            deleteProducts: deleteProducts
                         )
                             .environment(\.selectedProduct, $selectedProduct)
                         #else
-                        ProductListView(
+                        EnhancedProductListView(
                             filteredProducts: filteredProducts,
                             searchText: searchText,
                             deleteProducts: deleteProducts

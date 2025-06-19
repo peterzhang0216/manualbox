@@ -58,10 +58,10 @@ struct TagDetailView: View {
                     ForEach(products) { product in
                         #if os(iOS)
                         NavigationLink(destination: ProductDetailView(product: product)) {
-                            ProductRowView(product: product)
+                            ProductRow(product: product)
                         }
                         #else
-                        ProductRowView(product: product)
+                        ProductRow(product: product)
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 selectedProduct.wrappedValue = product
