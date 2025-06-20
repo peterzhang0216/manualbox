@@ -5,11 +5,10 @@ import CoreData
 
 struct CategoryDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var detailPanelStateManager: DetailPanelStateManager
     let category: Category
 
-    @State private var showingEditSheet = false
     @State private var showingDeleteAlert = false
-    @State private var showAddProduct = false
 
     #if os(macOS)
     @Environment(\.selectedProduct) private var selectedProduct
@@ -46,7 +45,7 @@ struct CategoryDetailView: View {
                     } description: {
                         Text("该分类下还没有产品")
                     } actions: {
-                        Button(action: { showAddProduct = true }) {
+                        Button(action: { detailPanelStateManager.showAddProduct() }) {
                             Text("添加产品")
                         }
                         .buttonStyle(.borderedProminent)
@@ -78,25 +77,6 @@ struct CategoryDetailView: View {
             }
         }
         .navigationTitle(category.categoryName)
-        .sheet(isPresented: $showingEditSheet) {
-            #if os(macOS)
-            EditCategorySheet(category: category)
-                .frame(minWidth: 500, minHeight: 400)
-                .environment(\.managedObjectContext, viewContext)
-            #else
-            NavigationStack {
-                EditCategorySheet(category: category)
-                    .navigationTitle("编辑分类")
-            }
-            #endif
-        }
-        .sheet(isPresented: $showAddProduct) {
-            NavigationStack {
-                AddProductView(isPresented: $showAddProduct)
-                    .environment(\.managedObjectContext, viewContext)
-            }
-            .presentationDetents([.large])
-        }
         .alert("确定删除此分类?", isPresented: $showingDeleteAlert) {
             Button("取消", role: .cancel) { }
             Button("删除", role: .destructive) { deleteCategory() }
@@ -129,7 +109,7 @@ struct CategoryDetailView: View {
 
                 // 分类管理按钮
                 HStack(spacing: 8) {
-                    Button(action: { showingEditSheet = true }) {
+                    Button(action: { detailPanelStateManager.showEditCategory(category) }) {
                         Image(systemName: "pencil")
                             .font(.system(size: 16, weight: .medium))
                     }

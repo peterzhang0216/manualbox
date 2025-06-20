@@ -5,11 +5,10 @@ import CoreData
 
 struct TagDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var detailPanelStateManager: DetailPanelStateManager
     let tag: Tag
 
-    @State private var showingEditSheet = false
     @State private var showingDeleteAlert = false
-    @State private var showAddProduct = false
 
     #if os(macOS)
     @Environment(\.selectedProduct) private var selectedProduct
@@ -46,7 +45,7 @@ struct TagDetailView: View {
                     } description: {
                         Text("该标签下还没有产品")
                     } actions: {
-                        Button(action: { showAddProduct = true }) {
+                        Button(action: { detailPanelStateManager.showAddProduct() }) {
                             Text("添加产品")
                         }
                         .buttonStyle(.borderedProminent)
@@ -77,25 +76,6 @@ struct TagDetailView: View {
             }
         }
         .navigationTitle(tag.tagName)
-        .sheet(isPresented: $showingEditSheet) {
-            #if os(macOS)
-            EditTagSheet(tag: tag)
-                .frame(minWidth: 500, minHeight: 400)
-                .environment(\.managedObjectContext, viewContext)
-            #else
-            NavigationStack {
-                EditTagSheet(tag: tag)
-                    .navigationTitle("编辑标签")
-            }
-            #endif
-        }
-        .sheet(isPresented: $showAddProduct) {
-            NavigationStack {
-                AddProductView(isPresented: $showAddProduct)
-                    .environment(\.managedObjectContext, viewContext)
-            }
-            .presentationDetents([.large])
-        }
         .alert("确定删除此标签?", isPresented: $showingDeleteAlert) {
             Button("取消", role: .cancel) { }
             Button("删除", role: .destructive) { deleteTag() }
@@ -131,7 +111,7 @@ struct TagDetailView: View {
 
                 // 标签管理按钮
                 HStack(spacing: 8) {
-                    Button(action: { showingEditSheet = true }) {
+                    Button(action: { detailPanelStateManager.showEditTag(tag) }) {
                         Image(systemName: "pencil")
                             .font(.system(size: 16, weight: .medium))
                     }

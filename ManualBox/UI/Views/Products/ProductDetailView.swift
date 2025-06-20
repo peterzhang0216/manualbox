@@ -5,8 +5,8 @@ import CoreData
 
 struct ProductDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var detailPanelStateManager: DetailPanelStateManager
     let product: Product
-    @State private var showingEditSheet = false
     @State private var selectedManual: Manual?
     
     var body: some View {
@@ -46,18 +46,13 @@ struct ProductDetailView: View {
         .toolbar {
             SwiftUI.ToolbarItem {
                 Button {
-                    showingEditSheet = true
+                    detailPanelStateManager.showEditProduct(product)
                 } label: {
                     Label("编辑", systemImage: "pencil")
                 }
             }
         }
-        .sheet(isPresented: $showingEditSheet) {
-            NavigationStack {
-                EditProductView(product: product)
-            }
-            .presentationDetents([.large])
-        }
+
         .sheet(item: $selectedManual) { manual in
             NavigationStack {
                 ManualPreviewView(manual: manual)

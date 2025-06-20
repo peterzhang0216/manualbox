@@ -31,7 +31,6 @@ struct MainTabView: View {
 
     @State private var selectedTab: SelectionValue? = .main(0)
     @State private var selectedProduct: Product? = nil
-    @State private var showingAddProduct = false
 
     // 产品相关状态
     @State private var searchText = ""
@@ -42,6 +41,9 @@ struct MainTabView: View {
 
     // 产品选择管理器
     @StateObject private var productSelectionManager: ProductSelectionManager
+
+    // 详情面板状态管理器
+    @StateObject private var detailPanelStateManager = DetailPanelStateManager()
 
     // 初始化器
     init() {
@@ -114,23 +116,17 @@ struct MainTabView: View {
         mainView
             .preferredColorScheme(computedColorScheme)
             .accentColor(computedAccentColor)
+            .environmentObject(detailPanelStateManager)
         .toolbar(content: {
             SwiftUI.ToolbarItem(placement: .primaryAction) {
-                Button(action: { showingAddProduct = true }) {
+                Button(action: { detailPanelStateManager.showAddProduct() }) {
                     Label("添加产品", systemImage: "plus")
                 }
                 .buttonStyle(.borderedProminent)
             }
         })
-        .sheet(isPresented: $showingAddProduct) {
-            QuickAddProductView(isPresented: $showingAddProduct)
-                #if os(iOS)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-                #endif
-        }
         .onAppNotification(.createNewProduct) { _ in
-            showingAddProduct = true
+            detailPanelStateManager.showAddProduct()
         }
         .onAppear {
             notificationManager.updateAllWarrantyReminders(in: viewContext)
@@ -311,11 +307,8 @@ struct MainTabView: View {
 
     @ViewBuilder
     private var detailView: some View {
-        if let selection = selectedTab {
-            detailForSelection(selection)
-        } else {
-            emptyDetailView
-        }
+        UnifiedDetailPanel()
+            .environmentObject(detailPanelStateManager)
     }
 
     @ViewBuilder
@@ -659,6 +652,12 @@ struct MainTabView: View {
             .receive(on: DispatchQueue.main)
             .sink { newProduct in
                 selectedProduct = newProduct
+                // 更新详情面板状态
+                if let product = newProduct {
+                    detailPanelStateManager.showProductDetail(product)
+                } else {
+                    detailPanelStateManager.reset()
+                }
             }
             .store(in: &cancellables)
     }
@@ -684,9 +683,7 @@ struct AddProductSheet: View {
 struct SidebarView: View {
     @Binding var selection: SelectionValue?
     @Environment(\.managedObjectContext) private var viewContext
-
-    @State private var showingAddCategorySheet = false
-    @State private var showingAddTagSheet = false
+    @EnvironmentObject private var detailPanelStateManager: DetailPanelStateManager
     
     @FetchRequest(
         entity: Category.entity(),
@@ -729,7 +726,7 @@ struct SidebarView: View {
                             .accessibilityHint("查看\(category.categoryName)分类下的商品，共\(category.productCount)个")
                             .contextMenu {
                                 Button(action: {
-                                    // 编辑分类功能 - 这里需要实现
+                                    detailPanelStateManager.showEditCategory(category)
                                 }) {
                                     Label("编辑分类", systemImage: "pencil")
                                 }
@@ -737,7 +734,7 @@ struct SidebarView: View {
                                 Divider()
 
                                 Button(role: .destructive, action: {
-                                    // 删除分类功能 - 这里需要实现
+                                    deleteCategory(category)
                                 }) {
                                     Label("删除分类", systemImage: "trash")
                                 }
@@ -746,7 +743,7 @@ struct SidebarView: View {
                 }
 
                 // 添加分类按钮
-                Button(action: { showingAddCategorySheet = true }) {
+                Button(action: { detailPanelStateManager.showAddCategory() }) {
                     Label("添加分类", systemImage: "plus")
                         .foregroundColor(.secondary)
                 }
@@ -770,7 +767,7 @@ struct SidebarView: View {
                         .accessibilityHint("查看\(tag.tagName)标签下的商品，共\(tag.productCount)个")
                         .contextMenu {
                             Button(action: {
-                                // 编辑标签功能 - 这里需要实现
+                                detailPanelStateManager.showEditTag(tag)
                             }) {
                                 Label("编辑标签", systemImage: "pencil")
                             }
@@ -778,7 +775,7 @@ struct SidebarView: View {
                             Divider()
 
                             Button(role: .destructive, action: {
-                                // 删除标签功能 - 这里需要实现
+                                deleteTag(tag)
                             }) {
                                 Label("删除标签", systemImage: "trash")
                             }
@@ -787,7 +784,7 @@ struct SidebarView: View {
                 }
 
                 // 添加标签按钮
-                Button(action: { showingAddTagSheet = true }) {
+                Button(action: { detailPanelStateManager.showAddTag() }) {
                     Label("添加标签", systemImage: "plus")
                         .foregroundColor(.secondary)
                 }
@@ -817,15 +814,28 @@ struct SidebarView: View {
         .frame(minWidth: 200, idealWidth: 250, maxWidth: 320) // maxWidth 统一为 320
         .accessibilityLabel("主导航")
         .accessibilityHint("选择要浏览的内容分类")
-        .sheet(isPresented: $showingAddCategorySheet) {
-            AddCategorySheet(isPresented: $showingAddCategorySheet)
-                .frame(minWidth: 400, minHeight: 300)
-                .environment(\.managedObjectContext, viewContext)
+    }
+
+    // MARK: - 删除操作
+    private func deleteCategory(_ category: Category) {
+        withAnimation {
+            viewContext.delete(category)
+            do {
+                try viewContext.save()
+            } catch {
+                print("删除分类失败: \(error.localizedDescription)")
+            }
         }
-        .sheet(isPresented: $showingAddTagSheet) {
-            AddTagSheet(isPresented: $showingAddTagSheet)
-                .frame(minWidth: 400, minHeight: 300)
-                .environment(\.managedObjectContext, viewContext)
+    }
+
+    private func deleteTag(_ tag: Tag) {
+        withAnimation {
+            viewContext.delete(tag)
+            do {
+                try viewContext.save()
+            } catch {
+                print("删除标签失败: \(error.localizedDescription)")
+            }
         }
     }
 }
