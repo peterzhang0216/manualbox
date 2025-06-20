@@ -519,8 +519,8 @@ struct SidebarView: View {
                     .accessibilityHint("查看和管理设备维修记录")
             }
 
-            // 设置项目 - 使用空的header来创建视觉分隔
-            Section(header: Text("")) {
+            // 设置项目
+            Section(header: Text("设置")) {
                 ForEach(SettingsPanel.allCases, id: \.self) { panel in
                     Label(panel.title, systemImage: panel.icon)
                         .tag(SelectionValue.settings(panel))
