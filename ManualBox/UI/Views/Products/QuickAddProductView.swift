@@ -40,19 +40,57 @@ struct QuickAddProductView: View {
     enum ImageSource {
         case camera, photoLibrary
     }
+
+    private var backgroundGradient: LinearGradient {
+        #if os(iOS)
+        return LinearGradient(
+            colors: [
+                Color(UIColor.systemBackground),
+                Color(UIColor.systemGroupedBackground)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        #else
+        return LinearGradient(
+            colors: [
+                Color(NSColor.controlBackgroundColor),
+                Color(NSColor.controlBackgroundColor).opacity(0.8)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        #endif
+    }
     
     var body: some View {
         NavigationStack {
             Form {
+                // 基本信息区域
                 Section {
-                    TextField("产品名称", text: $productName)
-                    TextField("品牌", text: $brand)
-                    TextField("型号", text: $model)
+                    VStack(spacing: 12) {
+                        TextField("产品名称", text: $productName)
+                            .textFieldStyle(.roundedBorder)
+
+                        HStack(spacing: 12) {
+                            TextField("品牌", text: $brand)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("型号", text: $model)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                    }
+                    .padding(.vertical, 8)
                 } header: {
-                    Text("基本信息")
+                    HStack {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.blue)
+                        Text("基本信息")
+                    }
                 }
-                
-                Section(header: Text("分类")) {
+                .listRowBackground(Color.clear)
+
+                // 分类选择区域
+                Section {
                     Picker("分类", selection: $selectedCategory) {
                         Text("未分类").tag(Category?.none)
                         ForEach(categories, id: \.self) { category in
@@ -60,12 +98,21 @@ struct QuickAddProductView: View {
                                 .tag(Category?.some(category))
                         }
                     }
+                    .pickerStyle(.menu)
+                    .padding(.vertical, 4)
+                } header: {
+                    HStack {
+                        Image(systemName: "folder")
+                            .foregroundColor(.orange)
+                        Text("分类")
+                    }
                 }
-                
+
+                // 标签选择区域
                 if !tags.isEmpty {
-                    Section(header: Text("标签")) {
+                    Section {
                         LazyVGrid(columns: [
-                            GridItem(.adaptive(minimum: 100), spacing: 8)
+                            GridItem(.adaptive(minimum: 90), spacing: 8)
                         ], spacing: 8) {
                             ForEach(tags, id: \.self) { tag in
                                 QuickAddTagChip(
@@ -76,51 +123,102 @@ struct QuickAddProductView: View {
                                 }
                             }
                         }
-                        .padding(.vertical, 4)
-                    }
-                }
-                
-                Section(header: Text("产品图片")) {
-                    if let selectedImage = selectedImage {
+                        .padding(.vertical, 8)
+                    } header: {
                         HStack {
-                            #if os(iOS)
-                            Image(uiImage: selectedImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(height: 100)
-                                .cornerRadius(8)
-                            #else
-                            Image(nsImage: selectedImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(height: 100)
-                                .cornerRadius(8)
-                            #endif
-                            
+                            Image(systemName: "tag")
+                                .foregroundColor(.green)
+                            Text("标签")
                             Spacer()
-                            
-                            Button("重新选择") {
-                                showingImagePicker = true
+                            if !selectedTags.isEmpty {
+                                Text("已选择 \(selectedTags.count) 个")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
                         }
-                    } else {
-                        Button(action: { showingImagePicker = true }) {
-                            Label("添加图片", systemImage: "camera")
+                    }
+                    .listRowBackground(Color.clear)
+                }
+
+                // 产品图片区域
+                Section {
+                    VStack(spacing: 12) {
+                        if let selectedImage = selectedImage {
+                            VStack(spacing: 8) {
+                                #if os(iOS)
+                                Image(uiImage: selectedImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxHeight: 120)
+                                    .cornerRadius(12)
+                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                #else
+                                Image(nsImage: selectedImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxHeight: 120)
+                                    .cornerRadius(12)
+                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                #endif
+
+                                Button("重新选择图片") {
+                                    showingImagePicker = true
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                            }
+                        } else {
+                            Button(action: { showingImagePicker = true }) {
+                                VStack(spacing: 8) {
+                                    Image(systemName: "camera.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.blue)
+                                    Text("添加产品图片")
+                                        .font(.subheadline)
+                                        .foregroundColor(.primary)
+                                }
                                 .frame(maxWidth: .infinity)
+                                .frame(height: 80)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.blue.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.blue.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [5]))
+                                        )
+                                )
+                            }
+                            .buttonStyle(.plain)
                         }
+                    }
+                    .padding(.vertical, 8)
+                } header: {
+                    HStack {
+                        Image(systemName: "photo")
+                            .foregroundColor(.purple)
+                        Text("产品图片")
                     }
                 }
                 .listRowBackground(Color.clear)
-                
-                Section(header: Text("产品图片")) {
-                    EmptyView()
-                }
-                
-                Section(header: Text("备注")) {
-                    TextField("备注", text: $notes, axis: .vertical)
+
+                // 备注区域
+                Section {
+                    TextField("添加产品备注信息...", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.vertical, 4)
+                } header: {
+                    HStack {
+                        Image(systemName: "note.text")
+                            .foregroundColor(.gray)
+                        Text("备注")
+                    }
                 }
+                .listRowBackground(Color.clear)
             }
+            .formStyle(.grouped)
+            .scrollContentBackground(.hidden)
+            .background(backgroundGradient)
             .navigationTitle("快速添加产品")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -132,26 +230,32 @@ struct QuickAddProductView: View {
                     Button("取消") {
                         dismiss()
                     }
+                    .foregroundColor(.secondary)
                 }
-                
+
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button("保存") {
                         saveProduct()
                     }
                     .disabled(productName.isEmpty)
+                    .foregroundColor(productName.isEmpty ? .secondary : .blue)
+                    .fontWeight(.medium)
                 }
                 #else
                 ToolbarItemGroup(placement: .navigation) {
                     Button("取消") {
                         dismiss()
                     }
-                    
+                    .foregroundColor(.secondary)
+
                     Spacer()
-                    
+
                     Button("保存") {
                         saveProduct()
                     }
                     .disabled(productName.isEmpty)
+                    .foregroundColor(productName.isEmpty ? .secondary : .blue)
+                    .fontWeight(.medium)
                 }
                 #endif
             }
@@ -220,31 +324,44 @@ struct QuickAddTagChip: View {
     let tag: Tag
     let isSelected: Bool
     let onTap: () -> Void
-    
+
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 6) {
+                // 标签颜色指示器
                 Circle()
                     .fill(tag.uiColor)
-                    .frame(width: 8, height: 8)
+                    .frame(width: 10, height: 10)
+                    .shadow(color: tag.uiColor.opacity(0.3), radius: 2, x: 0, y: 1)
+
+                // 标签名称
                 Text(tag.tagName)
                     .font(.caption)
+                    .fontWeight(isSelected ? .medium : .regular)
                     .lineLimit(1)
+                    .foregroundColor(isSelected ? tag.uiColor : .primary)
+
+                // 选中状态指示器
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.caption2)
+                        .foregroundColor(tag.uiColor)
+                }
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+            .padding(.vertical, 8)
             .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(isSelected ? tag.uiColor.opacity(0.2) : Color.secondary.opacity(0.1))
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(isSelected ? tag.uiColor.opacity(0.15) : Color.secondary.opacity(0.08))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? tag.uiColor : Color.clear, lineWidth: 1.5)
+                RoundedRectangle(cornerRadius: 18)
+                    .stroke(isSelected ? tag.uiColor.opacity(0.6) : Color.clear, lineWidth: 1.5)
             )
         }
         .buttonStyle(.plain)
-        .scaleEffect(isSelected ? 1.05 : 1.0)
-        .animation(.easeInOut(duration: 0.2), value: isSelected)
+        .scaleEffect(isSelected ? 1.02 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
     }
 }
 
