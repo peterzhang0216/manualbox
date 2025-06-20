@@ -18,6 +18,7 @@ struct EnhancedProductListView: View {
 
     #if os(macOS)
     @Environment(\.selectedProduct) private var environmentSelectedProduct
+    @Environment(\.productSelectionManager) private var productSelectionManager
 
     private var selectedProduct: Binding<Product?> {
         environmentSelectedProduct
@@ -121,7 +122,13 @@ struct EnhancedProductListView: View {
                     onTap: {
                         #if os(macOS)
                         if !isSelectionMode {
-                            selectedProduct.wrappedValue = product
+                            // 使用ProductSelectionManager进行选择
+                            if let manager = productSelectionManager {
+                                manager.send(.selectProduct(product))
+                            } else {
+                                // 回退到直接设置
+                                selectedProduct.wrappedValue = product
+                            }
                         }
                         #endif
                     }
@@ -153,7 +160,13 @@ struct EnhancedProductListView: View {
                         onTap: {
                             #if os(macOS)
                             if !isSelectionMode {
-                                selectedProduct.wrappedValue = product
+                                // 使用ProductSelectionManager进行选择
+                                if let manager = productSelectionManager {
+                                    manager.send(.selectProduct(product))
+                                } else {
+                                    // 回退到直接设置
+                                    selectedProduct.wrappedValue = product
+                                }
                             }
                             #endif
                         }

@@ -66,155 +66,11 @@ struct QuickAddProductView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // 基本信息区域
-                Section {
-                    VStack(spacing: 12) {
-                        TextField("产品名称", text: $productName)
-                            .textFieldStyle(.roundedBorder)
-
-                        HStack(spacing: 12) {
-                            TextField("品牌", text: $brand)
-                                .textFieldStyle(.roundedBorder)
-                            TextField("型号", text: $model)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                    }
-                    .padding(.vertical, 8)
-                } header: {
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .foregroundColor(.blue)
-                        Text("基本信息")
-                    }
-                }
-                .listRowBackground(Color.clear)
-
-                // 分类选择区域
-                Section {
-                    Picker("分类", selection: $selectedCategory) {
-                        Text("未分类").tag(Category?.none)
-                        ForEach(categories, id: \.self) { category in
-                            Label(category.categoryName, systemImage: category.categoryIcon)
-                                .tag(Category?.some(category))
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .padding(.vertical, 4)
-                } header: {
-                    HStack {
-                        Image(systemName: "folder")
-                            .foregroundColor(.orange)
-                        Text("分类")
-                    }
-                }
-
-                // 标签选择区域
-                if !tags.isEmpty {
-                    Section {
-                        LazyVGrid(columns: [
-                            GridItem(.adaptive(minimum: 90), spacing: 8)
-                        ], spacing: 8) {
-                            ForEach(tags, id: \.self) { tag in
-                                QuickAddTagChip(
-                                    tag: tag,
-                                    isSelected: selectedTags.contains(tag)
-                                ) {
-                                    toggleTag(tag)
-                                }
-                            }
-                        }
-                        .padding(.vertical, 8)
-                    } header: {
-                        HStack {
-                            Image(systemName: "tag")
-                                .foregroundColor(.green)
-                            Text("标签")
-                            Spacer()
-                            if !selectedTags.isEmpty {
-                                Text("已选择 \(selectedTags.count) 个")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                    .listRowBackground(Color.clear)
-                }
-
-                // 产品图片区域
-                Section {
-                    VStack(spacing: 12) {
-                        if let selectedImage = selectedImage {
-                            VStack(spacing: 8) {
-                                #if os(iOS)
-                                Image(uiImage: selectedImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxHeight: 120)
-                                    .cornerRadius(12)
-                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                                #else
-                                Image(nsImage: selectedImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxHeight: 120)
-                                    .cornerRadius(12)
-                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                                #endif
-
-                                Button("重新选择图片") {
-                                    showingImagePicker = true
-                                }
-                                .buttonStyle(.bordered)
-                                .controlSize(.small)
-                            }
-                        } else {
-                            Button(action: { showingImagePicker = true }) {
-                                VStack(spacing: 8) {
-                                    Image(systemName: "camera.fill")
-                                        .font(.title2)
-                                        .foregroundColor(.blue)
-                                    Text("添加产品图片")
-                                        .font(.subheadline)
-                                        .foregroundColor(.primary)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 80)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.blue.opacity(0.1))
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .stroke(Color.blue.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [5]))
-                                        )
-                                )
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.vertical, 8)
-                } header: {
-                    HStack {
-                        Image(systemName: "photo")
-                            .foregroundColor(.purple)
-                        Text("产品图片")
-                    }
-                }
-                .listRowBackground(Color.clear)
-
-                // 备注区域
-                Section {
-                    TextField("添加产品备注信息...", text: $notes, axis: .vertical)
-                        .lineLimit(3...6)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.vertical, 4)
-                } header: {
-                    HStack {
-                        Image(systemName: "note.text")
-                            .foregroundColor(.gray)
-                        Text("备注")
-                    }
-                }
-                .listRowBackground(Color.clear)
+                basicInfoSection
+                categorySection
+                tagsSection
+                imageSection
+                notesSection
             }
             .formStyle(.grouped)
             .scrollContentBackground(.hidden)
@@ -224,7 +80,7 @@ struct QuickAddProductView: View {
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .navigationBarBackButtonHidden(true)
-            .toolbar {
+            .toolbar(content: {
                 #if os(iOS)
                 ToolbarItemGroup(placement: .topBarLeading) {
                     Button("取消") {
@@ -242,14 +98,14 @@ struct QuickAddProductView: View {
                     .fontWeight(.medium)
                 }
                 #else
-                ToolbarItemGroup(placement: .navigation) {
+                SwiftUI.ToolbarItem(placement: .cancellationAction) {
                     Button("取消") {
                         dismiss()
                     }
                     .foregroundColor(.secondary)
+                }
 
-                    Spacer()
-
+                SwiftUI.ToolbarItem(placement: .confirmationAction) {
                     Button("保存") {
                         saveProduct()
                     }
@@ -258,7 +114,7 @@ struct QuickAddProductView: View {
                     .fontWeight(.medium)
                 }
                 #endif
-            }
+            })
         }
         .sheet(isPresented: $showingImagePicker) {
             #if os(iOS)
@@ -283,6 +139,163 @@ struct QuickAddProductView: View {
         }
     }
     
+    // MARK: - 视图组件
+    private var basicInfoSection: some View {
+        Section {
+            VStack(spacing: 12) {
+                TextField("产品名称", text: $productName)
+                    .textFieldStyle(.roundedBorder)
+
+                HStack(spacing: 12) {
+                    TextField("品牌", text: $brand)
+                        .textFieldStyle(.roundedBorder)
+                    TextField("型号", text: $model)
+                        .textFieldStyle(.roundedBorder)
+                }
+            }
+            .padding(.vertical, 8)
+        } header: {
+            HStack {
+                Image(systemName: "info.circle")
+                    .foregroundColor(.blue)
+                Text("基本信息")
+            }
+        }
+        .listRowBackground(Color.clear)
+    }
+
+    private var categorySection: some View {
+        Section {
+            Picker("分类", selection: $selectedCategory) {
+                Text("未分类").tag(Category?.none)
+                ForEach(categories, id: \.self) { category in
+                    Label(category.categoryName, systemImage: category.categoryIcon)
+                        .tag(Category?.some(category))
+                }
+            }
+            .pickerStyle(.menu)
+            .padding(.vertical, 4)
+        } header: {
+            HStack {
+                Image(systemName: "folder")
+                    .foregroundColor(.orange)
+                Text("分类")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var tagsSection: some View {
+        if !tags.isEmpty {
+            Section {
+                LazyVGrid(columns: [
+                    GridItem(.adaptive(minimum: 90), spacing: 8)
+                ], spacing: 8) {
+                    ForEach(tags, id: \.self) { tag in
+                        QuickAddTagChip(
+                            tag: tag,
+                            isSelected: selectedTags.contains(tag)
+                        ) {
+                            toggleTag(tag)
+                        }
+                    }
+                }
+                .padding(.vertical, 8)
+            } header: {
+                HStack {
+                    Image(systemName: "tag")
+                        .foregroundColor(.green)
+                    Text("标签")
+                    Spacer()
+                    if !selectedTags.isEmpty {
+                        Text("已选择 \(selectedTags.count) 个")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .listRowBackground(Color.clear)
+        }
+    }
+
+    private var imageSection: some View {
+        Section {
+            VStack(spacing: 12) {
+                if let selectedImage = selectedImage {
+                    VStack(spacing: 8) {
+                        #if os(iOS)
+                        Image(uiImage: selectedImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxHeight: 120)
+                            .cornerRadius(12)
+                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        #else
+                        Image(nsImage: selectedImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxHeight: 120)
+                            .cornerRadius(12)
+                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        #endif
+
+                        Button("重新选择图片") {
+                            showingImagePicker = true
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    }
+                } else {
+                    Button(action: { showingImagePicker = true }) {
+                        VStack(spacing: 8) {
+                            Image(systemName: "camera.fill")
+                                .font(.title2)
+                                .foregroundColor(.blue)
+                            Text("添加产品图片")
+                                .font(.subheadline)
+                                .foregroundColor(.primary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 80)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.blue.opacity(0.1))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.blue.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [5]))
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, 8)
+        } header: {
+            HStack {
+                Image(systemName: "photo")
+                    .foregroundColor(.purple)
+                Text("产品图片")
+            }
+        }
+        .listRowBackground(Color.clear)
+    }
+
+    private var notesSection: some View {
+        Section {
+            TextField("添加产品备注信息...", text: $notes, axis: .vertical)
+                .lineLimit(3...6)
+                .textFieldStyle(.roundedBorder)
+                .padding(.vertical, 4)
+        } header: {
+            HStack {
+                Image(systemName: "note.text")
+                    .foregroundColor(.gray)
+                Text("备注")
+            }
+        }
+        .listRowBackground(Color.clear)
+    }
+
     private func saveProduct() {
         let product = Product(context: viewContext)
         product.name = productName
@@ -294,7 +307,7 @@ struct QuickAddProductView: View {
         product.createdAt = Date()
         product.updatedAt = Date()
         product.id = UUID()
-        
+
         if let selectedImage = selectedImage {
             // 保存图片数据到 CoreData
             #if os(iOS)
@@ -309,7 +322,7 @@ struct QuickAddProductView: View {
             }
             #endif
         }
-        
+
         do {
             try viewContext.save()
             dismiss()

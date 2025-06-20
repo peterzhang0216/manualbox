@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 import Foundation
+import Combine
 
 // 创建 EnvironmentKey 传递选中产品状态
 struct SelectedProductKey: EnvironmentKey {
@@ -27,14 +28,27 @@ struct MainTabView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var notificationManager: AppNotificationManager
     @StateObject private var notificationObserver = NotificationObserver()
-    
+
     @State private var selectedTab: SelectionValue? = .main(0)
     @State private var selectedProduct: Product? = nil
     @State private var showingAddProduct = false
-    
+
     // 产品相关状态
     @State private var searchText = ""
     @State private var isEditing = false
+
+    // 设置状态管理
+    @StateObject private var settingsViewModel: SettingsViewModel
+
+    // 产品选择管理器
+    @StateObject private var productSelectionManager: ProductSelectionManager
+
+    // 初始化器
+    init() {
+        let context = PersistenceController.shared.container.viewContext
+        _settingsViewModel = StateObject(wrappedValue: SettingsViewModel(viewContext: context))
+        _productSelectionManager = StateObject(wrappedValue: ProductSelectionManager(viewContext: context))
+    }
     
     @FetchRequest(
         entity: Category.entity(),
@@ -97,203 +111,9 @@ struct MainTabView: View {
     }
     
     var body: some View {
-        // 主题设置
-        let colorScheme: ColorScheme? = {
-            switch appTheme {
-            case "light": return .light
-            case "dark": return .dark
-            default: return nil
-            }
-        }()
-        let accentColor: Color = {
-            switch accentColorKey {
-            case "blue": return .blue
-            case "green": return .green
-            case "orange": return .orange
-            case "pink": return .pink
-            case "purple": return .purple
-            case "red": return .red
-            default: return .accentColor
-            }
-        }()
-        UnifiedSplitView(
-            selection: $selectedTab,
-            selectedItem: $selectedProduct,
-            sidebar: {
-                #if os(macOS)
-                SidebarView(selection: $selectedTab)
-                #else
-                EmptyView()
-                #endif
-            },
-            content: {
-                // 内容区：根据选中Tab/分类/标签动态切换
-                ZStack {
-                    if let selection = selectedTab {
-                        switch selection {
-                        case .main(let index):
-                            switch index {
-                            case 0:
-                                EnhancedProductListView(
-                                    filteredProducts: filteredProducts,
-                                    searchText: searchText,
-                                    deleteProducts: deleteProducts
-                                )
-                                    .environment(\.selectedProduct, $selectedProduct)
-                                    .adaptiveLayout()
-                            case 1:
-                                ContentUnavailableView {
-                                    Label("分类管理", systemImage: "folder")
-                                } description: {
-                                    Text("请从左侧选择一个分类查看相关产品")
-                                }
-                                .padding(.top, 20)
-                            case 2:
-                                ContentUnavailableView {
-                                    Label("标签管理", systemImage: "tag")
-                                } description: {
-                                    Text("请从左侧选择一个标签查看相关产品")
-                                }
-                                .padding(.top, 20)
-                            case 3:
-                                RepairRecordsView()
-                            default:
-                                #if os(macOS)
-                                EnhancedProductListView(
-                                    filteredProducts: filteredProducts,
-                                    searchText: searchText,
-                                    deleteProducts: deleteProducts
-                                )
-                                    .environment(\.selectedProduct, $selectedProduct)
-                                #else
-                                EnhancedProductListView(
-                                    filteredProducts: filteredProducts,
-                                    searchText: searchText,
-                                    deleteProducts: deleteProducts
-                                )
-                                    .environment(\.selectedProduct, $selectedProduct)
-                                #endif
-                            }
-                        case .category(let id):
-                            if let category = categories.first(where: { $0.id == id }) {
-                                CategoryDetailView(category: category)
-                                    .environment(\.selectedProduct, $selectedProduct)
-                                    .adaptiveLayout()
-                            } else {
-                                EnhancedProductListView(
-                                    filteredProducts: filteredProducts,
-                                    searchText: searchText,
-                                    deleteProducts: deleteProducts
-                                )
-                                    .environment(\.selectedProduct, $selectedProduct)
-                                    .adaptiveLayout()
-                            }
-                        case .tag(let id):
-                            if let tag = tags.first(where: { $0.id == id }) {
-                                TagDetailView(tag: tag)
-                                    .environment(\.selectedProduct, $selectedProduct)
-                                    .adaptiveLayout()
-                            } else {
-                                EnhancedProductListView(
-                                    filteredProducts: filteredProducts,
-                                    searchText: searchText,
-                                    deleteProducts: deleteProducts
-                                )
-                                    .environment(\.selectedProduct, $selectedProduct)
-                                    .adaptiveLayout()
-                            }
-                        case .settings(let panel):
-                            settingsDetailView(for: panel)
-                        }
-                    } else {
-                        #if os(macOS)
-                        EnhancedProductListView(
-                            filteredProducts: filteredProducts,
-                            searchText: searchText,
-                            deleteProducts: deleteProducts
-                        )
-                            .environment(\.selectedProduct, $selectedProduct)
-                        #else
-                        EnhancedProductListView(
-                            filteredProducts: filteredProducts,
-                            searchText: searchText,
-                            deleteProducts: deleteProducts
-                        )
-                            .environment(\.selectedProduct, $selectedProduct)
-                        #endif
-                    }
-                }
-            },
-            detail: {
-                // 详情区
-                if let selection = selectedTab {
-                    switch selection {
-                    case .main(let index):
-                        switch index {
-                        case 0:
-                            if let product = selectedProduct {
-                                ProductDetailView(product: product)
-                                    .id(product.id?.uuidString ?? "unknown")
-                            } else {
-                                ContentUnavailableView {
-                                    Label("暂无选中商品", systemImage: "shippingbox")
-                                } description: {
-                                    Text("请从列表中选择一个商品查看详情")
-                                }
-                                .padding(.top, 20)
-                            }
-                        case 1:
-                            CategoryDetailView(category: categories.first ?? Category(context: viewContext))
-                        case 2:
-                            TagDetailView(tag: tags.first ?? Tag(context: viewContext))
-                        case 3:
-                            EmptyView()
-                        default:
-                            EmptyView()
-                        }
-                    case .settings(_):
-                        EmptyView()
-                    case .category(let id):
-                        if let category = categories.first(where: { $0.id == id }) {
-                            if let product = selectedProduct {
-                                ProductDetailView(product: product)
-                                    .id(product.id?.uuidString ?? "unknown")
-                            } else {
-                                ContentUnavailableView {
-                                    Label("请选择产品", systemImage: "hand.tap")
-                                } description: {
-                                    Text("从左侧\"\(category.categoryName)\"分类中选择一个产品查看详情")
-                                }
-                                .padding(.top, 20)
-                            }
-                        }
-                    case .tag(let id):
-                        if let tag = tags.first(where: { $0.id == id }) {
-                            if let product = selectedProduct {
-                                ProductDetailView(product: product)
-                                    .id(product.id?.uuidString ?? "unknown")
-                            } else {
-                                ContentUnavailableView {
-                                    Label("请选择产品", systemImage: "hand.tap")
-                                } description: {
-                                    Text("从左侧\"\(tag.tagName)\"标签中选择一个产品查看详情")
-                                }
-                                .padding(.top, 20)
-                            }
-                        }
-                    }
-                } else {
-                    ContentUnavailableView {
-                        Label("暂无选中内容", systemImage: "square.3.layers.3d")
-                    } description: {
-                        Text("请从左侧选择要查看的内容")
-                    }
-                    .padding(.top, 20)
-                }
-            }
-        )
-        .preferredColorScheme(colorScheme)
-        .accentColor(accentColor)
+        mainView
+            .preferredColorScheme(computedColorScheme)
+            .accentColor(computedAccentColor)
         .toolbar(content: {
             SwiftUI.ToolbarItem(placement: .primaryAction) {
                 Button(action: { showingAddProduct = true }) {
@@ -315,39 +135,490 @@ struct MainTabView: View {
         .onAppear {
             notificationManager.updateAllWarrantyReminders(in: viewContext)
             setupNotificationObservers()
+            setupProductSelectionObserver()
+
+            // 初始化产品选择
+            productSelectionManager.send(.updateAvailableProducts(Array(products)))
+            productSelectionManager.smartSelectProduct(from: filteredProducts, context: .default)
         }
         .onChange(of: selectedTab) { oldValue, newValue in
             // 当选中的标签页改变时，清空选中的商品
             if oldValue != newValue {
+                productSelectionManager.send(.clearSelection)
                 selectedProduct = nil
+            }
+        }
+        .onChange(of: filteredProducts) { oldValue, newValue in
+            // 当筛选结果改变时，更新产品选择管理器
+            productSelectionManager.send(.updateFilteredProducts(newValue))
+        }
+        .onChange(of: Array(products)) { oldValue, newValue in
+            // 当产品列表改变时，更新可用产品
+            productSelectionManager.send(.updateAvailableProducts(newValue))
+        }
+    }
+
+    // MARK: - 计算属性
+
+    private var computedColorScheme: ColorScheme? {
+        switch appTheme {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+
+    private var computedAccentColor: Color {
+        switch accentColorKey {
+        case "blue": return .blue
+        case "green": return .green
+        case "orange": return .orange
+        case "pink": return .pink
+        case "purple": return .purple
+        case "red": return .red
+        default: return .accentColor
+        }
+    }
+
+    // MARK: - 主视图
+
+    private var mainView: some View {
+        UnifiedSplitView(
+            selection: $selectedTab,
+            selectedItem: $selectedProduct,
+            sidebar: { sidebarContent },
+            content: { contentView },
+            detail: { detailView }
+        )
+    }
+
+    @ViewBuilder
+    private var sidebarContent: some View {
+        #if os(macOS)
+        SidebarView(selection: $selectedTab)
+        #else
+        EmptyView()
+        #endif
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        ZStack {
+            if let selection = selectedTab {
+                contentForSelection(selection)
+            } else {
+                defaultProductListView
             }
         }
     }
 
-    // 设置详情视图
+    @ViewBuilder
+    private func contentForSelection(_ selection: SelectionValue) -> some View {
+        switch selection {
+        case .main(let index):
+            mainContentView(for: index)
+        case .category(let id):
+            categoryContentView(for: id)
+        case .tag(let id):
+            tagContentView(for: id)
+        case .settings(let panel):
+            settingsDetailView(for: panel)
+        }
+    }
+
+    @ViewBuilder
+    private func mainContentView(for index: Int) -> some View {
+        switch index {
+        case 0:
+            productListView
+        case 1:
+            categoryPlaceholderView
+        case 2:
+            tagPlaceholderView
+        case 3:
+            RepairRecordsView()
+        default:
+            defaultProductListView
+        }
+    }
+
+    @ViewBuilder
+    private func categoryContentView(for id: UUID) -> some View {
+        if let category = categories.first(where: { $0.id == id }) {
+            CategoryDetailView(category: category)
+                .environment(\.selectedProduct, $selectedProduct)
+                .productSelectionManager(productSelectionManager)
+                .adaptiveLayout()
+        } else {
+            productListView
+        }
+    }
+
+    @ViewBuilder
+    private func tagContentView(for id: UUID) -> some View {
+        if let tag = tags.first(where: { $0.id == id }) {
+            TagDetailView(tag: tag)
+                .environment(\.selectedProduct, $selectedProduct)
+                .productSelectionManager(productSelectionManager)
+                .adaptiveLayout()
+        } else {
+            productListView
+        }
+    }
+
+    @ViewBuilder
+    private var productListView: some View {
+        EnhancedProductListView(
+            filteredProducts: filteredProducts,
+            searchText: searchText,
+            deleteProducts: deleteProducts
+        )
+        .environment(\.selectedProduct, $selectedProduct)
+        .productSelectionManager(productSelectionManager)
+        .adaptiveLayout()
+    }
+
+    @ViewBuilder
+    private var defaultProductListView: some View {
+        EnhancedProductListView(
+            filteredProducts: filteredProducts,
+            searchText: searchText,
+            deleteProducts: deleteProducts
+        )
+        .environment(\.selectedProduct, $selectedProduct)
+        .productSelectionManager(productSelectionManager)
+    }
+
+    @ViewBuilder
+    private var categoryPlaceholderView: some View {
+        ContentUnavailableView {
+            Label("分类管理", systemImage: "folder")
+        } description: {
+            Text("请从左侧选择一个分类查看相关产品")
+        }
+        .padding(.top, 20)
+    }
+
+    @ViewBuilder
+    private var tagPlaceholderView: some View {
+        ContentUnavailableView {
+            Label("标签管理", systemImage: "tag")
+        } description: {
+            Text("请从左侧选择一个标签查看相关产品")
+        }
+        .padding(.top, 20)
+    }
+
+    @ViewBuilder
+    private var detailView: some View {
+        if let selection = selectedTab {
+            detailForSelection(selection)
+        } else {
+            emptyDetailView
+        }
+    }
+
+    @ViewBuilder
+    private func detailForSelection(_ selection: SelectionValue) -> some View {
+        switch selection {
+        case .main(let index):
+            mainDetailView(for: index)
+        case .settings(let panel):
+            settingsDetailPanelView(for: panel)
+        case .category(let id):
+            categoryDetailView(for: id)
+        case .tag(let id):
+            tagDetailView(for: id)
+        }
+    }
+
+    @ViewBuilder
+    private func mainDetailView(for index: Int) -> some View {
+        switch index {
+        case 0:
+            productDetailOrPlaceholder
+        case 1:
+            CategoryDetailView(category: categories.first ?? Category(context: viewContext))
+        case 2:
+            TagDetailView(tag: tags.first ?? Tag(context: viewContext))
+        case 3:
+            EmptyView()
+        default:
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func categoryDetailView(for id: UUID) -> some View {
+        if let category = categories.first(where: { $0.id == id }) {
+            if let product = selectedProduct {
+                ProductDetailView(product: product)
+                    .id(product.id?.uuidString ?? "unknown")
+            } else {
+                ContentUnavailableView {
+                    Label("请选择产品", systemImage: "hand.tap")
+                } description: {
+                    Text("从左侧\"\(category.categoryName)\"分类中选择一个产品查看详情")
+                }
+                .padding(.top, 20)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func tagDetailView(for id: UUID) -> some View {
+        if let tag = tags.first(where: { $0.id == id }) {
+            if let product = selectedProduct {
+                ProductDetailView(product: product)
+                    .id(product.id?.uuidString ?? "unknown")
+            } else {
+                ContentUnavailableView {
+                    Label("请选择产品", systemImage: "hand.tap")
+                } description: {
+                    Text("从左侧\"\(tag.tagName)\"标签中选择一个产品查看详情")
+                }
+                .padding(.top, 20)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var productDetailOrPlaceholder: some View {
+        if let product = selectedProduct {
+            ProductDetailView(product: product)
+                .id(product.id?.uuidString ?? "unknown")
+        } else {
+            ContentUnavailableView {
+                Label("暂无选中商品", systemImage: "shippingbox")
+            } description: {
+                Text("请从列表中选择一个商品查看详情")
+            }
+            .padding(.top, 20)
+        }
+    }
+
+    @ViewBuilder
+    private var emptyDetailView: some View {
+        ContentUnavailableView {
+            Label("暂无选中内容", systemImage: "square.3.layers.3d")
+        } description: {
+            Text("请从左侧选择要查看的内容")
+        }
+        .padding(.top, 20)
+    }
+
+    // 设置详情视图（中间栏）
     @ViewBuilder
     private func settingsDetailView(for panel: SettingsPanel) -> some View {
-        switch panel {
-        case .notification:
-            NotificationAdvancedSettingsPanel()
-        case .theme:
-            ThemeSettingsPanel()
-        case .data:
-            DataSettingsPanel(
-                defaultWarrantyPeriod: Binding(
-                    get: { UserDefaults.standard.integer(forKey: "defaultWarrantyPeriod") == 0 ? 12 : UserDefaults.standard.integer(forKey: "defaultWarrantyPeriod") },
-                    set: { UserDefaults.standard.set($0, forKey: "defaultWarrantyPeriod") }
-                ),
-                enableOCRByDefault: Binding(
-                    get: { UserDefaults.standard.bool(forKey: "enableOCRByDefault") },
-                    set: { UserDefaults.standard.set($0, forKey: "enableOCRByDefault") }
-                )
-            )
-        case .about:
-            AboutSettingsPanel(
-                showPrivacySheet: .constant(false),
-                showAgreementSheet: .constant(false)
-            )
+        SettingsDetailView(viewModel: settingsViewModel)
+            .id(panel.rawValue) // 确保面板切换时视图刷新
+            .onAppear {
+                // 确保选中的面板与ViewModel同步
+                if settingsViewModel.selectedPanel != panel {
+                    Task {
+                        await settingsViewModel.send(.selectPanel(panel))
+                    }
+                }
+            }
+    }
+
+    // 设置详情面板视图（右侧栏）
+    @ViewBuilder
+    private func settingsDetailPanelView(for panel: SettingsPanel) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            // 面板标题
+            HStack {
+                Image(systemName: panel.icon)
+                    .font(.title2)
+                    .foregroundColor(.accentColor)
+                Text(panel.title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.top)
+
+            Divider()
+
+            // 面板描述和快速操作
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    switch panel {
+                    case .notification:
+                        settingsNotificationSummary()
+                    case .theme:
+                        settingsThemeSummary()
+                    case .data:
+                        settingsDataSummary()
+                    case .about:
+                        settingsAboutSummary()
+                    }
+                }
+                .padding(.horizontal)
+            }
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+    }
+
+    // MARK: - 设置面板摘要视图
+
+    @ViewBuilder
+    private func settingsNotificationSummary() -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("通知设置概览")
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            Text("管理应用通知偏好，包括保修提醒、维修通知等。")
+                .font(.body)
+                .foregroundColor(.secondary)
+
+            HStack {
+                Image(systemName: "bell.badge")
+                    .foregroundColor(.orange)
+                Text("通知状态: \(settingsViewModel.enableNotifications ? "已启用" : "已禁用")")
+                    .font(.subheadline)
+                Spacer()
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(Color.secondary.opacity(0.1))
+            .cornerRadius(8)
+        }
+    }
+
+    @ViewBuilder
+    private func settingsThemeSummary() -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("外观设置概览")
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            Text("自定义应用外观，包括主题模式、强调色等。")
+                .font(.body)
+                .foregroundColor(.secondary)
+
+            VStack(spacing: 8) {
+                HStack {
+                    Image(systemName: "circle.lefthalf.filled")
+                        .foregroundColor(.purple)
+                    Text("主题: \(themeDisplayName)")
+                        .font(.subheadline)
+                    Spacer()
+                }
+
+                HStack {
+                    Image(systemName: "paintbrush.pointed")
+                        .foregroundColor(.accentColor)
+                    Text("强调色: \(accentColorDisplayName)")
+                        .font(.subheadline)
+                    Spacer()
+                }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(Color.secondary.opacity(0.1))
+            .cornerRadius(8)
+        }
+    }
+
+    @ViewBuilder
+    private func settingsDataSummary() -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("数据设置概览")
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            Text("管理默认设置和数据，包括保修期、OCR等。")
+                .font(.body)
+                .foregroundColor(.secondary)
+
+            VStack(spacing: 8) {
+                HStack {
+                    Image(systemName: "calendar")
+                        .foregroundColor(.blue)
+                    Text("默认保修期: \(settingsViewModel.defaultWarrantyPeriod)个月")
+                        .font(.subheadline)
+                    Spacer()
+                }
+
+                HStack {
+                    Image(systemName: "doc.text.viewfinder")
+                        .foregroundColor(.green)
+                    Text("OCR识别: \(settingsViewModel.enableOCRByDefault ? "默认启用" : "默认禁用")")
+                        .font(.subheadline)
+                    Spacer()
+                }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(Color.secondary.opacity(0.1))
+            .cornerRadius(8)
+        }
+    }
+
+    @ViewBuilder
+    private func settingsAboutSummary() -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("关于应用")
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            Text("查看应用信息、版本号、隐私政策等。")
+                .font(.body)
+                .foregroundColor(.secondary)
+
+            VStack(spacing: 8) {
+                HStack {
+                    Image(systemName: "info.circle")
+                        .foregroundColor(.blue)
+                    Text("ManualBox")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Spacer()
+                    Text("v1.0.0")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Image(systemName: "shield.checkered")
+                        .foregroundColor(.green)
+                    Text("隐私保护")
+                        .font(.subheadline)
+                    Spacer()
+                }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(Color.secondary.opacity(0.1))
+            .cornerRadius(8)
+        }
+    }
+
+    // MARK: - 辅助计算属性
+
+    private var themeDisplayName: String {
+        switch appTheme {
+        case "light": return "浅色"
+        case "dark": return "深色"
+        default: return "跟随系统"
+        }
+    }
+
+    private var accentColorDisplayName: String {
+        switch accentColorKey {
+        case "blue": return "蓝色"
+        case "green": return "绿色"
+        case "orange": return "橙色"
+        case "pink": return "粉色"
+        case "purple": return "紫色"
+        case "red": return "红色"
+        default: return "系统默认"
         }
     }
 
@@ -381,6 +652,19 @@ struct MainTabView: View {
             }
         }
     }
+
+    private func setupProductSelectionObserver() {
+        // 监听产品选择管理器的变化
+        productSelectionManager.$currentProduct
+            .receive(on: DispatchQueue.main)
+            .sink { newProduct in
+                selectedProduct = newProduct
+            }
+            .store(in: &cancellables)
+    }
+
+    // 用于存储Combine订阅
+    @State private var cancellables = Set<AnyCancellable>()
 }
 
 #if os(macOS)
