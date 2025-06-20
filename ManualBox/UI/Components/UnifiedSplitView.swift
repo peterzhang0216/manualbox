@@ -40,9 +40,9 @@ enum SettingsPanel: String, CaseIterable, Hashable {
 
     var icon: String {
         switch self {
-        case .notification: return "bell.badge.fill"
-        case .theme: return "paintbrush"
-        case .data: return "tray.full"
+        case .notification: return "bell.badge"
+        case .theme: return "paintbrush.pointed"
+        case .data: return "externaldrive"
         case .about: return "info.circle"
         }
     }

@@ -147,12 +147,14 @@ struct MainTabView: View {
                                 } description: {
                                     Text("请从左侧选择一个分类查看相关产品")
                                 }
+                                .padding(.top, 20)
                             case 2:
                                 ContentUnavailableView {
                                     Label("标签管理", systemImage: "tag")
                                 } description: {
                                     Text("请从左侧选择一个标签查看相关产品")
                                 }
+                                .padding(.top, 20)
                             case 3:
                                 RepairRecordsView()
                             default:
@@ -238,6 +240,7 @@ struct MainTabView: View {
                                 } description: {
                                     Text("请从列表中选择一个商品查看详情")
                                 }
+                                .padding(.top, 20)
                             }
                         case 1:
                             CategoryDetailView(category: categories.first ?? Category(context: viewContext))
@@ -261,6 +264,7 @@ struct MainTabView: View {
                                 } description: {
                                     Text("从左侧\"\(category.categoryName)\"分类中选择一个产品查看详情")
                                 }
+                                .padding(.top, 20)
                             }
                         }
                     case .tag(let id):
@@ -274,6 +278,7 @@ struct MainTabView: View {
                                 } description: {
                                     Text("从左侧\"\(tag.tagName)\"标签中选择一个产品查看详情")
                                 }
+                                .padding(.top, 20)
                             }
                         }
                     }
@@ -283,6 +288,7 @@ struct MainTabView: View {
                     } description: {
                         Text("请从左侧选择要查看的内容")
                     }
+                    .padding(.top, 20)
                 }
             }
         )
@@ -512,9 +518,9 @@ struct SidebarView: View {
                     .accessibilityLabel("维修记录")
                     .accessibilityHint("查看和管理设备维修记录")
             }
-            
-            Section(header: Text("设置")) {
-                // 设置选项
+
+            // 设置项目 - 使用空的header来创建视觉分隔
+            Section(header: Text("")) {
                 ForEach(SettingsPanel.allCases, id: \.self) { panel in
                     Label(panel.title, systemImage: panel.icon)
                         .tag(SelectionValue.settings(panel))

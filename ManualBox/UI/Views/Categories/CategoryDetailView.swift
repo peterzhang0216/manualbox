@@ -51,6 +51,7 @@ struct CategoryDetailView: View {
                         }
                         .buttonStyle(.borderedProminent)
                     }
+                    .padding(.top, 20)
                     Spacer()
                 }
             } else {

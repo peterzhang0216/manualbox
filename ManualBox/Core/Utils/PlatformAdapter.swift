@@ -139,7 +139,7 @@ struct PlatformAdapter {
         #endif
     }
     
-    // MARK: - 颜色系统
+    // MARK: - 颜色系统（现代化升级）
     static var backgroundColor: Color {
         #if os(macOS)
         return Color(.windowBackgroundColor)
@@ -147,12 +147,58 @@ struct PlatformAdapter {
         return Color(.systemBackground)
         #endif
     }
-    
+
     static var secondaryBackgroundColor: Color {
         #if os(macOS)
         return Color(.controlBackgroundColor)
         #else
         return Color(.secondarySystemBackground)
+        #endif
+    }
+
+    // MARK: - 现代化颜色系统集成
+    /// 获取现代化的主背景色
+    static var modernPrimaryBackground: Color {
+        #if os(macOS)
+        return Color(.windowBackgroundColor)
+        #else
+        return Color(.systemBackground)
+        #endif
+    }
+
+    /// 获取现代化的次要背景色
+    static var modernSecondaryBackground: Color {
+        #if os(macOS)
+        return Color(.controlBackgroundColor)
+        #else
+        return Color(.secondarySystemBackground)
+        #endif
+    }
+
+    /// 获取现代化的三级背景色
+    static var modernTertiaryBackground: Color {
+        #if os(macOS)
+        return Color(.underPageBackgroundColor)
+        #else
+        return Color(.tertiarySystemBackground)
+        #endif
+    }
+
+    /// 获取现代化的前景色
+    static var modernPrimaryForeground: Color {
+        #if os(macOS)
+        return Color(.labelColor)
+        #else
+        return Color(.label)
+        #endif
+    }
+
+    /// 获取现代化的次要前景色
+    static var modernSecondaryForeground: Color {
+        #if os(macOS)
+        return Color(.secondaryLabelColor)
+        #else
+        return Color(.secondaryLabel)
         #endif
     }
     
@@ -357,6 +403,43 @@ struct PlatformAdapter {
     static var shouldPreloadImages: Bool {
         return devicePerformanceLevel == .high && shouldUseMemoryCache
     }
+
+    // MARK: - 现代化布局系统
+    /// 现代化的卡片圆角半径
+    static var modernCardCornerRadius: CGFloat {
+        #if os(macOS)
+        return 12
+        #else
+        return 16
+        #endif
+    }
+
+    /// 现代化的内容间距
+    static var modernContentSpacing: CGFloat {
+        #if os(macOS)
+        return 12
+        #else
+        return 16
+        #endif
+    }
+
+    /// 现代化的分组间距
+    static var modernGroupSpacing: CGFloat {
+        #if os(macOS)
+        return 20
+        #else
+        return 24
+        #endif
+    }
+
+    /// 现代化的默认内边距
+    static var modernDefaultPadding: CGFloat {
+        #if os(macOS)
+        return 20
+        #else
+        return 20
+        #endif
+    }
 }
 
 // MARK: - 交互模式枚举
@@ -371,6 +454,18 @@ enum NavigationStyle {
     case sidebar
     case stack
     case tabs
+}
+
+// MARK: - 现代化设计系统枚举
+enum PlatformBackgroundLevel {
+    case primary
+    case secondary
+    case tertiary
+}
+
+enum PlatformForegroundLevel {
+    case primary
+    case secondary
 }
 
 // MARK: - SwiftUI 视图扩展
@@ -400,6 +495,46 @@ extension View {
                 RoundedRectangle(cornerRadius: PlatformAdapter.cardCornerRadius)
                     .fill(PlatformAdapter.secondaryBackgroundColor)
             )
+    }
+
+    // MARK: - 现代化设计系统扩展
+    /// 应用现代化的 Liquid Glass 卡片样式
+    @ViewBuilder
+    func modernCard(
+        material: LiquidGlassMaterial = .thin,
+        padding: CGFloat? = nil,
+        cornerRadius: CGFloat? = nil
+    ) -> some View {
+        self
+            .padding(padding ?? PlatformAdapter.defaultPadding)
+            .liquidGlass(
+                material: material,
+                cornerRadius: cornerRadius ?? PlatformAdapter.modernCardCornerRadius
+            )
+    }
+
+    /// 应用现代化的背景色
+    @ViewBuilder
+    func modernBackground(_ level: PlatformBackgroundLevel = .primary) -> some View {
+        switch level {
+        case .primary:
+            self.background(PlatformAdapter.modernPrimaryBackground)
+        case .secondary:
+            self.background(PlatformAdapter.modernSecondaryBackground)
+        case .tertiary:
+            self.background(PlatformAdapter.modernTertiaryBackground)
+        }
+    }
+
+    /// 应用现代化的前景色
+    @ViewBuilder
+    func modernForeground(_ level: PlatformForegroundLevel = .primary) -> some View {
+        switch level {
+        case .primary:
+            self.foregroundColor(PlatformAdapter.modernPrimaryForeground)
+        case .secondary:
+            self.foregroundColor(PlatformAdapter.modernSecondaryForeground)
+        }
     }
     
     @ViewBuilder

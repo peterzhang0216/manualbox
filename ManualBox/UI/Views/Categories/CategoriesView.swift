@@ -73,6 +73,7 @@ struct CategoriesView: View {
                     }
                     .buttonStyle(.borderedProminent)
                 }
+                .padding(.top, 20)
             } else {
                 List {
                     ForEach(categories) { category in
