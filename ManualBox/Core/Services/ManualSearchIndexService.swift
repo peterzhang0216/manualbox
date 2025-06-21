@@ -52,7 +52,7 @@ class ManualSearchIndexService: ObservableObject {
                 }
             }
             
-            await indexQueue.async {
+            indexQueue.async {
                 self.searchIndex = newIndex
                 self.saveSearchIndex()
             }
@@ -153,7 +153,7 @@ class ManualSearchIndexService: ObservableObject {
         let keywords = tokenizeText(query)
         var results: [ManualSearchResult] = []
         
-        await indexQueue.async {
+        indexQueue.sync {
             for keyword in keywords {
                 let lowercasedKeyword = keyword.lowercased()
                 if let entries = self.searchIndex[lowercasedKeyword] {
@@ -164,7 +164,7 @@ class ManualSearchIndexService: ObservableObject {
                                 continue
                             }
                         }
-                        
+
                         // 查找或更新结果
                         if let existingIndex = results.firstIndex(where: { $0.manual.id == entry.manualId }) {
                             // 更新现有结果的相关性分数
@@ -223,14 +223,14 @@ class ManualSearchIndexService: ObservableObject {
     
     /// 获取搜索建议
     func getSearchSuggestions(for query: String) async -> [String] {
-        let suggestions = await indexQueue.sync {
+        let suggestions = indexQueue.sync {
             let lowercasedQuery = query.lowercased()
             return searchIndex.keys
                 .filter { $0.hasPrefix(lowercasedQuery) }
                 .prefix(10)
                 .map { $0 }
         }
-        
+
         return Array(suggestions)
     }
     
@@ -275,7 +275,7 @@ class ManualSearchIndexService: ObservableObject {
         // 添加新索引
         let entries = createIndexEntries(for: content, manual: manual)
         
-        await indexQueue.async {
+        indexQueue.async {
             for entry in entries {
                 let keyword = entry.keyword.lowercased()
                 if self.searchIndex[keyword] == nil {
@@ -289,7 +289,7 @@ class ManualSearchIndexService: ObservableObject {
     
     /// 从索引中移除说明书
     func removeFromIndex(manualId: UUID) async {
-        await indexQueue.async {
+        indexQueue.async {
             for (keyword, entries) in self.searchIndex {
                 self.searchIndex[keyword] = entries.filter { $0.manualId != manualId }
             }

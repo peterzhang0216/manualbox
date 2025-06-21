@@ -57,7 +57,7 @@ struct LocalizationDemoView: View {
                 Text("English").tag("en")
             }
             .pickerStyle(SegmentedPickerStyle())
-            .onChange(of: selectedLanguage) { newLanguage in
+            .onChange(of: selectedLanguage) { _, newLanguage in
                 localizationManager.setLanguage(newLanguage)
             }
         }

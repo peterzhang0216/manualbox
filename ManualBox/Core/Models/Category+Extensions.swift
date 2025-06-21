@@ -29,13 +29,13 @@ extension Category {
     
     // 添加createdAt和updatedAt属性
     var createdAt: Date? {
-        get { objc_getAssociatedObject(self, &AssociatedKeys.createdAtKey) as? Date }
-        set { objc_setAssociatedObject(self, &AssociatedKeys.createdAtKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+        get { objc_getAssociatedObject(self, AssociatedKeys.createdAtKey) as? Date }
+        set { objc_setAssociatedObject(self, AssociatedKeys.createdAtKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
-    
+
     var updatedAt: Date? {
-        get { objc_getAssociatedObject(self, &AssociatedKeys.updatedAtKey) as? Date }
-        set { objc_setAssociatedObject(self, &AssociatedKeys.updatedAtKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+        get { objc_getAssociatedObject(self, AssociatedKeys.updatedAtKey) as? Date }
+        set { objc_setAssociatedObject(self, AssociatedKeys.updatedAtKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
     
     // MARK: - 工厂方法
@@ -82,8 +82,8 @@ extension Category {
     
     // MARK: - Associated Objects Keys
     private struct AssociatedKeys {
-        static var createdAtKey = "category_createdAt"
-        static var updatedAtKey = "category_updatedAt"
+        static let createdAtKey = UnsafeRawPointer(bitPattern: "category_createdAt".hashValue)!
+        static let updatedAtKey = UnsafeRawPointer(bitPattern: "category_updatedAt".hashValue)!
     }
     
     // MARK: - 预览数据

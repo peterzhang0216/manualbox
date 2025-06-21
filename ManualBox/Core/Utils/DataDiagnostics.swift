@@ -331,32 +331,27 @@ extension PersistenceController {
     /// 自动修复重复数据问题
     @MainActor
     func autoFixDuplicateData() async -> (success: Bool, message: String, result: DataDiagnostics.DiagnosticResult?) {
-        do {
-            // 1. 先诊断当前状态
-            let initialResult = await quickDiagnose()
-            print("[AutoFix] 初始诊断结果: \(initialResult.summary)")
+        // 1. 先诊断当前状态
+        let initialResult = await quickDiagnose()
+        print("[AutoFix] 初始诊断结果: \(initialResult.summary)")
 
-            if !initialResult.hasIssues {
-                return (true, "数据状态良好，未发现重复项", initialResult)
-            }
+        if !initialResult.hasIssues {
+            return (true, "数据状态良好，未发现重复项", initialResult)
+        }
 
-            // 2. 执行清理
-            await cleanupDuplicateData()
-            print("[AutoFix] 重复数据清理完成")
+        // 2. 执行清理
+        await cleanupDuplicateData()
+        print("[AutoFix] 重复数据清理完成")
 
-            // 3. 再次诊断验证结果
-            let finalResult = await quickDiagnose()
-            print("[AutoFix] 最终诊断结果: \(finalResult.summary)")
+        // 3. 再次诊断验证结果
+        let finalResult = await quickDiagnose()
+        print("[AutoFix] 最终诊断结果: \(finalResult.summary)")
 
-            if finalResult.hasIssues {
-                return (false, "清理后仍存在重复数据: \(finalResult.summary)", finalResult)
-            } else {
-                let message = "重复数据修复成功！清理了 \(initialResult.duplicateCategories.count) 个重复分类和 \(initialResult.duplicateTags.count) 个重复标签"
-                return (true, message, finalResult)
-            }
-
-        } catch {
-            return (false, "修复过程中出错: \(error.localizedDescription)", nil)
+        if finalResult.hasIssues {
+            return (false, "清理后仍存在重复数据: \(finalResult.summary)", finalResult)
+        } else {
+            let message = "重复数据修复成功！清理了 \(initialResult.duplicateCategories.count) 个重复分类和 \(initialResult.duplicateTags.count) 个重复标签"
+            return (true, message, finalResult)
         }
     }
 }

@@ -139,6 +139,7 @@ class ImportService {
         warningCallback: WarningCallback? = nil
     ) async throws -> ImportResult {
         var warnings: [String] = []
+        _ = warnings // 标记为已使用，避免编译警告
         progressCallback?(0.1)
         
         // 读取JSON文件内容
@@ -514,7 +515,7 @@ class ImportService {
     ) async throws -> ImportResult {
         let backgroundContext = PersistenceController.shared.newBackgroundContext()
         var importedCount = 0
-        var warnings: [String] = []
+        let warnings: [String] = []
         
         return try await withCheckedThrowingContinuation { continuation in
             backgroundContext.perform {
