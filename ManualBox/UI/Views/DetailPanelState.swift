@@ -93,6 +93,24 @@ enum DetailPanelState: Equatable {
             return "plus.square"
         }
     }
+
+    var isEditingCategory: Bool {
+        switch self {
+        case .editCategory:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isEditingTag: Bool {
+        switch self {
+        case .editTag:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 // MARK: - 详情面板状态管理器

@@ -137,6 +137,9 @@ struct MainTabView: View {
             productSelectionManager.send(.updateAvailableProducts(Array(products)))
             productSelectionManager.smartSelectProduct(from: filteredProducts, context: .default)
         }
+        .onChange(of: detailPanelStateManager.currentState) { oldState, newState in
+            handleDetailPanelStateChange(newState)
+        }
         .onChange(of: selectedTab) { oldValue, newValue in
             // 当选中的标签页改变时，清空选中的商品
             if oldValue != newValue {
@@ -287,22 +290,50 @@ struct MainTabView: View {
 
     @ViewBuilder
     private var categoryPlaceholderView: some View {
-        ContentUnavailableView {
-            Label("分类管理", systemImage: "folder")
-        } description: {
-            Text("请从左侧选择一个分类查看相关产品")
+        // 根据详情面板状态决定显示内容
+        if detailPanelStateManager.currentState == .addCategory ||
+           detailPanelStateManager.currentState.isEditingCategory {
+            CategoriesView()
+                .environment(\.selectedProduct, $selectedProduct)
+                .productSelectionManager(productSelectionManager)
+                .adaptiveLayout()
+        } else {
+            ContentUnavailableView {
+                Label("分类管理", systemImage: "folder")
+            } description: {
+                Text("请从左侧选择一个分类查看相关产品，或点击右上角的 + 按钮添加新分类")
+            } actions: {
+                Button("添加分类") {
+                    detailPanelStateManager.showAddCategory()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding(.top, 20)
         }
-        .padding(.top, 20)
     }
 
     @ViewBuilder
     private var tagPlaceholderView: some View {
-        ContentUnavailableView {
-            Label("标签管理", systemImage: "tag")
-        } description: {
-            Text("请从左侧选择一个标签查看相关产品")
+        // 根据详情面板状态决定显示内容
+        if detailPanelStateManager.currentState == .addTag ||
+           detailPanelStateManager.currentState.isEditingTag {
+            TagsView()
+                .environment(\.selectedProduct, $selectedProduct)
+                .productSelectionManager(productSelectionManager)
+                .adaptiveLayout()
+        } else {
+            ContentUnavailableView {
+                Label("标签管理", systemImage: "tag")
+            } description: {
+                Text("请从左侧选择一个标签查看相关产品，或点击右上角的 + 按钮添加新标签")
+            } actions: {
+                Button("添加标签") {
+                    detailPanelStateManager.showAddTag()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding(.top, 20)
         }
-        .padding(.top, 20)
     }
 
     @ViewBuilder
@@ -409,7 +440,7 @@ struct MainTabView: View {
                 // 确保选中的面板与ViewModel同步
                 if settingsViewModel.selectedPanel != panel {
                     Task {
-                        await settingsViewModel.send(.selectPanel(panel))
+                        settingsViewModel.send(.selectPanel(panel))
                     }
                 }
             }
@@ -660,6 +691,26 @@ struct MainTabView: View {
                 }
             }
             .store(in: &cancellables)
+    }
+
+    private func handleDetailPanelStateChange(_ state: DetailPanelState) {
+        switch state {
+        case .addCategory, .editCategory, .categoryDetail, .categoryList:
+            // 当进入分类相关状态时，切换到分类管理页面
+            selectedTab = .main(1)
+        case .addTag, .editTag, .tagDetail, .tagList:
+            // 当进入标签相关状态时，切换到标签管理页面
+            selectedTab = .main(2)
+        case .addProduct, .editProduct:
+            // 当进入产品相关状态时，切换到产品列表页面
+            selectedTab = .main(0)
+        case .productDetail:
+            // 产品详情不需要改变中间栏
+            break
+        case .empty:
+            // 空状态不需要改变中间栏
+            break
+        }
     }
 
     // 用于存储Combine订阅
