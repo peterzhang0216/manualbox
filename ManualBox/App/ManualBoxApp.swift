@@ -37,8 +37,12 @@ struct ManualBoxApp: App {
                     Task {
                         print("[App] 开始应用初始化...")
 
-                        // 初始化通知管理器
+                        // 1. 初始化通知管理器
                         await notificationManager.requestPermission()
+
+                        // 2. 安全地初始化默认数据
+                        let initResult = await persistenceController.initializeDefaultDataSafely()
+                        print("[App] 数据初始化结果: \(initResult.summary)")
 
                         print("[App] 应用初始化完成")
                     }

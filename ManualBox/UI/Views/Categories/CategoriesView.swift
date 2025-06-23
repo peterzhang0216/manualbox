@@ -1,56 +1,6 @@
 import SwiftUI
 import CoreData
 
-
-
-struct AddCategorySheet: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @Binding var isPresented: Bool
-    @State private var categoryName = ""
-    @State private var selectedIcon = "folder"
-    
-    var body: some View {
-        Form {
-            TextField("分类名称", text: $categoryName)
-            
-            Picker("图标", selection: $selectedIcon) {
-                ForEach(systemIcons, id: \.self) { icon in
-                    Label("", systemImage: icon)
-                }
-            }
-        }
-        .formStyle(.grouped)
-        .toolbar {
-            SwiftUI.ToolbarItem(placement: .cancellationAction) {
-                Button("取消") {
-                    isPresented = false
-                }
-            }
-            SwiftUI.ToolbarItem(placement: .confirmationAction) {
-                Button("保存") {
-                    addCategory()
-                }
-                .disabled(categoryName.isEmpty)
-            }
-        }
-    }
-    
-    private func addCategory() {
-        let _ = Category.createCategoryIfNotExists(
-            in: viewContext,
-            name: categoryName,
-            icon: selectedIcon
-        )
-
-        do {
-            try viewContext.save()
-            isPresented = false
-        } catch {
-            print("保存分类失败: \(error.localizedDescription)")
-        }
-    }
-}
-
 struct CategoriesView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
@@ -58,20 +8,13 @@ struct CategoriesView: View {
         animation: .default)
     private var categories: FetchedResults<Category>
     
-    @State private var showingAddSheet = false
-    
     var body: some View {
         Group {
             if categories.isEmpty {
                 ContentUnavailableView {
                     Label("暂无分类", systemImage: "folder")
                 } description: {
-                    Text("点击右上角的 + 按钮添加新分类")
-                } actions: {
-                    Button(action: { showingAddSheet = true }) {
-                        Text("添加分类")
-                    }
-                    .buttonStyle(.borderedProminent)
+                    Text("请从左侧导航选择分类管理来添加新分类")
                 }
                 .padding(.top, 20)
             } else {
@@ -86,35 +29,6 @@ struct CategoriesView: View {
             }
         }
         .navigationTitle("分类管理")
-        .toolbar {
-            #if os(iOS)
-            ToolbarItemGroup(placement: .primaryAction) {
-                Button(action: { showingAddSheet = true }) {
-                    Label("添加分类", systemImage: "plus")
-                }
-            }
-            #else
-            SwiftUI.ToolbarItem {
-                Button(action: { showingAddSheet = true }) {
-                    Label("添加分类", systemImage: "plus")
-                }
-            }
-            #endif
-        }
-        #if os(macOS)
-        .sheet(isPresented: $showingAddSheet) {
-            AddCategorySheet(isPresented: $showingAddSheet)
-                .frame(minWidth: 400, minHeight: 200)
-                .environment(\.managedObjectContext, viewContext)
-        }
-        #else
-        .sheet(isPresented: $showingAddSheet) {
-            NavigationView {
-                AddCategorySheet(isPresented: $showingAddSheet)
-                    .navigationTitle("新建分类")
-            }
-        }
-        #endif
     }
     
     private func deleteCategories(offsets: IndexSet) {

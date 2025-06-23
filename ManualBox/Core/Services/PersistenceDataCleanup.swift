@@ -15,26 +15,32 @@ extension PersistenceController {
         let context = container.viewContext
 
         context.performAndWait {
+            print("[Persistence] 开始清理重复数据...")
+
             // 清理重复分类
-            removeDuplicateCategories(in: context)
+            let categoriesRemoved = removeDuplicateCategories(in: context)
+            print("[Persistence] 清理了 \(categoriesRemoved) 个重复分类")
 
             // 清理重复标签
-            removeDuplicateTags(in: context)
+            let tagsRemoved = removeDuplicateTags(in: context)
+            print("[Persistence] 清理了 \(tagsRemoved) 个重复标签")
 
             // 保存清理结果
             if context.hasChanges {
                 do {
                     try context.save()
-                    print("[Persistence] 重复数据清理完成")
+                    print("[Persistence] 重复数据清理完成，共清理 \(categoriesRemoved + tagsRemoved) 个重复项")
                 } catch {
                     print("[Persistence] 清理重复数据时出错: \(error.localizedDescription)")
                 }
+            } else {
+                print("[Persistence] 没有发现重复数据")
             }
         }
     }
 
     /// 清理重复分类（改进版本）
-    private func removeDuplicateCategories(in context: NSManagedObjectContext) {
+    private func removeDuplicateCategories(in context: NSManagedObjectContext) -> Int {
         let request: NSFetchRequest<Category> = Category.fetchRequest()
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Category.name, ascending: true)
@@ -77,16 +83,15 @@ extension PersistenceController {
                 context.delete(duplicate)
             }
 
-            if !duplicatesToDelete.isEmpty {
-                print("[Persistence] 已删除 \(duplicatesToDelete.count) 个重复分类")
-            }
+            return duplicatesToDelete.count
         } catch {
             print("[Persistence] 清理重复分类时出错: \(error.localizedDescription)")
+            return 0
         }
     }
 
     /// 清理重复标签（改进版本）
-    private func removeDuplicateTags(in context: NSManagedObjectContext) {
+    private func removeDuplicateTags(in context: NSManagedObjectContext) -> Int {
         let request: NSFetchRequest<Tag> = Tag.fetchRequest()
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Tag.name, ascending: true)
@@ -129,11 +134,10 @@ extension PersistenceController {
                 context.delete(duplicate)
             }
 
-            if !duplicatesToDelete.isEmpty {
-                print("[Persistence] 已删除 \(duplicatesToDelete.count) 个重复标签")
-            }
+            return duplicatesToDelete.count
         } catch {
             print("[Persistence] 清理重复标签时出错: \(error.localizedDescription)")
+            return 0
         }
     }
 

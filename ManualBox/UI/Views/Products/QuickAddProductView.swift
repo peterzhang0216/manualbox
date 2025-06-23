@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreData
+import PhotosUI
 
 #if os(iOS)
 import UIKit
@@ -10,8 +11,16 @@ import AppKit
 struct QuickAddProductView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
-    
+
     @Binding var isPresented: Bool
+    let defaultCategory: Category?
+    let defaultTag: Tag?
+
+    init(isPresented: Binding<Bool>, defaultCategory: Category? = nil, defaultTag: Tag? = nil) {
+        self._isPresented = isPresented
+        self.defaultCategory = defaultCategory
+        self.defaultTag = defaultTag
+    }
     
     @State private var productName = ""
     @State private var brand = ""
@@ -19,13 +28,13 @@ struct QuickAddProductView: View {
     @State private var selectedCategory: Category?
     @State private var selectedTags: Set<Tag> = []
     @State private var notes = ""
+    @State private var hasInitializedDefaults = false
     #if os(iOS)
     @State private var selectedImage: UIImage?
     #else
     @State private var selectedImage: NSImage?
     #endif
-    @State private var showingImagePicker = false
-    @State private var imageSource: ImageSource = .camera
+    @State private var selectedPhotoItem: PhotosPickerItem?
     
     @FetchRequest(
         entity: Category.entity(),
@@ -37,9 +46,7 @@ struct QuickAddProductView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Tag.name, ascending: true)]
     ) private var tags: FetchedResults<Tag>
     
-    enum ImageSource {
-        case camera, photoLibrary
-    }
+
 
     private var backgroundGradient: LinearGradient {
         #if os(iOS)
@@ -116,18 +123,15 @@ struct QuickAddProductView: View {
                 #endif
             })
         }
-        .sheet(isPresented: $showingImagePicker) {
-            #if os(iOS)
-            ImagePickerView(
-                selectedImage: $selectedImage,
-                sourceType: imageSource == .camera ? .camera : .photoLibrary
-            )
-            #else
-            ImagePickerView(
-                selectedImage: $selectedImage,
-                sourceType: "file" // macOS上不使用这个参数
-            )
-            #endif
+        .onChange(of: selectedPhotoItem) { _, newItem in
+            Task {
+                if let newItem = newItem {
+                    await loadImageFromPhotoItem(newItem)
+                }
+            }
+        }
+        .onAppear {
+            initializeDefaults()
         }
     }
     
@@ -136,6 +140,54 @@ struct QuickAddProductView: View {
             selectedTags.remove(tag)
         } else {
             selectedTags.insert(tag)
+        }
+    }
+
+    // MARK: - 默认值初始化
+    private func initializeDefaults() {
+        guard !hasInitializedDefaults else { return }
+
+        // 设置默认分类
+        if let defaultCategory = defaultCategory {
+            // 如果提供了特定分类，使用该分类
+            selectedCategory = defaultCategory
+        } else {
+            // 否则不设置任何默认分类，让用户自己选择
+            selectedCategory = nil
+        }
+
+        // 设置默认标签
+        if let defaultTag = defaultTag {
+            // 如果提供了特定标签，使用该标签
+            selectedTags.insert(defaultTag)
+        } else {
+            // 否则不设置任何默认标签，让用户自己选择
+            selectedTags = []
+        }
+
+        hasInitializedDefaults = true
+    }
+
+    // MARK: - 图片加载
+    private func loadImageFromPhotoItem(_ item: PhotosPickerItem) async {
+        do {
+            if let data = try await item.loadTransferable(type: Data.self) {
+                #if os(iOS)
+                if let uiImage = UIImage(data: data) {
+                    await MainActor.run {
+                        selectedImage = uiImage
+                    }
+                }
+                #else
+                if let nsImage = NSImage(data: data) {
+                    await MainActor.run {
+                        selectedImage = nsImage
+                    }
+                }
+                #endif
+            }
+        } catch {
+            print("加载图片失败: \(error)")
         }
     }
     
@@ -239,16 +291,16 @@ struct QuickAddProductView: View {
                             .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                         #endif
 
-                        Button("重新选择图片") {
-                            showingImagePicker = true
+                        PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                            Text("重新选择图片")
                         }
                         .buttonStyle(.bordered)
                         .controlSize(.small)
                     }
                 } else {
-                    Button(action: { showingImagePicker = true }) {
+                    PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
                         VStack(spacing: 8) {
-                            Image(systemName: "camera.fill")
+                            Image(systemName: "photo.fill")
                                 .font(.title2)
                                 .foregroundColor(.blue)
                             Text("添加产品图片")
@@ -378,65 +430,7 @@ struct QuickAddTagChip: View {
     }
 }
 
-#if os(iOS)
-struct ImagePickerView: UIViewControllerRepresentable {
-    @Binding var selectedImage: UIImage?
-    let sourceType: UIImagePickerController.SourceType
-    @Environment(\.dismiss) private var dismiss
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.sourceType = sourceType
-        picker.delegate = context.coordinator
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ImagePickerView
-        
-        init(_ parent: ImagePickerView) {
-            self.parent = parent
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[.originalImage] as? UIImage {
-                parent.selectedImage = image
-            }
-            parent.dismiss()
-        }
-        
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.dismiss()
-        }
-    }
-}
-#else
-// macOS 版本的图片选择器
-struct ImagePickerView: View {
-    @Binding var selectedImage: NSImage?
-    let sourceType: String // 在 macOS 上这个参数不使用
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        VStack {
-            Text("图片选择功能在 macOS 上暂不可用")
-                .foregroundColor(.secondary)
-            
-            Button("取消") {
-                dismiss()
-            }
-            .buttonStyle(.bordered)
-        }
-        .padding()
-    }
-}
-#endif
+
 
 #Preview {
     QuickAddProductView(isPresented: .constant(true))

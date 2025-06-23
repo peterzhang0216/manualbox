@@ -151,6 +151,15 @@ extension Tag {
     static func createDefaultTags(in context: NSManagedObjectContext) {
         // 添加线程安全检查
         context.performAndWait {
+            // 首先检查是否已经有标签存在，如果有则跳过整个创建过程
+            let totalTagsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Tag")
+            let totalCount = (try? context.count(for: totalTagsRequest)) ?? 0
+
+            if totalCount >= defaultTags.count {
+                print("[Tag] 已存在 \(totalCount) 个标签，跳过默认标签创建")
+                return
+            }
+
             for (name, color) in defaultTags {
                 // 使用严格的名称匹配（忽略大小写和空格）
                 let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()

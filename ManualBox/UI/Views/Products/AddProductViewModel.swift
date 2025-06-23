@@ -15,7 +15,7 @@ import UIKit
 struct AddProductState: StateProtocol {
     var isLoading: Bool = false
     var errorMessage: String? = nil
-    
+
     // 产品基本信息
     var name = ""
     var brand = ""
@@ -24,6 +24,9 @@ struct AddProductState: StateProtocol {
     var selectedTags: Set<Tag> = []
     var selectedImage: PhotosPickerItem?
     var productImage: PlatformImage?
+
+    // 默认值初始化标记
+    var hasInitializedDefaults = false
     
     // 订单信息
     var orderNumber = ""
@@ -82,18 +85,46 @@ final class AddProductViewModel: BaseViewModel<AddProductState, AddProductAction
     var warrantyPeriod: Int { state.warrantyPeriod }
     var invoiceImage: PhotosPickerItem? { state.invoiceImage }
     var invoiceImageData: Data? { state.invoiceImageData }
+
+    // CoreData 上下文
+    private let context: NSManagedObjectContext
+
+    init(context: NSManagedObjectContext, defaultCategory: Category? = nil, defaultTag: Tag? = nil) {
+        self.context = context
+        super.init(initialState: AddProductState())
+
+        // 根据上下文初始化默认分类和标签
+        initializeDefaults(defaultCategory: defaultCategory, defaultTag: defaultTag)
+    }
+
+    // MARK: - 默认值初始化
+    private func initializeDefaults(defaultCategory: Category? = nil, defaultTag: Tag? = nil) {
+        guard !state.hasInitializedDefaults else { return }
+
+        // 设置默认分类
+        if let defaultCategory = defaultCategory {
+            // 如果提供了特定分类，使用该分类
+            state.selectedCategory = defaultCategory
+        } else {
+            // 否则不设置任何默认分类，让用户自己选择
+            state.selectedCategory = nil
+        }
+
+        // 设置默认标签
+        if let defaultTag = defaultTag {
+            // 如果提供了特定标签，使用该标签
+            state.selectedTags.insert(defaultTag)
+        } else {
+            // 否则不设置任何默认标签，让用户自己选择
+            state.selectedTags = []
+        }
+
+        state.hasInitializedDefaults = true
+    }
     var selectedManuals: [PhotosPickerItem] { state.selectedManuals }
     var performOCR: Bool { state.performOCR }
     var isSaving: Bool { state.isSaving }
     var saveError: String? { state.saveError }
-    
-    override init(initialState: AddProductState) {
-        super.init(initialState: initialState)
-    }
-    
-    convenience init() {
-        self.init(initialState: AddProductState())
-    }
     
     // MARK: - Action Handler
     override func handle(_ action: AddProductAction) async {

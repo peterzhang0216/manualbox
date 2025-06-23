@@ -45,7 +45,7 @@ struct CategoryDetailView: View {
                     } description: {
                         Text("该分类下还没有产品")
                     } actions: {
-                        Button(action: { detailPanelStateManager.showAddProduct() }) {
+                        Button(action: { detailPanelStateManager.showAddProduct(defaultCategory: category) }) {
                             Text("添加产品")
                         }
                         .buttonStyle(.borderedProminent)

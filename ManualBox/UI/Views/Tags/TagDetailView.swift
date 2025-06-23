@@ -45,7 +45,7 @@ struct TagDetailView: View {
                     } description: {
                         Text("该标签下还没有产品")
                     } actions: {
-                        Button(action: { detailPanelStateManager.showAddProduct() }) {
+                        Button(action: { detailPanelStateManager.showAddProduct(defaultTag: tag) }) {
                             Text("添加产品")
                         }
                         .buttonStyle(.borderedProminent)

@@ -18,7 +18,7 @@ enum DetailPanelState: Equatable {
     case editCategory(Category)
     case addTag
     case editTag(Tag)
-    case addProduct
+    case addProduct(defaultCategory: Category? = nil, defaultTag: Tag? = nil)
     case editProduct(Product)
     case categoryList
     case tagList
@@ -141,8 +141,8 @@ class DetailPanelStateManager: ObservableObject {
         currentState = .editTag(tag)
     }
     
-    func showAddProduct() {
-        currentState = .addProduct
+    func showAddProduct(defaultCategory: Category? = nil, defaultTag: Tag? = nil) {
+        currentState = .addProduct(defaultCategory: defaultCategory, defaultTag: defaultTag)
     }
     
     func showEditProduct(_ product: Product) {

@@ -22,10 +22,11 @@ struct AddProductView: View {
     var isPresented: Binding<Bool>?
     
     // 使用StateObject来处理数据
-    @StateObject private var viewModel = AddProductViewModel()
-    
-    init(isPresented: Binding<Bool>? = nil) {
+    @StateObject private var viewModel: AddProductViewModel
+
+    init(isPresented: Binding<Bool>? = nil, context: NSManagedObjectContext, defaultCategory: Category? = nil, defaultTag: Tag? = nil) {
         self.isPresented = isPresented
+        self._viewModel = StateObject(wrappedValue: AddProductViewModel(context: context, defaultCategory: defaultCategory, defaultTag: defaultTag))
     }
     
     var body: some View {

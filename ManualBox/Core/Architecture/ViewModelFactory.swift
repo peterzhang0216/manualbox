@@ -12,7 +12,7 @@ import CoreData
 @MainActor
 protocol ViewModelFactory {
     func makeProductListViewModel(viewContext: NSManagedObjectContext) -> ProductListViewModel
-    func makeAddProductViewModel() -> AddProductViewModel
+    func makeAddProductViewModel(context: NSManagedObjectContext, defaultCategory: Category?, defaultTag: Tag?) -> AddProductViewModel
     func makeProductDetailViewModel(product: Product, viewContext: NSManagedObjectContext) -> ProductDetailViewModel
     func makeCategoriesViewModel(viewContext: NSManagedObjectContext) -> CategoriesViewModel
     func makeTagsViewModel(viewContext: NSManagedObjectContext) -> TagsViewModel
@@ -27,8 +27,8 @@ class DefaultViewModelFactory: ViewModelFactory {
         return ProductListViewModel(viewContext: viewContext)
     }
     
-    func makeAddProductViewModel() -> AddProductViewModel {
-        return AddProductViewModel()
+    func makeAddProductViewModel(context: NSManagedObjectContext, defaultCategory: Category?, defaultTag: Tag?) -> AddProductViewModel {
+        return AddProductViewModel(context: context, defaultCategory: defaultCategory, defaultTag: defaultTag)
     }
     
     func makeProductDetailViewModel(product: Product, viewContext: NSManagedObjectContext) -> ProductDetailViewModel {

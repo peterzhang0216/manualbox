@@ -119,14 +119,18 @@ struct MainTabView: View {
             .environmentObject(detailPanelStateManager)
         .toolbar(content: {
             SwiftUI.ToolbarItem(placement: .primaryAction) {
-                Button(action: { detailPanelStateManager.showAddProduct() }) {
+                Button(action: {
+                    let (defaultCategory, defaultTag) = getContextualDefaults()
+                    detailPanelStateManager.showAddProduct(defaultCategory: defaultCategory, defaultTag: defaultTag)
+                }) {
                     Label("添加产品", systemImage: "plus")
                 }
                 .buttonStyle(.borderedProminent)
             }
         })
         .onAppNotification(.createNewProduct) { _ in
-            detailPanelStateManager.showAddProduct()
+            let (defaultCategory, defaultTag) = getContextualDefaults()
+            detailPanelStateManager.showAddProduct(defaultCategory: defaultCategory, defaultTag: defaultTag)
         }
         .onAppear {
             notificationManager.updateAllWarrantyReminders(in: viewContext)
@@ -164,6 +168,30 @@ struct MainTabView: View {
         case "light": return .light
         case "dark": return .dark
         default: return nil
+        }
+    }
+
+    // MARK: - 上下文感知的默认值
+    private func getContextualDefaults() -> (Category?, Tag?) {
+        guard let selectedTab = selectedTab else {
+            return (nil, nil) // 在"所有商品"页面，不设置默认值
+        }
+
+        switch selectedTab {
+        case .main(_):
+            // 在主页面（所有商品、分类管理、标签管理等），不设置默认值
+            return (nil, nil)
+        case .category(let id):
+            // 在特定分类页面，设置该分类为默认值
+            let category = categories.first(where: { $0.id == id })
+            return (category, nil)
+        case .tag(let id):
+            // 在特定标签页面，设置该标签为默认值
+            let tag = tags.first(where: { $0.id == id })
+            return (nil, tag)
+        case .settings:
+            // 在设置页面，不设置默认值
+            return (nil, nil)
         }
     }
 
@@ -753,9 +781,35 @@ struct MainTabView: View {
         case .addTag, .editTag, .tagDetail, .tagList:
             // 当进入标签相关状态时，切换到标签管理页面
             selectedTab = .main(2)
-        case .addProduct, .editProduct:
-            // 当进入产品相关状态时，切换到产品列表页面
-            selectedTab = .main(0)
+        case .addProduct(let defaultCategory, let defaultTag):
+            // 当添加产品时，根据上下文决定是否需要切换页面
+            if let defaultCategory = defaultCategory {
+                // 如果有默认分类，且当前不在该分类页面，则切换到该分类页面
+                if case .category(let currentCategoryId) = selectedTab,
+                   currentCategoryId == defaultCategory.id {
+                    // 已经在正确的分类页面，不需要切换
+                    break
+                } else if let categoryId = defaultCategory.id {
+                    // 切换到对应的分类页面
+                    selectedTab = .category(categoryId)
+                }
+            } else if let defaultTag = defaultTag {
+                // 如果有默认标签，且当前不在该标签页面，则切换到该标签页面
+                if case .tag(let currentTagId) = selectedTab,
+                   currentTagId == defaultTag.id {
+                    // 已经在正确的标签页面，不需要切换
+                    break
+                } else if let tagId = defaultTag.id {
+                    // 切换到对应的标签页面
+                    selectedTab = .tag(tagId)
+                }
+            } else {
+                // 没有默认分类或标签，切换到产品列表页面
+                selectedTab = .main(0)
+            }
+        case .editProduct(_):
+            // 编辑产品时保持当前页面不变
+            break
         case .productDetail:
             // 产品详情不需要改变中间栏
             break
@@ -770,18 +824,6 @@ struct MainTabView: View {
 }
 
 #if os(macOS)
-struct AddProductSheet: View {
-    @Binding var isPresented: Bool
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    var body: some View {
-        AddProductView(isPresented: $isPresented)
-            .frame(minWidth: 600, minHeight: 600) // 高度提升为 600，更适合表单
-            .environment(\.managedObjectContext, viewContext)
-            .formStyle(.grouped)
-    }
-}
-
 // macOS 侧边栏视图
 struct SidebarView: View {
     @Binding var selection: SelectionValue?

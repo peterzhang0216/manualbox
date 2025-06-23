@@ -1,60 +1,6 @@
 import SwiftUI
 import CoreData
 
-struct AddTagSheet: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @Binding var isPresented: Bool
-    @State private var tagName = ""
-    @State private var selectedColor = TagColor.blue
-    
-    var body: some View {
-        Form {
-            TextField("标签名称", text: $tagName)
-            
-            Picker("颜色", selection: $selectedColor) {
-                ForEach(TagColor.allCases) { color in
-                    HStack {
-                        Circle()
-                            .fill(color.color)
-                            .frame(width: 20, height: 20)
-                        Text(color.displayName)
-                    }
-                    .tag(color)
-                }
-            }
-        }
-        .formStyle(.grouped)
-        .toolbar {
-            SwiftUI.ToolbarItem(placement: .cancellationAction) {
-                Button("取消") {
-                    isPresented = false
-                }
-            }
-            SwiftUI.ToolbarItem(placement: .confirmationAction) {
-                Button("保存") {
-                    addTag()
-                }
-                .disabled(tagName.isEmpty)
-            }
-        }
-    }
-    
-    private func addTag() {
-        let _ = Tag.createTagIfNotExists(
-            in: viewContext,
-            name: tagName,
-            color: selectedColor.rawValue
-        )
-
-        do {
-            try viewContext.save()
-            isPresented = false
-        } catch {
-            print("保存标签失败: \(error.localizedDescription)")
-        }
-    }
-}
-
 struct TagsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
@@ -62,20 +8,13 @@ struct TagsView: View {
         animation: .default)
     private var tags: FetchedResults<Tag>
     
-    @State private var showingAddSheet = false
-    
     var body: some View {
         Group {
             if tags.isEmpty {
                 ContentUnavailableView {
                     Label("暂无标签", systemImage: "tag")
                 } description: {
-                    Text("点击右上角的 + 按钮添加新标签")
-                } actions: {
-                    Button(action: { showingAddSheet = true }) {
-                        Text("添加标签")
-                    }
-                    .buttonStyle(.borderedProminent)
+                    Text("请从左侧导航选择标签管理来添加新标签")
                 }
             } else {
                 List {
@@ -89,35 +28,6 @@ struct TagsView: View {
             }
         }
         .navigationTitle("标签管理")
-        .toolbar {
-            #if os(iOS)
-            SwiftUI.ToolbarItem(placement: .primaryAction) {
-                Button(action: { showingAddSheet = true }) {
-                    Label("添加标签", systemImage: "plus")
-                }
-            }
-            #else
-            SwiftUI.ToolbarItem {
-                Button(action: { showingAddSheet = true }) {
-                    Label("添加标签", systemImage: "plus")
-                }
-            }
-            #endif
-        }
-        #if os(macOS)
-        .sheet(isPresented: $showingAddSheet) {
-            AddTagSheet(isPresented: $showingAddSheet)
-                .frame(minWidth: 400, minHeight: 200)
-                .environment(\.managedObjectContext, viewContext)
-        }
-        #else
-        .sheet(isPresented: $showingAddSheet) {
-            NavigationView {
-                AddTagSheet(isPresented: $showingAddSheet)
-                    .navigationTitle("新建标签")
-            }
-        }
-        #endif
     }
     
     private func deleteTags(offsets: IndexSet) {

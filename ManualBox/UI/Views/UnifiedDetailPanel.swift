@@ -32,8 +32,8 @@ struct UnifiedDetailPanel: View {
             case .addTag, .editTag:
                 // 添加/编辑标签现在在第二栏显示，第三栏显示空状态
                 emptyStateView
-            case .addProduct:
-                InlineProductFormView(mode: .add)
+            case .addProduct(let defaultCategory, let defaultTag):
+                InlineProductFormView(mode: .add, defaultCategory: defaultCategory, defaultTag: defaultTag)
             case .editProduct(let product):
                 InlineProductFormView(mode: .edit(product))
             case .categoryList:
@@ -67,6 +67,14 @@ struct InlineProductFormView: View {
     @EnvironmentObject private var stateManager: DetailPanelStateManager
 
     let mode: FormMode<Product>
+    let defaultCategory: Category?
+    let defaultTag: Tag?
+
+    init(mode: FormMode<Product>, defaultCategory: Category? = nil, defaultTag: Tag? = nil) {
+        self.mode = mode
+        self.defaultCategory = defaultCategory
+        self.defaultTag = defaultTag
+    }
 
     @State private var productName = ""
     @State private var brand = ""
@@ -76,6 +84,7 @@ struct InlineProductFormView: View {
     @State private var notes = ""
     @State private var isSaving = false
     @State private var saveError: String?
+    @State private var hasInitializedDefaults = false
 
     @FetchRequest(
         entity: Category.entity(),
@@ -218,6 +227,9 @@ struct InlineProductFormView: View {
             selectedCategory = nil
             selectedTags = []
             notes = ""
+
+            // 初始化默认值
+            initializeDefaults()
         case .edit(let product):
             productName = product.name ?? ""
             brand = product.brand ?? ""
@@ -226,6 +238,31 @@ struct InlineProductFormView: View {
             selectedTags = Set(product.productTags)
             notes = product.notes ?? ""
         }
+    }
+
+    // MARK: - 默认值初始化
+    private func initializeDefaults() {
+        guard !hasInitializedDefaults else { return }
+
+        // 设置默认分类
+        if let defaultCategory = defaultCategory {
+            // 如果提供了特定分类，使用该分类
+            selectedCategory = defaultCategory
+        } else {
+            // 否则不设置任何默认分类，让用户自己选择
+            selectedCategory = nil
+        }
+
+        // 设置默认标签
+        if let defaultTag = defaultTag {
+            // 如果提供了特定标签，使用该标签
+            selectedTags.insert(defaultTag)
+        } else {
+            // 否则不设置任何默认标签，让用户自己选择
+            selectedTags = []
+        }
+
+        hasInitializedDefaults = true
     }
 
     private func saveProduct() {

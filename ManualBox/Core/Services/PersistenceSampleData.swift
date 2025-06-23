@@ -387,20 +387,9 @@ extension PersistenceController {
                     }
                     UserDefaults.standard.synchronize()
 
-                    // 4. 重新创建默认分类和标签
-                    await context.perform {
-                        Category.createDefaultCategories(in: context)
-                        Tag.createDefaultTags(in: context)
-
-                        if context.hasChanges {
-                            do {
-                                try context.save()
-                                print("[Persistence] 默认分类和标签重新创建完成")
-                            } catch {
-                                print("[Persistence] 重新创建默认数据时出错: \(error.localizedDescription)")
-                            }
-                        }
-                    }
+                    // 4. 使用统一的数据初始化管理器重新创建默认数据
+                    let initResult = await DataInitializationManager.shared.forceReinitialize(in: context)
+                    print("[Persistence] 数据重新初始化结果: \(initResult.summary)")
 
                     let message = "数据库完全重置成功，删除了 \(deletedFiles) 个文件，并重新创建了默认分类和标签"
                     print("[Persistence] \(message)")

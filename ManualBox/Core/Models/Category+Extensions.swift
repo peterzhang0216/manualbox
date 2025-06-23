@@ -225,6 +225,15 @@ extension Category {
     static func createDefaultCategories(in context: NSManagedObjectContext) {
         // 添加线程安全检查
         context.performAndWait {
+            // 首先检查是否已经有分类存在，如果有则跳过整个创建过程
+            let totalCategoriesRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
+            let totalCount = (try? context.count(for: totalCategoriesRequest)) ?? 0
+
+            if totalCount >= defaultCategories.count {
+                print("[Category] 已存在 \(totalCount) 个分类，跳过默认分类创建")
+                return
+            }
+
             for (name, icon) in defaultCategories {
                 // 使用严格的名称匹配（忽略大小写和空格）
                 let fetchRequest: NSFetchRequest<Category> = Category.fetchRequest()
