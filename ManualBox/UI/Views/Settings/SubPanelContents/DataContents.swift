@@ -27,138 +27,137 @@ struct DefaultSettingsContent: View {
 
 // MARK: - 数据管理内容
 struct DataManagementContent: View {
-    var body: some View {
-        SettingsCard(
-            title: "数据操作",
-            icon: "externaldrive.fill",
-            iconColor: .orange,
-            description: "备份、导出和导入您的商品数据"
-        ) {
-            SettingsGroup {
-                NavigationLink(destination: DataExportView()) {
-                    SettingRow(
-                        icon: "arrow.up.doc.fill",
-                        iconColor: .green,
-                        title: "导出数据",
-                        subtitle: "将商品、分类、标签等数据导出为文件",
-                        showChevron: true
-                    )
-                }
-                .buttonStyle(.plain)
-
-                Divider()
-                    .padding(.vertical, 8)
-
-                NavigationLink(destination: DataImportView()) {
-                    SettingRow(
-                        icon: "arrow.down.doc.fill",
-                        iconColor: .blue,
-                        title: "导入数据",
-                        subtitle: "从文件中导入商品、分类、标签等数据",
-                        showChevron: true
-                    )
-                }
-                .buttonStyle(.plain)
-
-                Divider()
-                    .padding(.vertical, 8)
-
-                NavigationLink(destination: DataBackupView()) {
-                    SettingRow(
-                        icon: "externaldrive.fill",
-                        iconColor: .purple,
-                        title: "备份与恢复",
-                        subtitle: "创建完整备份或从备份中恢复数据",
-                        showChevron: true
-                    )
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-}
-
-// MARK: - 数据健康内容
-struct DataHealthContent: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var diagnosticResult: DataDiagnostics.DiagnosticResult?
     @State private var isDiagnosing = false
-    
+
     var body: some View {
-        SettingsCard(
-            title: "数据完整性检查",
-            icon: "stethoscope",
-            iconColor: .green,
-            description: "检测数据完整性，确保应用正常运行"
-        ) {
-            SettingsGroup {
-                Button {
-                    Task {
-                        await runDiagnostics()
+        VStack(spacing: 24) {
+            // 数据健康检查卡片
+            SettingsCard(
+                title: "数据健康检查",
+                icon: "stethoscope",
+                iconColor: .green,
+                description: "检测数据完整性，确保应用正常运行"
+            ) {
+                SettingsGroup {
+                    Button {
+                        Task {
+                            await runDiagnostics()
+                        }
+                    } label: {
+                        SettingRow(
+                            icon: "stethoscope",
+                            iconColor: .green,
+                            title: "开始检查",
+                            subtitle: isDiagnosing ? "正在分析数据..." : (diagnosticResult?.summary ?? "点击检查数据完整性"),
+                            showChevron: !isDiagnosing,
+                            isInteractive: !isDiagnosing
+                        )
                     }
-                } label: {
-                    SettingRow(
-                        icon: "stethoscope",
-                        iconColor: .green,
-                        title: "开始检查",
-                        subtitle: isDiagnosing ? "正在分析数据..." : (diagnosticResult?.summary ?? "点击检查数据完整性"),
-                        showChevron: !isDiagnosing,
-                        isInteractive: !isDiagnosing
-                    )
-                }
-                .buttonStyle(.plain)
-                .disabled(isDiagnosing)
+                    .buttonStyle(.plain)
+                    .disabled(isDiagnosing)
 
-                if isDiagnosing {
-                    Divider()
-                        .padding(.vertical, 8)
-                    
-                    HStack {
-                        ProgressView()
-                            .scaleEffect(0.8)
-                        Text("正在检查数据完整性...")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                    }
-                }
+                    if isDiagnosing {
+                        Divider()
+                            .padding(.vertical, 8)
 
-                if let result = diagnosticResult {
-                    Divider()
-                        .padding(.vertical, 8)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
                         HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                            Text("检查完成")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.primary)
+                            ProgressView()
+                                .scaleEffect(0.8)
+                            Text("正在检查数据完整性...")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                             Spacer()
                         }
+                    }
 
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack(alignment: .top, spacing: 8) {
-                                Image(systemName: "info.circle.fill")
-                                    .font(.caption)
-                                    .foregroundColor(.blue)
-                                Text(result.summary)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                    if let result = diagnosticResult {
+                        Divider()
+                            .padding(.vertical, 8)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                                Text("检查完成")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.primary)
                                 Spacer()
                             }
 
-                            if result.hasIssues {
-                                Text(result.detailedReport)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .padding(.top, 4)
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "info.circle.fill")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                    Text(result.summary)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                }
+
+                                if result.hasIssues {
+                                    Text(result.detailedReport)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .padding(.top, 4)
+                                }
                             }
                         }
+                        .padding(12)
+                        .background(Color.green.opacity(0.05))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
-                    .padding(12)
-                    .background(Color.green.opacity(0.05))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            }
+
+            // 数据操作卡片
+            SettingsCard(
+                title: "数据操作",
+                icon: "externaldrive.fill",
+                iconColor: .orange,
+                description: "备份、导出和导入您的商品数据"
+            ) {
+                SettingsGroup {
+                    NavigationLink(destination: DataExportView()) {
+                        SettingRow(
+                            icon: "arrow.up.doc.fill",
+                            iconColor: .green,
+                            title: "导出数据",
+                            subtitle: "将商品、分类、标签等数据导出为文件",
+                            showChevron: true
+                        )
+                    }
+                    .buttonStyle(.plain)
+
+                    Divider()
+                        .padding(.vertical, 8)
+
+                    NavigationLink(destination: DataImportView()) {
+                        SettingRow(
+                            icon: "arrow.down.doc.fill",
+                            iconColor: .blue,
+                            title: "导入数据",
+                            subtitle: "从文件中导入商品、分类、标签等数据",
+                            showChevron: true
+                        )
+                    }
+                    .buttonStyle(.plain)
+
+                    Divider()
+                        .padding(.vertical, 8)
+
+                    NavigationLink(destination: DataBackupView()) {
+                        SettingRow(
+                            icon: "externaldrive.fill",
+                            iconColor: .purple,
+                            title: "备份与恢复",
+                            subtitle: "创建完整备份或从备份中恢复数据",
+                            showChevron: true
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -168,7 +167,7 @@ struct DataHealthContent: View {
             }
         }
     }
-    
+
     @MainActor
     private func runDiagnostics() async {
         isDiagnosing = true
@@ -183,6 +182,8 @@ struct DataHealthContent: View {
         isDiagnosing = false
     }
 }
+
+
 
 // MARK: - 危险操作内容
 struct DangerousOperationsContent: View {
@@ -283,7 +284,6 @@ struct DangerousOperationsContent: View {
             enableOCRByDefault: .constant(true)
         )
         DataManagementContent()
-        DataHealthContent()
         DangerousOperationsContent()
     }
     .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)

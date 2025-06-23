@@ -264,8 +264,6 @@ struct ThreeColumnSettingsView: View {
             )
         case .dataManagement:
             DataManagementContent()
-        case .dataHealth:
-            DataHealthContent()
         case .dangerousOperations:
             DangerousOperationsContent()
 

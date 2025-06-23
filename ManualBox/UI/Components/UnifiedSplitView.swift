@@ -62,7 +62,6 @@ enum SettingsSubPanel: String, CaseIterable, Hashable {
     // 数据与默认子项
     case defaultSettings = "default_settings"
     case dataManagement = "data_management"
-    case dataHealth = "data_health"
     case dangerousOperations = "dangerous_operations"
 
     // 关于与支持子项
@@ -80,7 +79,6 @@ enum SettingsSubPanel: String, CaseIterable, Hashable {
         case .displaySettings: return "显示设置"
         case .defaultSettings: return "默认配置"
         case .dataManagement: return "数据管理"
-        case .dataHealth: return "数据健康"
         case .dangerousOperations: return "重置数据"
         case .appInfo: return "应用信息"
         case .languageSettings: return "语言设置"
@@ -98,7 +96,6 @@ enum SettingsSubPanel: String, CaseIterable, Hashable {
         case .displaySettings: return "display"
         case .defaultSettings: return "gearshape.fill"
         case .dataManagement: return "externaldrive.fill"
-        case .dataHealth: return "stethoscope"
         case .dangerousOperations: return "exclamationmark.triangle.fill"
         case .appInfo: return "app.badge.fill"
         case .languageSettings: return "globe"
@@ -113,7 +110,7 @@ enum SettingsSubPanel: String, CaseIterable, Hashable {
             return .notification
         case .themeMode, .displaySettings:
             return .theme
-        case .defaultSettings, .dataManagement, .dataHealth, .dangerousOperations:
+        case .defaultSettings, .dataManagement, .dangerousOperations:
             return .data
         case .appInfo, .languageSettings, .legalPolicies, .updateSupport:
             return .about
