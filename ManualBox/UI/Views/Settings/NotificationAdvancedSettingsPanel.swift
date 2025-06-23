@@ -15,7 +15,7 @@ struct NotificationAdvancedSettingsPanel: View {
                     Image(systemName: "bell.badge.fill")
                         .font(.title2)
                         .foregroundColor(.orange)
-                    Text(NSLocalizedString("Notification Settings", comment: ""))
+                    Text("通知设置")
                         .font(.title2)
                         .fontWeight(.semibold)
                     Spacer()

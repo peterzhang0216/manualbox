@@ -31,10 +31,10 @@
 ### 1. 基本用法
 ```swift
 // 使用扩展方法（推荐）
-let text = "Save".localized
+let text = "保存".localized
 
 // 使用本地化管理器
-let text = LocalizationManager.shared.localizedString(for: "Save")
+let text = LocalizationManager.shared.localizedString(for: "保存")
 
 // 使用预定义常量
 let text = LocalizedStrings.save
@@ -108,10 +108,10 @@ ManualBox/
 
 ```swift
 // 旧方法
-NSLocalizedString("Save", comment: "")
+NSLocalizedString("保存", comment: "")
 
 // 新方法（推荐）
-"Save".localized
+"保存".localized
 ```
 
 ### 3. 添加新的本地化文本

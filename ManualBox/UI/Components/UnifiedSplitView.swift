@@ -48,6 +48,83 @@ enum SettingsPanel: String, CaseIterable, Hashable {
     }
 }
 
+// MARK: - 设置子面板枚举
+enum SettingsSubPanel: String, CaseIterable, Hashable {
+    // 通知与提醒子项
+    case notificationPermissions = "notification_permissions"
+    case notificationSchedule = "notification_schedule"
+    case silentPeriod = "silent_period"
+
+    // 外观与主题子项
+    case themeMode = "theme_mode"
+    case displaySettings = "display_settings"
+
+    // 数据与默认子项
+    case defaultSettings = "default_settings"
+    case dataManagement = "data_management"
+    case dataHealth = "data_health"
+    case dangerousOperations = "dangerous_operations"
+
+    // 关于与支持子项
+    case appInfo = "app_info"
+    case languageSettings = "language_settings"
+    case legalPolicies = "legal_policies"
+    case updateSupport = "update_support"
+
+    var title: String {
+        switch self {
+        case .notificationPermissions: return "通知权限"
+        case .notificationSchedule: return "提醒计划"
+        case .silentPeriod: return "免打扰时段"
+        case .themeMode: return "主题模式"
+        case .displaySettings: return "显示设置"
+        case .defaultSettings: return "默认配置"
+        case .dataManagement: return "数据管理"
+        case .dataHealth: return "数据健康"
+        case .dangerousOperations: return "重置数据"
+        case .appInfo: return "应用信息"
+        case .languageSettings: return "语言设置"
+        case .legalPolicies: return "法律与政策"
+        case .updateSupport: return "更新与支持"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .notificationPermissions: return "bell.circle.fill"
+        case .notificationSchedule: return "clock.fill"
+        case .silentPeriod: return "moon.fill"
+        case .themeMode: return "circle.lefthalf.filled"
+        case .displaySettings: return "display"
+        case .defaultSettings: return "gearshape.fill"
+        case .dataManagement: return "externaldrive.fill"
+        case .dataHealth: return "stethoscope"
+        case .dangerousOperations: return "exclamationmark.triangle.fill"
+        case .appInfo: return "app.badge.fill"
+        case .languageSettings: return "globe"
+        case .legalPolicies: return "doc.text.fill"
+        case .updateSupport: return "arrow.triangle.2.circlepath"
+        }
+    }
+
+    var parentPanel: SettingsPanel {
+        switch self {
+        case .notificationPermissions, .notificationSchedule, .silentPeriod:
+            return .notification
+        case .themeMode, .displaySettings:
+            return .theme
+        case .defaultSettings, .dataManagement, .dataHealth, .dangerousOperations:
+            return .data
+        case .appInfo, .languageSettings, .legalPolicies, .updateSupport:
+            return .about
+        }
+    }
+
+    var color: Color {
+        return parentPanel.color
+    }
+}
+
 // MARK: - 平台颜色适配
 @available(iOS 14.0, macOS 11.0, *)
 extension Color {

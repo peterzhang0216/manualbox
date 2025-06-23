@@ -7,21 +7,21 @@ struct OCRDefaultView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             // 标题部分
-            Label("OCR 文字识别", systemImage: "doc.text.viewfinder")
+            Label("智能文字识别", systemImage: "doc.text.viewfinder")
                 .foregroundColor(.orange)
                 .font(.headline)
-            
+
             // 开关组件，更明确的显示
             HStack {
                 Toggle(isOn: $enabled) {
-                    Text("默认开启文字识别")
+                    Text("默认启用 OCR 识别")
                         .font(.body)
                 }
                 .toggleStyle(SwitchToggleStyle(tint: .orange))
             }
-            
+
             // 说明文字
-            Text("添加说明书时自动识别文字内容")
+            Text("上传说明书图片时自动提取其中的文字内容")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

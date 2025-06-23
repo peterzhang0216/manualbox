@@ -3,7 +3,6 @@ import SwiftUI
 // MARK: - 主题设置面板
 struct ThemeSettingsPanel: View {
     @AppStorage("appTheme") private var appTheme: String = "system"
-    @AppStorage("accentColor") private var accentColor: String = "accentColor"
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     var body: some View {
@@ -14,7 +13,7 @@ struct ThemeSettingsPanel: View {
                     Image(systemName: "paintbrush.fill")
                         .font(.title2)
                         .foregroundColor(.purple)
-                    Text(NSLocalizedString("Appearance & Theme", comment: ""))
+                    Text("外观与主题".localized)
                         .font(.title2)
                         .fontWeight(.semibold)
                     Spacer()
@@ -30,30 +29,6 @@ struct ThemeSettingsPanel: View {
                 ) {
                     SettingsGroup {
                         ThemePickerView()
-                    }
-                }
-
-                // 主题色设置卡片
-                SettingsCard(
-                    title: "主题色彩",
-                    icon: "paintpalette.fill",
-                    iconColor: .purple,
-                    description: "自定义应用的主题色彩"
-                ) {
-                    SettingsGroup {
-                        AccentColorPickerView()
-                    }
-                }
-
-                // 语言设置卡片
-                SettingsCard(
-                    title: "语言设置",
-                    icon: "globe",
-                    iconColor: .green,
-                    description: "选择应用的显示语言"
-                ) {
-                    SettingsGroup {
-                        LanguagePickerView()
                     }
                 }
 

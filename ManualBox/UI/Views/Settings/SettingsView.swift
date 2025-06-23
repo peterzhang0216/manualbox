@@ -22,81 +22,10 @@ struct SettingsView: View {
     
     var body: some View {
         #if os(macOS)
-        NavigationSplitView {
-            List(selection: Binding(
-                get: { viewModel.selectedPanel },
-                set: { panel in
-                    Task {
-                        await viewModel.send(.selectPanel(panel))
-                    }
-                }
-            )) {
-                Section(header: Text("设置")) {
-                    NavigationLink(value: SettingsPanel.notification) {
-                        Label("通知与提醒", systemImage: "bell.badge.fill")
-                    }
-                    NavigationLink(value: SettingsPanel.theme) {
-                        Label("外观与主题", systemImage: "paintbrush")
-                    }
-                    NavigationLink(value: SettingsPanel.data) {
-                        Label("数据与默认", systemImage: "tray.full")
-                    }
-                    NavigationLink(value: SettingsPanel.about) {
-                        Label("关于与支持", systemImage: "info.circle")
-                    }
-                }
-            }
-            .listStyle(.sidebar)
-            .navigationTitle("设置")
-        } detail: {
-            switch viewModel.selectedPanel {
-            case .notification:
-                NotificationAdvancedSettingsPanel()
-                    .environmentObject(viewModel)
-            case .theme:
-                ThemeSettingsPanel()
-                    .environmentObject(viewModel)
-            case .data:
-                DataSettingsPanel(
-                    defaultWarrantyPeriod: Binding(
-                        get: { viewModel.defaultWarrantyPeriod },
-                        set: { period in
-                            Task {
-                                await viewModel.send(.updateDefaultWarrantyPeriod(period))
-                            }
-                        }
-                    ),
-                    enableOCRByDefault: Binding(
-                        get: { viewModel.enableOCRByDefault },
-                        set: { enabled in
-                            Task {
-                                await viewModel.send(.updateEnableOCRByDefault(enabled))
-                            }
-                        }
-                    )
-                )
-            case .about:
-                AboutSettingsPanel(
-                    showPrivacySheet: Binding(
-                        get: { viewModel.showPrivacySheet },
-                        set: { show in
-                            Task {
-                                await viewModel.send(.togglePrivacySheet)
-                            }
-                        }
-                    ),
-                    showAgreementSheet: Binding(
-                        get: { viewModel.showAgreementSheet },
-                        set: { show in
-                            Task {
-                                await viewModel.send(.toggleAgreementSheet)
-                            }
-                        }
-                    )
-                )
-            }
-        }
+        // 使用新的三栏布局
+        ThreeColumnSettingsView()
         #else
+        // iOS 保持原有的导航栈布局
         NavigationStack {
             List {
                 Section(header: Text("设置")) {

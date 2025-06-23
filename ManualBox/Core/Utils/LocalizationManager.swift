@@ -35,9 +35,15 @@ class LocalizationManager: ObservableObject {
         case "en":
             return "en"
         case "auto":
-            return Locale.current.language.languageCode?.identifier ?? "en"
+            let systemLanguage = Locale.current.language.languageCode?.identifier ?? "zh-Hans"
+            // 如果系统语言是中文相关，返回简体中文，否则返回英文
+            if systemLanguage.hasPrefix("zh") {
+                return "zh-Hans"
+            } else {
+                return systemLanguage == "en" ? "en" : "zh-Hans"
+            }
         default:
-            return "en"
+            return "zh-Hans" // 默认使用中文
         }
     }
 
@@ -63,7 +69,7 @@ class LocalizationManager: ObservableObject {
         }
 
         let result = NSLocalizedString(key, bundle: bundle, comment: comment)
-        return result == key ? (localizations["en"]?[key] ?? key) : result
+        return result == key ? (localizations["zh-Hans"]?[key] ?? localizations["en"]?[key] ?? key) : result
     }
 }
 
@@ -155,352 +161,352 @@ struct LocalizationData {
 
     // MARK: - 英文本地化
     static let english: [String: String] = [
-        // Main UI
+        // 主界面
         "ManualBox": "ManualBox",
-        "Settings": "Settings",
-        "Notification & Reminders": "Notification & Reminders",
-        "Appearance & Theme": "Appearance & Theme",
-        "Data & Defaults": "Data & Defaults",
-        "About & Support": "About & Support",
-        "Follow System": "Follow System",
-        "Chinese": "Chinese",
-        "English": "English",
-        "Language": "Language",
-        "Export Data": "Export Data",
-        "Import Data": "Import Data",
-        "Data Backup & Restore": "Data Backup & Restore",
-        "Reset App Data": "Reset App Data",
-        "Privacy Policy": "Privacy Policy",
-        "User Agreement": "User Agreement",
-        "Check for Updates": "Check for Updates",
-        "System Notification": "System Notification",
-        "Email": "Email",
-        "Calendar Event": "Calendar Event",
-        "Start": "Start",
-        "End": "End",
-        "Silent Period": "Silent Period",
-        "Warranty Advance Reminder": "Warranty Advance Reminder",
-        "Maintenance Progress Push": "Maintenance Progress Push",
-        "Asset Inspection/Maintenance": "Asset Inspection/Maintenance",
-        "Notification Channel": "Notification Channel",
+        "设置": "Settings",
+        "通知与提醒": "Notification & Reminders",
+        "外观与主题": "Appearance & Theme",
+        "数据与默认": "Data & Defaults",
+        "关于与支持": "About & Support",
+        "跟随系统": "Follow System",
+        "中文": "Chinese",
+        "英文": "English",
+        "语言": "Language",
+        "导出数据": "Export Data",
+        "导入数据": "Import Data",
+        "数据备份与恢复": "Data Backup & Restore",
+        "重置应用数据": "Reset App Data",
+        "隐私政策": "Privacy Policy",
+        "用户协议": "User Agreement",
+        "检查更新": "Check for Updates",
+        "系统通知": "System Notification",
+        "邮件": "Email",
+        "日历事件": "Calendar Event",
+        "开始": "Start",
+        "结束": "End",
+        "静默时段": "Silent Period",
+        "保修到期提前提醒": "Warranty Advance Reminder",
+        "维修进度推送": "Maintenance Progress Push",
+        "资产定期巡检/保养": "Asset Inspection/Maintenance",
+        "通知方式": "Notification Channel",
 
-        // Repair Records
-        "Repair Records": "Repair Records",
-        "Add Repair Record": "Add Repair Record",
-        "Edit Repair Record": "Edit Repair Record",
-        "Repair Details": "Repair Details",
-        "Repair Date": "Repair Date",
-        "Repair Cost": "Repair Cost",
-        "Delete Repair Record": "Delete Repair Record",
-        "Confirm Delete": "Confirm Delete",
-        "This action cannot be undone": "This action cannot be undone",
-        "Save Changes": "Save Changes",
-        "Cancel": "Cancel",
-        "Related Product": "Related Product",
-        "No Repair Records": "No Repair Records",
-        "Search Repair Records": "Search Repair Records",
-        "Enter repair details...": "Enter repair details...",
+        // 维修记录
+        "维修记录": "Repair Records",
+        "添加维修记录": "Add Repair Record",
+        "编辑维修记录": "Edit Repair Record",
+        "维修详情": "Repair Details",
+        "维修日期": "Repair Date",
+        "维修费用": "Repair Cost",
+        "删除此维修记录": "Delete Repair Record",
+        "确认删除": "Confirm Delete",
+        "此操作无法撤销": "This action cannot be undone",
+        "保存修改": "Save Changes",
+        "取消": "Cancel",
+        "关联产品": "Related Product",
+        "暂无维修记录": "No Repair Records",
+        "搜索维修记录": "Search Repair Records",
+        "请输入维修详情...": "Enter repair details...",
 
-        // Theme Settings
-        "Theme Mode": "Theme Mode",
-        "Theme Color": "Theme Color",
-        "System": "System",
-        "Light": "Light",
-        "Dark": "Dark",
-        "Blue": "Blue",
-        "Green": "Green",
-        "Orange": "Orange",
-        "Pink": "Pink",
-        "Purple": "Purple",
-        "Red": "Red",
+        // 主题设置
+        "主题模式": "Theme Mode",
+        "主题色": "Theme Color",
+        "系统": "System",
+        "浅色": "Light",
+        "深色": "Dark",
+        "蓝色": "Blue",
+        "绿色": "Green",
+        "橙色": "Orange",
+        "粉色": "Pink",
+        "紫色": "Purple",
+        "红色": "Red",
 
-        // Data & Default Settings
-        "Default Settings": "Default Settings",
-        "Data Management": "Data Management",
-        "Export products, categories, and tags": "Export products, categories, and tags",
-        "Import products, categories, and tags": "Import products, categories, and tags",
-        "Local or iCloud backup/restore": "Local or iCloud backup/restore",
-        "Clear all local data, cannot be recovered": "Clear all local data, cannot be recovered",
+        // 数据与默认设置
+        "默认设置": "Default Settings",
+        "数据管理": "Data Management",
+        "导出商品、分类、标签等数据": "Export products, categories, and tags",
+        "导入商品、分类、标签等数据": "Import products, categories, and tags",
+        "本地或iCloud备份/恢复": "Local or iCloud backup/restore",
+        "清除所有本地数据，无法恢复": "Clear all local data, cannot be recovered",
 
-        // About & Support
-        "Legal & Policies": "Legal & Policies",
-        "Updates & Support": "Updates & Support",
-        "View app privacy policy": "View app privacy policy",
-        "View app user agreement": "View app user agreement",
-        "Go to the latest version download page": "Go to the latest version download page",
-        "Warranty Information Assistant": "Warranty Information Assistant",
+        // 关于与支持
+        "法律与政策": "Legal & Policies",
+        "更新与支持": "Updates & Support",
+        "查看应用隐私政策": "View app privacy policy",
+        "查看应用用户协议": "View app user agreement",
+        "前往最新版本下载页": "Go to the latest version download page",
+        "保修信息管理助手": "Warranty Information Assistant",
 
-        // Search & Filter
-        "Advanced Search": "Advanced Search",
-        "Search Scope": "Search Scope",
-        "Category Filter": "Category Filter",
-        "Tag Filter": "Tag Filter",
-        "Warranty Status": "Warranty Status",
-        "Purchase Date": "Purchase Date",
-        "Enable Category Filter": "Enable Category Filter",
-        "Enable Tag Filter": "Enable Tag Filter",
-        "Enable Warranty Status Filter": "Enable Warranty Status Filter",
-        "Enable Date Filter": "Enable Date Filter",
-        "Select Category": "Select Category",
-        "All Categories": "All Categories",
-        "All Statuses": "All Statuses",
-        "In Warranty": "In Warranty",
-        "Expiring Soon": "Expiring Soon",
-        "Expired": "Expired",
-        "Start Date": "Start Date",
-        "End Date": "End Date",
-        "Apply Filters": "Apply Filters",
-        "Reset All Filters": "Reset All Filters",
-        "Filter Conditions:": "Filter Conditions:",
-        "Clear": "Clear",
+        // 搜索筛选
+        "高级搜索": "Advanced Search",
+        "搜索范围": "Search Scope",
+        "分类筛选": "Category Filter",
+        "标签筛选": "Tag Filter",
+        "保修状态": "Warranty Status",
+        "购买日期": "Purchase Date",
+        "启用分类筛选": "Enable Category Filter",
+        "启用标签筛选": "Enable Tag Filter",
+        "启用保修状态筛选": "Enable Warranty Status Filter",
+        "启用日期筛选": "Enable Date Filter",
+        "选择分类": "Select Category",
+        "所有分类": "All Categories",
+        "所有状态": "All Statuses",
+        "在保修期内": "In Warranty",
+        "即将过期": "Expiring Soon",
+        "已过期": "Expired",
+        "开始日期": "Start Date",
+        "结束日期": "End Date",
+        "应用筛选": "Apply Filters",
+        "重置所有筛选": "Reset All Filters",
+        "筛选条件:": "Filter Conditions:",
+        "清除": "Clear",
 
-        // Products
-        "Products": "Products",
-        "Add Product": "Add Product",
-        "Edit Product": "Edit Product",
-        "Product Name": "Product Name",
-        "Brand": "Brand",
-        "Model": "Model",
-        "Category": "Category",
-        "Tags": "Tags",
-        "Notes": "Notes",
-        "Image": "Image",
-        "No Products": "No Products",
-        "Search Products": "Search Products",
-        "Delete Product": "Delete Product",
-        "Product Details": "Product Details",
+        // 产品
+        "产品": "Products",
+        "添加产品": "Add Product",
+        "编辑产品": "Edit Product",
+        "产品名称": "Product Name",
+        "品牌": "Brand",
+        "型号": "Model",
+        "产品分类": "Category",
+        "标签": "Tags",
+        "备注": "Notes",
+        "图片": "Image",
+        "暂无产品": "No Products",
+        "搜索产品": "Search Products",
+        "删除产品": "Delete Product",
+        "产品详情": "Product Details",
 
-        // Categories
-        "Categories": "Categories",
-        "Add Category": "Add Category",
-        "Edit Category": "Edit Category",
-        "Category Name": "Category Name",
-        "Category Icon": "Category Icon",
-        "Delete Category": "Delete Category",
-        "No Categories": "No Categories",
+        // 分类
+        "分类列表": "Categories",
+        "添加分类": "Add Category",
+        "编辑分类": "Edit Category",
+        "分类名称": "Category Name",
+        "分类图标": "Category Icon",
+        "删除分类": "Delete Category",
+        "暂无分类": "No Categories",
 
-        // Tags
-        "Add Tag": "Add Tag",
-        "Edit Tag": "Edit Tag",
-        "Tag Name": "Tag Name",
-        "Tag Color": "Tag Color",
-        "Delete Tag": "Delete Tag",
-        "No Tags": "No Tags",
+        // 标签
+        "添加标签": "Add Tag",
+        "编辑标签": "Edit Tag",
+        "标签名称": "Tag Name",
+        "标签颜色": "Tag Color",
+        "删除标签": "Delete Tag",
+        "暂无标签": "No Tags",
 
-        // Orders
-        "Order Information": "Order Information",
-        "Order Number": "Order Number",
-        "Purchase Platform": "Purchase Platform",
-        "Order Date": "Order Date",
-        "Warranty Period": "Warranty Period",
-        "Invoice": "Invoice",
-        "Upload Invoice": "Upload Invoice",
+        // 订单
+        "订单信息": "Order Information",
+        "订单号": "Order Number",
+        "购买平台": "Purchase Platform",
+        "订单日期": "Order Date",
+        "保修期": "Warranty Period",
+        "发票": "Invoice",
+        "上传发票": "Upload Invoice",
 
-        // Manuals
-        "Manuals": "Manuals",
-        "Manual": "Manual",
-        "Upload Manual": "Upload Manual",
-        "Select Manual Files": "Select Manual Files",
-        "OCR Text Recognition": "OCR Text Recognition",
-        "No Manuals": "No Manuals",
+        // 说明书
+        "说明书列表": "Manuals",
+        "说明书文档": "Manual",
+        "上传说明书": "Upload Manual",
+        "选择说明书文件": "Select Manual Files",
+        "OCR 文字识别": "OCR Text Recognition",
+        "暂无说明书": "No Manuals",
 
-        // Common Actions
-        "Save": "Save",
-        "Delete": "Delete",
-        "Edit": "Edit",
-        "Add": "Add",
-        "Done": "Done",
-        "Close": "Close",
-        "OK": "OK",
-        "Yes": "Yes",
-        "No": "No",
-        "Confirm": "Confirm",
-        "Loading...": "Loading...",
-        "Error": "Error",
-        "Success": "Success",
-        "Warning": "Warning",
+        // 常用操作
+        "保存": "Save",
+        "删除": "Delete",
+        "编辑": "Edit",
+        "添加": "Add",
+        "完成": "Done",
+        "关闭": "Close",
+        "确定": "OK",
+        "是": "Yes",
+        "否": "No",
+        "确认": "Confirm",
+        "加载中...": "Loading...",
+        "错误": "Error",
+        "成功": "Success",
+        "警告": "Warning",
 
-        // Validation Messages
-        "Name is required": "Name is required",
-        "Please enter a valid name": "Please enter a valid name",
-        "Save failed": "Save failed",
-        "Delete failed": "Delete failed",
-        "Operation completed successfully": "Operation completed successfully"
+        // 验证消息
+        "名称不能为空": "Name is required",
+        "请输入有效的名称": "Please enter a valid name",
+        "保存失败": "Save failed",
+        "删除失败": "Delete failed",
+        "操作成功完成": "Operation completed successfully"
     ]
 
     // MARK: - 中文本地化
     static let chinese: [String: String] = [
         // 主界面
         "ManualBox": "ManualBox",
-        "Settings": "设置",
-        "Notification & Reminders": "通知与提醒",
-        "Appearance & Theme": "外观与主题",
-        "Data & Defaults": "数据与默认",
-        "About & Support": "关于与支持",
-        "Follow System": "跟随系统",
-        "Chinese": "中文",
-        "English": "英文",
-        "Language": "语言",
-        "Export Data": "导出数据",
-        "Import Data": "导入数据",
-        "Data Backup & Restore": "数据备份与恢复",
-        "Reset App Data": "重置应用数据",
-        "Privacy Policy": "隐私政策",
-        "User Agreement": "用户协议",
-        "Check for Updates": "检查更新",
-        "System Notification": "系统通知",
-        "Email": "邮件",
-        "Calendar Event": "日历事件",
-        "Start": "开始",
-        "End": "结束",
-        "Silent Period": "静默时段",
-        "Warranty Advance Reminder": "保修到期提前提醒",
-        "Maintenance Progress Push": "维修进度推送",
-        "Asset Inspection/Maintenance": "资产定期巡检/保养",
-        "Notification Channel": "通知方式",
+        "设置": "设置",
+        "通知与提醒": "通知与提醒",
+        "外观与主题": "外观与主题",
+        "数据与默认": "数据与默认",
+        "关于与支持": "关于与支持",
+        "跟随系统": "跟随系统",
+        "中文": "中文",
+        "英文": "英文",
+        "语言": "语言",
+        "导出数据": "导出数据",
+        "导入数据": "导入数据",
+        "数据备份与恢复": "数据备份与恢复",
+        "重置应用数据": "重置应用数据",
+        "隐私政策": "隐私政策",
+        "用户协议": "用户协议",
+        "检查更新": "检查更新",
+        "系统通知": "系统通知",
+        "邮件": "邮件",
+        "日历事件": "日历事件",
+        "开始": "开始",
+        "结束": "结束",
+        "静默时段": "静默时段",
+        "保修到期提前提醒": "保修到期提前提醒",
+        "维修进度推送": "维修进度推送",
+        "资产定期巡检/保养": "资产定期巡检/保养",
+        "通知方式": "通知方式",
 
         // 维修记录
-        "Repair Records": "维修记录",
-        "Add Repair Record": "添加维修记录",
-        "Edit Repair Record": "编辑维修记录",
-        "Repair Details": "维修详情",
-        "Repair Date": "维修日期",
-        "Repair Cost": "维修费用",
-        "Delete Repair Record": "删除此维修记录",
-        "Confirm Delete": "确认删除",
-        "This action cannot be undone": "此操作无法撤销",
-        "Save Changes": "保存修改",
-        "Cancel": "取消",
-        "Related Product": "关联产品",
-        "No Repair Records": "暂无维修记录",
-        "Search Repair Records": "搜索维修记录",
-        "Enter repair details...": "请输入维修详情...",
+        "维修记录": "维修记录",
+        "添加维修记录": "添加维修记录",
+        "编辑维修记录": "编辑维修记录",
+        "维修详情": "维修详情",
+        "维修日期": "维修日期",
+        "维修费用": "维修费用",
+        "删除此维修记录": "删除此维修记录",
+        "确认删除": "确认删除",
+        "此操作无法撤销": "此操作无法撤销",
+        "保存修改": "保存修改",
+        "取消": "取消",
+        "关联产品": "关联产品",
+        "暂无维修记录": "暂无维修记录",
+        "搜索维修记录": "搜索维修记录",
+        "请输入维修详情...": "请输入维修详情...",
 
         // 主题设置
-        "Theme Mode": "主题模式",
-        "Theme Color": "主题色",
-        "System": "系统",
-        "Light": "浅色",
-        "Dark": "深色",
-        "Blue": "蓝色",
-        "Green": "绿色",
-        "Orange": "橙色",
-        "Pink": "粉色",
-        "Purple": "紫色",
-        "Red": "红色",
+        "主题模式": "主题模式",
+        "主题色": "主题色",
+        "系统": "系统",
+        "浅色": "浅色",
+        "深色": "深色",
+        "蓝色": "蓝色",
+        "绿色": "绿色",
+        "橙色": "橙色",
+        "粉色": "粉色",
+        "紫色": "紫色",
+        "红色": "红色",
 
         // 数据与默认设置
-        "Default Settings": "默认设置",
-        "Data Management": "数据管理",
-        "Export products, categories, and tags": "导出商品、分类、标签等数据",
-        "Import products, categories, and tags": "导入商品、分类、标签等数据",
-        "Local or iCloud backup/restore": "本地或iCloud备份/恢复",
-        "Clear all local data, cannot be recovered": "清除所有本地数据，无法恢复",
+        "默认设置": "默认设置",
+        "数据管理": "数据管理",
+        "导出商品、分类、标签等数据": "导出商品、分类、标签等数据",
+        "导入商品、分类、标签等数据": "导入商品、分类、标签等数据",
+        "本地或iCloud备份/恢复": "本地或iCloud备份/恢复",
+        "清除所有本地数据，无法恢复": "清除所有本地数据，无法恢复",
 
         // 关于与支持
-        "Legal & Policies": "法律与政策",
-        "Updates & Support": "更新与支持",
-        "View app privacy policy": "查看应用隐私政策",
-        "View app user agreement": "查看应用用户协议",
-        "Go to the latest version download page": "前往最新版本下载页",
-        "Warranty Information Assistant": "保修信息管理助手",
+        "法律与政策": "法律与政策",
+        "更新与支持": "更新与支持",
+        "查看应用隐私政策": "查看应用隐私政策",
+        "查看应用用户协议": "查看应用用户协议",
+        "前往最新版本下载页": "前往最新版本下载页",
+        "保修信息管理助手": "保修信息管理助手",
 
         // 搜索筛选
-        "Advanced Search": "高级搜索",
-        "Search Scope": "搜索范围",
-        "Category Filter": "分类筛选",
-        "Tag Filter": "标签筛选",
-        "Warranty Status": "保修状态",
-        "Purchase Date": "购买日期",
-        "Enable Category Filter": "启用分类筛选",
-        "Enable Tag Filter": "启用标签筛选",
-        "Enable Warranty Status Filter": "启用保修状态筛选",
-        "Enable Date Filter": "启用日期筛选",
-        "Select Category": "选择分类",
-        "All Categories": "所有分类",
-        "All Statuses": "所有状态",
-        "In Warranty": "在保修期内",
-        "Expiring Soon": "即将过期",
-        "Expired": "已过期",
-        "Start Date": "开始日期",
-        "End Date": "结束日期",
-        "Apply Filters": "应用筛选",
-        "Reset All Filters": "重置所有筛选",
-        "Filter Conditions:": "筛选条件:",
-        "Clear": "清除",
+        "高级搜索": "高级搜索",
+        "搜索范围": "搜索范围",
+        "分类筛选": "分类筛选",
+        "标签筛选": "标签筛选",
+        "保修状态": "保修状态",
+        "购买日期": "购买日期",
+        "启用分类筛选": "启用分类筛选",
+        "启用标签筛选": "启用标签筛选",
+        "启用保修状态筛选": "启用保修状态筛选",
+        "启用日期筛选": "启用日期筛选",
+        "选择分类": "选择分类",
+        "所有分类": "所有分类",
+        "所有状态": "所有状态",
+        "在保修期内": "在保修期内",
+        "即将过期": "即将过期",
+        "已过期": "已过期",
+        "开始日期": "开始日期",
+        "结束日期": "结束日期",
+        "应用筛选": "应用筛选",
+        "重置所有筛选": "重置所有筛选",
+        "筛选条件:": "筛选条件:",
+        "清除": "清除",
 
         // 产品
-        "Products": "产品",
-        "Add Product": "添加产品",
-        "Edit Product": "编辑产品",
-        "Product Name": "产品名称",
-        "Brand": "品牌",
-        "Model": "型号",
-        "Category": "分类",
-        "Tags": "标签",
-        "Notes": "备注",
-        "Image": "图片",
-        "No Products": "暂无产品",
-        "Search Products": "搜索产品",
-        "Delete Product": "删除产品",
-        "Product Details": "产品详情",
+        "产品": "产品",
+        "添加产品": "添加产品",
+        "编辑产品": "编辑产品",
+        "产品名称": "产品名称",
+        "品牌": "品牌",
+        "型号": "型号",
+        "产品分类": "产品分类",
+        "标签": "标签",
+        "备注": "备注",
+        "图片": "图片",
+        "暂无产品": "暂无产品",
+        "搜索产品": "搜索产品",
+        "删除产品": "删除产品",
+        "产品详情": "产品详情",
 
         // 分类
-        "Categories": "分类",
-        "Add Category": "添加分类",
-        "Edit Category": "编辑分类",
-        "Category Name": "分类名称",
-        "Category Icon": "分类图标",
-        "Delete Category": "删除分类",
-        "No Categories": "暂无分类",
+        "分类列表": "分类列表",
+        "添加分类": "添加分类",
+        "编辑分类": "编辑分类",
+        "分类名称": "分类名称",
+        "分类图标": "分类图标",
+        "删除分类": "删除分类",
+        "暂无分类": "暂无分类",
 
         // 标签
-        "Add Tag": "添加标签",
-        "Edit Tag": "编辑标签",
-        "Tag Name": "标签名称",
-        "Tag Color": "标签颜色",
-        "Delete Tag": "删除标签",
-        "No Tags": "暂无标签",
+        "添加标签": "添加标签",
+        "编辑标签": "编辑标签",
+        "标签名称": "标签名称",
+        "标签颜色": "标签颜色",
+        "删除标签": "删除标签",
+        "暂无标签": "暂无标签",
 
         // 订单
-        "Order Information": "订单信息",
-        "Order Number": "订单号",
-        "Purchase Platform": "购买平台",
-        "Order Date": "订单日期",
-        "Warranty Period": "保修期",
-        "Invoice": "发票",
-        "Upload Invoice": "上传发票",
+        "订单信息": "订单信息",
+        "订单号": "订单号",
+        "购买平台": "购买平台",
+        "订单日期": "订单日期",
+        "保修期": "保修期",
+        "发票": "发票",
+        "上传发票": "上传发票",
 
         // 说明书
-        "Manuals": "说明书",
-        "Manual": "说明书",
-        "Upload Manual": "上传说明书",
-        "Select Manual Files": "选择说明书文件",
-        "OCR Text Recognition": "OCR 文字识别",
-        "No Manuals": "暂无说明书",
+        "说明书列表": "说明书列表",
+        "说明书文档": "说明书文档",
+        "上传说明书": "上传说明书",
+        "选择说明书文件": "选择说明书文件",
+        "OCR 文字识别": "OCR 文字识别",
+        "暂无说明书": "暂无说明书",
 
         // 常用操作
-        "Save": "保存",
-        "Delete": "删除",
-        "Edit": "编辑",
-        "Add": "添加",
-        "Done": "完成",
-        "Close": "关闭",
-        "OK": "确定",
-        "Yes": "是",
-        "No": "否",
-        "Confirm": "确认",
-        "Loading...": "加载中...",
-        "Error": "错误",
-        "Success": "成功",
-        "Warning": "警告",
+        "保存": "保存",
+        "删除": "删除",
+        "编辑": "编辑",
+        "添加": "添加",
+        "完成": "完成",
+        "关闭": "关闭",
+        "确定": "确定",
+        "是": "是",
+        "否": "否",
+        "确认": "确认",
+        "加载中...": "加载中...",
+        "错误": "错误",
+        "成功": "成功",
+        "警告": "警告",
 
         // 验证消息
-        "Name is required": "名称不能为空",
-        "Please enter a valid name": "请输入有效的名称",
-        "Save failed": "保存失败",
-        "Delete failed": "删除失败",
-        "Operation completed successfully": "操作成功完成"
+        "名称不能为空": "名称不能为空",
+        "请输入有效的名称": "请输入有效的名称",
+        "保存失败": "保存失败",
+        "删除失败": "删除失败",
+        "操作成功完成": "操作成功完成"
     ]
 }
 
@@ -508,50 +514,51 @@ struct LocalizationData {
 struct LocalizedStrings {
     // 主界面
     static let manualBox = "ManualBox".localized
-    static let settings = "Settings".localized
-    static let products = "Products".localized
-    static let categories = "Categories".localized
-    static let tags = "Tags".localized
+    static let settings = "设置".localized
+    static let products = "产品".localized
+
+    static let tags = "标签".localized
 
     // 操作
-    static let save = "Save".localized
-    static let cancel = "Cancel".localized
-    static let delete = "Delete".localized
-    static let edit = "Edit".localized
-    static let add = "Add".localized
-    static let done = "Done".localized
-    static let close = "Close".localized
-    static let confirm = "Confirm".localized
+    static let save = "保存".localized
+    static let cancel = "取消".localized
+    static let delete = "删除".localized
+    static let edit = "编辑".localized
+    static let add = "添加".localized
+    static let done = "完成".localized
+    static let close = "关闭".localized
+    static let confirm = "确认".localized
 
     // 状态
-    static let loading = "Loading...".localized
-    static let error = "Error".localized
-    static let success = "Success".localized
-    static let warning = "Warning".localized
+    static let loading = "加载中...".localized
+    static let error = "错误".localized
+    static let success = "成功".localized
+    static let warning = "警告".localized
 
     // 产品相关
-    static let addProduct = "Add Product".localized
-    static let editProduct = "Edit Product".localized
-    static let productName = "Product Name".localized
-    static let brand = "Brand".localized
-    static let model = "Model".localized
-    static let noProducts = "No Products".localized
+    static let addProduct = "添加产品".localized
+    static let editProduct = "编辑产品".localized
+    static let productName = "产品名称".localized
+    static let brand = "品牌".localized
+    static let model = "型号".localized
+    static let noProducts = "暂无产品".localized
 
     // 分类相关
-    static let addCategory = "Add Category".localized
-    static let editCategory = "Edit Category".localized
-    static let categoryName = "Category Name".localized
-    static let noCategories = "No Categories".localized
+    static let categories = "分类列表".localized
+    static let addCategory = "添加分类".localized
+    static let editCategory = "编辑分类".localized
+    static let categoryName = "分类名称".localized
+    static let noCategories = "暂无分类".localized
 
     // 标签相关
-    static let addTag = "Add Tag".localized
-    static let editTag = "Edit Tag".localized
-    static let tagName = "Tag Name".localized
-    static let noTags = "No Tags".localized
+    static let addTag = "添加标签".localized
+    static let editTag = "编辑标签".localized
+    static let tagName = "标签名称".localized
+    static let noTags = "暂无标签".localized
 
     // 验证消息
-    static let nameRequired = "Name is required".localized
-    static let saveFailed = "Save failed".localized
-    static let deleteFailed = "Delete failed".localized
-    static let operationSuccess = "Operation completed successfully".localized
+    static let nameRequired = "名称不能为空".localized
+    static let saveFailed = "保存失败".localized
+    static let deleteFailed = "删除失败".localized
+    static let operationSuccess = "操作成功完成".localized
 }

@@ -9,31 +9,31 @@ struct LocalizationTests {
         
         // 测试英文本地化
         LocalizationManager.shared.setLanguage("en")
-        let englishSave = "Save".localized
-        let englishCancel = "Cancel".localized
-        print("✅ 英文测试: Save = '\(englishSave)', Cancel = '\(englishCancel)'")
-        
+        let englishSave = "保存".localized
+        let englishCancel = "取消".localized
+        print("✅ 英文测试: 保存 = '\(englishSave)', 取消 = '\(englishCancel)'")
+
         // 测试中文本地化
         LocalizationManager.shared.setLanguage("zh-Hans")
-        let chineseSave = "Save".localized
-        let chineseCancel = "Cancel".localized
-        print("✅ 中文测试: Save = '\(chineseSave)', Cancel = '\(chineseCancel)'")
-        
+        let chineseSave = "保存".localized
+        let chineseCancel = "取消".localized
+        print("✅ 中文测试: 保存 = '\(chineseSave)', 取消 = '\(chineseCancel)'")
+
         // 测试预定义常量
         let constantSave = LocalizedStrings.save
         let constantCancel = LocalizedStrings.cancel
-        print("✅ 常量测试: Save = '\(constantSave)', Cancel = '\(constantCancel)'")
-        
+        print("✅ 常量测试: 保存 = '\(constantSave)', 取消 = '\(constantCancel)'")
+
         // 测试权限描述
         let notificationPermission = PermissionLocalizations.getPermissionDescription(
-            for: "NSUserNotificationsUsageDescription", 
+            for: "NSUserNotificationsUsageDescription",
             language: "zh-Hans"
         )
         print("✅ 权限测试: 通知权限 = '\(notificationPermission)'")
-        
+
         // 测试不存在的键
-        let unknownKey = "Unknown Key".localized
-        print("✅ 未知键测试: 'Unknown Key' = '\(unknownKey)'")
+        let unknownKey = "未知键".localized
+        print("✅ 未知键测试: '未知键' = '\(unknownKey)'")
         
         print("🎉 本地化系统测试完成！")
     }
@@ -42,7 +42,7 @@ struct LocalizationTests {
     static func testAllLanguages() {
         print("\n🌍 测试所有支持的语言...")
         
-        let testKeys = ["Save", "Cancel", "Settings", "Products"]
+        let testKeys = ["保存", "取消", "设置", "产品"]
         let languages = ["en", "zh-Hans", "auto"]
         
         for language in languages {

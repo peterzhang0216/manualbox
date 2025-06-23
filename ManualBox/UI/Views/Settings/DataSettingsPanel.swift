@@ -31,15 +31,15 @@ struct DataSettingsPanel: View {
                 await runDiagnostics()
             }
         }
-        .alert("重置所有数据", isPresented: $showResetAlert) {
+        .alert("确认重置数据", isPresented: $showResetAlert) {
             Button("取消", role: .cancel) { }
-            Button("重置", role: .destructive) {
+            Button("确认重置", role: .destructive) {
                 Task {
                     await resetAllData()
                 }
             }
         } message: {
-            Text("⚠️ 此操作将删除所有数据，包括产品、分类、标签、订单、说明书等，然后重新创建默认分类和标签。此操作不可撤销，确定要继续吗？")
+            Text("⚠️ 此操作将永久删除所有数据，包括：\n• 所有商品信息\n• 分类和标签\n• 说明书和图片\n• 维修记录\n\n重置后将恢复默认的分类和标签。\n\n此操作无法撤销，请确认是否继续？")
         }
         .alert("重置完成", isPresented: .constant(!resetMessage.isEmpty)) {
             Button("确定") {
@@ -56,7 +56,7 @@ struct DataSettingsPanel: View {
             Image(systemName: "tray.full.fill")
                 .font(.title2)
                 .foregroundColor(.blue)
-            Text(NSLocalizedString("Data & Defaults", comment: ""))
+            Text("数据与默认设置")
                 .font(.title2)
                 .fontWeight(.semibold)
             Spacer()
@@ -66,10 +66,10 @@ struct DataSettingsPanel: View {
 
     private var defaultSettingsCard: some View {
         SettingsCard(
-            title: "默认设置",
+            title: "默认配置",
             icon: "gearshape.fill",
             iconColor: .blue,
-            description: "配置新产品的默认参数"
+            description: "设置新增商品时的默认参数"
         ) {
             SettingsGroup {
                 WarrantyDefaultView(period: $defaultWarrantyPeriod)
@@ -84,10 +84,10 @@ struct DataSettingsPanel: View {
 
     private var diagnosticsCard: some View {
         SettingsCard(
-            title: "数据诊断",
+            title: "数据健康检查",
             icon: "stethoscope",
             iconColor: .green,
-            description: "检查数据完整性和应用状态"
+            description: "检测数据完整性，确保应用正常运行"
         ) {
             SettingsGroup {
                 diagnosticsContent
@@ -105,8 +105,8 @@ struct DataSettingsPanel: View {
             SettingRow(
                 icon: "stethoscope",
                 iconColor: .green,
-                title: "运行诊断",
-                subtitle: isDiagnosing ? "正在检查..." : (diagnosticResult?.summary ?? "检查数据完整性"),
+                title: "开始检查",
+                subtitle: isDiagnosing ? "正在分析数据..." : (diagnosticResult?.summary ?? "点击检查数据完整性"),
                 showChevron: !isDiagnosing,
                 isInteractive: !isDiagnosing
             )
@@ -127,7 +127,7 @@ struct DataSettingsPanel: View {
         HStack {
             ProgressView()
                 .scaleEffect(0.8)
-            Text("正在分析数据...")
+            Text("正在检查数据完整性...")
                 .font(.caption)
                 .foregroundColor(.secondary)
             Spacer()
@@ -143,7 +143,7 @@ struct DataSettingsPanel: View {
             HStack {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
-                Text("诊断完成")
+                Text("检查完成")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.primary)
                 Spacer()
@@ -178,7 +178,7 @@ struct DataSettingsPanel: View {
             title: "数据管理",
             icon: "externaldrive.fill",
             iconColor: .orange,
-            description: "导入、导出和备份应用数据"
+            description: "备份、导出和导入您的商品数据"
         ) {
             SettingsGroup {
                 dataManagementContent
@@ -192,8 +192,8 @@ struct DataSettingsPanel: View {
             SettingRow(
                 icon: "arrow.up.doc.fill",
                 iconColor: .green,
-                title: NSLocalizedString("Export Data", comment: ""),
-                subtitle: NSLocalizedString("Export products, categories, and tags", comment: ""),
+                title: "导出数据",
+                subtitle: "将商品、分类、标签等数据导出为文件",
                 showChevron: true
             )
         }
@@ -206,8 +206,8 @@ struct DataSettingsPanel: View {
             SettingRow(
                 icon: "arrow.down.doc.fill",
                 iconColor: .blue,
-                title: NSLocalizedString("Import Data", comment: ""),
-                subtitle: NSLocalizedString("Import products, categories, and tags", comment: ""),
+                title: "导入数据",
+                subtitle: "从文件中导入商品、分类、标签等数据",
                 showChevron: true
             )
         }
@@ -220,8 +220,8 @@ struct DataSettingsPanel: View {
             SettingRow(
                 icon: "externaldrive.fill",
                 iconColor: .purple,
-                title: NSLocalizedString("Data Backup & Restore", comment: ""),
-                subtitle: NSLocalizedString("Local or iCloud backup/restore", comment: ""),
+                title: "备份与恢复",
+                subtitle: "创建完整备份或从备份中恢复数据",
                 showChevron: true
             )
         }
@@ -230,10 +230,10 @@ struct DataSettingsPanel: View {
 
     private var dangerousOperationsCard: some View {
         SettingsCard(
-            title: "危险操作",
+            title: "重置数据",
             icon: "exclamationmark.triangle.fill",
             iconColor: .red,
-            description: "不可逆的数据操作，请谨慎使用"
+            description: "⚠️ 危险操作：此操作将永久删除所有数据"
         ) {
             SettingsGroup {
                 Button(role: .destructive) {
@@ -242,8 +242,8 @@ struct DataSettingsPanel: View {
                     SettingRow(
                         icon: "trash.fill",
                         iconColor: .red,
-                        title: NSLocalizedString("Reset App Data", comment: ""),
-                        subtitle: NSLocalizedString("Clear all local data, cannot be recovered", comment: ""),
+                        title: "重置所有数据",
+                        subtitle: "删除所有商品、分类、标签等数据，恢复默认设置",
                         warning: true,
                         showChevron: true,
                         isInteractive: !isResetting
@@ -259,7 +259,7 @@ struct DataSettingsPanel: View {
                     HStack {
                         ProgressView()
                             .scaleEffect(0.8)
-                        Text("正在重置数据...")
+                        Text("正在清除数据，请稍候...")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Spacer()
@@ -295,14 +295,14 @@ struct DataSettingsPanel: View {
             let result = await persistenceController.completelyResetDatabase()
 
             if result.success {
-                resetMessage = "✅ 数据库已完全重置！默认分类和标签已恢复。\n\n请重启应用以完成重置。"
+                resetMessage = "✅ 数据重置成功！\n\n所有数据已清除，默认分类和标签已恢复。\n建议重启应用以确保完全生效。"
                 // 重新运行诊断
                 await runDiagnostics()
             } else {
                 resetMessage = "❌ 重置失败：\(result.message)"
             }
         } catch {
-            resetMessage = "❌ 重置失败：\(error.localizedDescription)"
+            resetMessage = "❌ 重置过程中发生错误：\(error.localizedDescription)"
         }
 
         isResetting = false
@@ -319,7 +319,7 @@ struct DataSettingsPanel: View {
             let persistenceController = PersistenceController.shared
             diagnosticResult = await persistenceController.quickDiagnose()
         } catch {
-            print("诊断失败：\(error.localizedDescription)")
+            print("数据检查失败：\(error.localizedDescription)")
         }
 
         isDiagnosing = false

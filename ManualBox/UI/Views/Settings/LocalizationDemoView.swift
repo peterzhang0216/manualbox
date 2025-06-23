@@ -87,13 +87,13 @@ struct LocalizationDemoView: View {
                 .foregroundColor(.primary)
             
             HStack(spacing: 12) {
-                Button("Save".localized) { }
+                Button("保存".localized) { }
                     .buttonStyle(.borderedProminent)
-                
-                Button("Cancel".localized) { }
+
+                Button("取消".localized) { }
                     .buttonStyle(.bordered)
-                
-                Button("Delete".localized) { }
+
+                Button("删除".localized) { }
                     .buttonStyle(.bordered)
                     .foregroundColor(.red)
             }

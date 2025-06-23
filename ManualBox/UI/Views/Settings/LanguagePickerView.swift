@@ -8,7 +8,7 @@ struct LanguagePickerView: View {
         ("auto", "跟随系统", "🌐"),
         ("zh-Hans", "简体中文", "🇨🇳"),
         ("zh-Hant", "繁體中文", "🇹🇼"),
-        ("en", "English", "🇺🇸"),
+        ("en", "英文", "🇺🇸"),
         ("ja", "日本語", "🇯🇵"),
         ("ko", "한국어", "🇰🇷")
     ]
@@ -23,7 +23,7 @@ struct LanguagePickerView: View {
                     .background(Color.accentColor.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 
-                Text(NSLocalizedString("Language", comment: ""))
+                Text("语言".localized)
                     .font(.headline)
                 
                 Spacer()
@@ -35,7 +35,7 @@ struct LanguagePickerView: View {
                         Text(language.flag)
                             .font(.title2)
                         
-                        Text(NSLocalizedString(language.name, comment: ""))
+                        Text(language.name)
                             .font(.body)
                         
                         Spacer()

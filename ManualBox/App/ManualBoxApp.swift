@@ -29,6 +29,7 @@ struct ManualBoxApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(notificationManager)
                 .environmentObject(settingsViewModel)
+                .withLocalization()
                 .onAppear {
                     // 防止重复初始化
                     guard !hasInitialized else { return }

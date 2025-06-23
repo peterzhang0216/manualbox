@@ -18,7 +18,7 @@ struct AboutSettingsPanel: View {
                     Image(systemName: "info.circle.fill")
                         .font(.title2)
                         .foregroundColor(.blue)
-                    Text(NSLocalizedString("About & Support", comment: ""))
+                    Text("关于与支持")
                         .font(.title2)
                         .fontWeight(.semibold)
                     Spacer()
@@ -37,6 +37,18 @@ struct AboutSettingsPanel: View {
                     }
                 }
 
+                // 语言设置卡片
+                SettingsCard(
+                    title: "语言设置",
+                    icon: "globe",
+                    iconColor: .green,
+                    description: "选择应用的显示语言"
+                ) {
+                    SettingsGroup {
+                        CompactLanguagePickerView()
+                    }
+                }
+
                 // 法律与政策卡片
                 SettingsCard(
                     title: "法律与政策",
@@ -49,14 +61,14 @@ struct AboutSettingsPanel: View {
                             SettingRow(
                                 icon: "lock.shield.fill",
                                 iconColor: .purple,
-                                title: NSLocalizedString("Privacy Policy", comment: ""),
-                                subtitle: NSLocalizedString("View app privacy policy", comment: ""),
+                                title: "隐私政策",
+                                subtitle: "查看应用隐私政策",
                                 showChevron: true
                             )
                         }
                         .buttonStyle(.plain)
                         .sheet(isPresented: $showPrivacySheet) {
-                            PolicySheetView(title: NSLocalizedString("Privacy Policy", comment: ""), url: URL(string: "https://yourdomain.com/privacy")!)
+                            PolicySheetView(title: "隐私政策", url: URL(string: "https://yourdomain.com/privacy")!)
                         }
 
                         Divider()
@@ -66,14 +78,14 @@ struct AboutSettingsPanel: View {
                             SettingRow(
                                 icon: "doc.text.fill",
                                 iconColor: .blue,
-                                title: NSLocalizedString("User Agreement", comment: ""),
-                                subtitle: NSLocalizedString("View app user agreement", comment: ""),
+                                title: "用户协议",
+                                subtitle: "查看应用用户协议",
                                 showChevron: true
                             )
                         }
                         .buttonStyle(.plain)
                         .sheet(isPresented: $showAgreementSheet) {
-                            PolicySheetView(title: NSLocalizedString("User Agreement", comment: ""), url: URL(string: "https://yourdomain.com/agreement")!)
+                            PolicySheetView(title: "用户协议", url: URL(string: "https://yourdomain.com/agreement")!)
                         }
                     }
                 }
@@ -90,8 +102,8 @@ struct AboutSettingsPanel: View {
                             SettingRow(
                                 icon: "arrow.triangle.2.circlepath",
                                 iconColor: .green,
-                                title: NSLocalizedString("Check for Updates", comment: ""),
-                                subtitle: NSLocalizedString("Go to the latest version download page", comment: ""),
+                                title: "检查更新",
+                                subtitle: "前往最新版本下载页面",
                                 showChevron: true
                             )
                         }

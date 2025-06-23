@@ -29,7 +29,7 @@ struct AppInfoView: View {
                         .bold()
                         .foregroundColor(.primary)
                     
-                    Text(NSLocalizedString("Warranty Information Assistant", comment: ""))
+                    Text("保修信息管理助手")
                         .font(.headline)
                         .foregroundColor(.secondary)
                     
@@ -77,11 +77,11 @@ struct AppInfoView: View {
             
             // 版权信息 - 更精美的设计
             VStack(spacing: 6) {
-                Text("© 2025 ManualBox Team")
+                Text("© 2025 ManualBox 团队")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                
-                Text("All Rights Reserved")
+
+                Text("保留所有权利")
                     .font(.caption)
                     .foregroundColor(.secondary.opacity(0.8))
             }
@@ -99,7 +99,7 @@ struct AppInfoView: View {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
         // 如果有构建日期使用，否则使用当前日期
-        return "Build: \(dateFormatter.string(from: Date()))"
+        return "构建: \(dateFormatter.string(from: Date()))"
     }
 }
 
