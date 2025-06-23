@@ -6,17 +6,11 @@ struct DataSettingsPanel: View {
     @Binding var defaultWarrantyPeriod: Int
     @Binding var enableOCRByDefault: Bool
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var showCleanupAlert = false
-    @State private var isCleaningUp = false
-    @State private var cleanupMessage = ""
     @State private var diagnosticResult: DataDiagnostics.DiagnosticResult?
     @State private var isDiagnosing = false
     @State private var showResetAlert = false
     @State private var isResetting = false
     @State private var resetMessage = ""
-    @State private var showTestDataCleanupAlert = false
-    @State private var isCleaningTestData = false
-    @State private var testDataCleanupMessage = ""
     
     var body: some View {
         ScrollView {
@@ -97,34 +91,7 @@ struct DataSettingsPanel: View {
                     .buttonStyle(.plain)
                     .disabled(isDiagnosing)
 
-                    Button {
-                        showCleanupAlert = true
-                    } label: {
-                        SettingRow(
-                            icon: "arrow.triangle.2.circlepath",
-                            iconColor: .orange,
-                            title: "清理重复数据",
-                            subtitle: "清理重复的分类和标签数据"
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(isCleaningUp || (diagnosticResult?.hasIssues == false))
 
-                    // 测试数据清理按钮（仅在开发环境显示）
-                    #if DEBUG
-                    Button {
-                        showTestDataCleanupAlert = true
-                    } label: {
-                        SettingRow(
-                            icon: "trash.circle.fill",
-                            iconColor: .red,
-                            title: "清理测试数据",
-                            subtitle: isCleaningTestData ? "正在清理..." : "删除所有默认分类、标签和示例产品"
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(isCleaningTestData)
-                    #endif
 
                     NavigationLink(destination: DataExportView()) {
                         SettingRow(
@@ -184,23 +151,7 @@ struct DataSettingsPanel: View {
                 await runDiagnostics()
             }
         }
-        .alert("清理重复数据", isPresented: $showCleanupAlert) {
-            Button("取消", role: .cancel) { }
-            Button("清理", role: .destructive) {
-                Task {
-                    await cleanupDuplicateData()
-                }
-            }
-        } message: {
-            Text("这将删除重复的分类和标签数据。此操作不可撤销，确定要继续吗？")
-        }
-        .alert("清理完成", isPresented: .constant(!cleanupMessage.isEmpty)) {
-            Button("确定") {
-                cleanupMessage = ""
-            }
-        } message: {
-            Text(cleanupMessage)
-        }
+
         .alert("重置所有数据", isPresented: $showResetAlert) {
             Button("取消", role: .cancel) { }
             Button("重置", role: .destructive) {
@@ -218,43 +169,10 @@ struct DataSettingsPanel: View {
         } message: {
             Text(resetMessage)
         }
-        .alert("清理测试数据", isPresented: $showTestDataCleanupAlert) {
-            Button("取消", role: .cancel) { }
-            Button("清理", role: .destructive) {
-                Task {
-                    await cleanupTestData()
-                }
-            }
-        } message: {
-            Text("这将删除所有默认分类、标签和示例产品数据。此操作不可撤销，确定要继续吗？")
-        }
-        .alert("测试数据清理完成", isPresented: .constant(!testDataCleanupMessage.isEmpty)) {
-            Button("确定") {
-                testDataCleanupMessage = ""
-            }
-        } message: {
-            Text(testDataCleanupMessage)
-        }
+
     }
 
-    // MARK: - 清理重复数据
-    @MainActor
-    private func cleanupDuplicateData() async {
-        isCleaningUp = true
 
-        do {
-            if let persistenceController = try? PersistenceController.shared {
-                await persistenceController.cleanupDuplicateData()
-                cleanupMessage = "重复数据清理完成！"
-            } else {
-                cleanupMessage = "清理失败：无法访问数据库"
-            }
-        } catch {
-            cleanupMessage = "清理失败：\(error.localizedDescription)"
-        }
-
-        isCleaningUp = false
-    }
 
     // MARK: - 重置所有数据
     @MainActor
@@ -279,28 +197,7 @@ struct DataSettingsPanel: View {
         isResetting = false
     }
 
-    // MARK: - 清理测试数据
-    @MainActor
-    private func cleanupTestData() async {
-        isCleaningTestData = true
 
-        do {
-            let testDataCleanupService = TestDataCleanupService(context: viewContext)
-            let result = await testDataCleanupService.cleanupAllTestData()
-
-            if result.success {
-                testDataCleanupMessage = "✅ \(result.message)"
-                // 重新运行诊断
-                await runDiagnostics()
-            } else {
-                testDataCleanupMessage = "❌ \(result.message)"
-            }
-        } catch {
-            testDataCleanupMessage = "❌ 清理失败：\(error.localizedDescription)"
-        }
-
-        isCleaningTestData = false
-    }
 
     // MARK: - 数据诊断
     @MainActor

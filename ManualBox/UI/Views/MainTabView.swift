@@ -291,13 +291,16 @@ struct MainTabView: View {
     @ViewBuilder
     private var categoryPlaceholderView: some View {
         // 根据详情面板状态决定显示内容
-        if detailPanelStateManager.currentState == .addCategory ||
-           detailPanelStateManager.currentState.isEditingCategory {
-            CategoriesView()
-                .environment(\.selectedProduct, $selectedProduct)
-                .productSelectionManager(productSelectionManager)
-                .adaptiveLayout()
-        } else {
+        switch detailPanelStateManager.currentState {
+        case .addCategory:
+            // 在第二栏显示添加分类表单
+            InlineCategoryFormView(mode: .add)
+                .environmentObject(detailPanelStateManager)
+        case .editCategory(let category):
+            // 在第二栏显示编辑分类表单
+            InlineCategoryFormView(mode: .edit(category))
+                .environmentObject(detailPanelStateManager)
+        default:
             ContentUnavailableView {
                 Label("分类管理", systemImage: "folder")
             } description: {
@@ -315,13 +318,16 @@ struct MainTabView: View {
     @ViewBuilder
     private var tagPlaceholderView: some View {
         // 根据详情面板状态决定显示内容
-        if detailPanelStateManager.currentState == .addTag ||
-           detailPanelStateManager.currentState.isEditingTag {
-            TagsView()
-                .environment(\.selectedProduct, $selectedProduct)
-                .productSelectionManager(productSelectionManager)
-                .adaptiveLayout()
-        } else {
+        switch detailPanelStateManager.currentState {
+        case .addTag:
+            // 在第二栏显示添加标签表单
+            InlineTagFormView(mode: .add)
+                .environmentObject(detailPanelStateManager)
+        case .editTag(let tag):
+            // 在第二栏显示编辑标签表单
+            InlineTagFormView(mode: .edit(tag))
+                .environmentObject(detailPanelStateManager)
+        default:
             ContentUnavailableView {
                 Label("标签管理", systemImage: "tag")
             } description: {
@@ -839,10 +845,15 @@ struct SidebarView: View {
                     }
                 }
 
-                // 添加分类按钮
+                // 添加分类按钮 - 放在列表下方
                 Button(action: { detailPanelStateManager.showAddCategory() }) {
-                    Label("添加分类", systemImage: "plus")
-                        .foregroundColor(.secondary)
+                    HStack {
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(.secondary)
+                        Text("添加分类")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("添加新分类")
@@ -880,10 +891,15 @@ struct SidebarView: View {
                     }
                 }
 
-                // 添加标签按钮
+                // 添加标签按钮 - 放在列表下方
                 Button(action: { detailPanelStateManager.showAddTag() }) {
-                    Label("添加标签", systemImage: "plus")
-                        .foregroundColor(.secondary)
+                    HStack {
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(.secondary)
+                        Text("添加标签")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("添加新标签")
