@@ -4,6 +4,7 @@ import SwiftUI
 struct ThemeSettingsPanel: View {
     @AppStorage("appTheme") private var appTheme: String = "system"
     @AppStorage("accentColor") private var accentColor: String = "accentColor"
+    @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     var body: some View {
         ScrollView {
@@ -75,4 +76,5 @@ struct ThemeSettingsPanel: View {
 
 #Preview {
     ThemeSettingsPanel()
+        .environmentObject(SettingsViewModel(viewContext: PersistenceController.preview.container.viewContext))
 }

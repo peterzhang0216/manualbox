@@ -149,14 +149,14 @@ extension Category {
 
 // 默认分类列表
 extension Category {
-    static let defaultCategories = [
+    static let defaultCategories: [String: String] = [
         "电子产品": "laptopcomputer",
         "家用电器": "oven",
         "家具家私": "sofa",
         "厨房用品": "fork.knife",
-        "健身器材": "dumbbell",
-        "户外装备": "tent",
+        "运动器材": "dumbbell",
         "汽车配件": "car",
+        "文玩": "cube.box",
         "其他": "archivebox"
     ]
     

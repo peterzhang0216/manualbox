@@ -52,8 +52,10 @@ struct SettingsView: View {
             switch viewModel.selectedPanel {
             case .notification:
                 NotificationAdvancedSettingsPanel()
+                    .environmentObject(viewModel)
             case .theme:
                 ThemeSettingsPanel()
+                    .environmentObject(viewModel)
             case .data:
                 DataSettingsPanel(
                     defaultWarrantyPeriod: Binding(
@@ -98,7 +100,9 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section(header: Text("设置")) {
-                    NavigationLink(destination: NotificationAdvancedSettingsPanel()) {
+                    NavigationLink(destination: NotificationAdvancedSettingsPanel()
+                        .environmentObject(viewModel)
+                    ) {
                         SettingRow(
                             icon: "bell.badge.fill",
                             iconColor: .orange,
@@ -106,7 +110,9 @@ struct SettingsView: View {
                             subtitle: "管理通知偏好设置"
                         )
                     }
-                    NavigationLink(destination: ThemeSettingsPanel()) {
+                    NavigationLink(destination: ThemeSettingsPanel()
+                        .environmentObject(viewModel)
+                    ) {
                         SettingRow(
                             icon: "paintbrush",
                             iconColor: .purple,
@@ -131,7 +137,9 @@ struct SettingsView: View {
                                 }
                             }
                         )
-                    )) {
+                    )
+                        .environmentObject(viewModel)
+                    ) {
                         SettingRow(
                             icon: "tray.full",
                             iconColor: .blue,
@@ -156,7 +164,9 @@ struct SettingsView: View {
                                 }
                             }
                         )
-                    )) {
+                    )
+                        .environmentObject(viewModel)
+                    ) {
                         SettingRow(
                             icon: "info.circle",
                             iconColor: .green,

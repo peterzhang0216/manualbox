@@ -12,12 +12,51 @@ extension PersistenceController {
     
     // 初始化默认数据（兼容旧版本，会清理重复数据）
     // 注意：此方法主要用于数据修复和兼容性，不会检查初始化标记
-    // 发布版本：已禁用默认数据创建
     func initializeDefaultData() {
-        print("[Persistence] 发布版本：默认数据创建已禁用")
+        print("[Persistence] 开始初始化默认数据...")
 
-        // 只清理重复数据，不创建新数据
+        // 清理重复数据
         removeDuplicateData()
+
+        // 创建默认数据
+        let context = container.viewContext
+
+        // 分别检查分类和标签是否为空
+        let categoriesRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
+        let categoriesCount = (try? context.count(for: categoriesRequest)) ?? 0
+
+        let tagsRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Tag")
+        let tagsCount = (try? context.count(for: tagsRequest)) ?? 0
+
+        var needsSave = false
+
+        // 只有当分类表为空时才创建默认分类
+        if categoriesCount == 0 {
+            print("[Persistence] 创建默认分类...")
+            Category.createDefaultCategories(in: context)
+            needsSave = true
+        } else {
+            print("[Persistence] 分类已存在，跳过创建默认分类")
+        }
+
+        // 只有当标签表为空时才创建默认标签
+        if tagsCount == 0 {
+            print("[Persistence] 创建默认标签...")
+            Tag.createDefaultTags(in: context)
+            needsSave = true
+        } else {
+            print("[Persistence] 标签已存在，跳过创建默认标签")
+        }
+
+        // 保存更改
+        if needsSave {
+            do {
+                try context.save()
+                print("[Persistence] 默认数据初始化完成")
+            } catch {
+                print("[Persistence] 保存默认数据时出错: \(error.localizedDescription)")
+            }
+        }
 
         /* 以下代码仅用于开发和测试
         let context = container.viewContext

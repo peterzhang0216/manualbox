@@ -14,6 +14,9 @@ struct DataSettingsPanel: View {
     @State private var showResetAlert = false
     @State private var isResetting = false
     @State private var resetMessage = ""
+    @State private var showTestDataCleanupAlert = false
+    @State private var isCleaningTestData = false
+    @State private var testDataCleanupMessage = ""
     
     var body: some View {
         ScrollView {
@@ -107,6 +110,22 @@ struct DataSettingsPanel: View {
                     .buttonStyle(.plain)
                     .disabled(isCleaningUp || (diagnosticResult?.hasIssues == false))
 
+                    // 测试数据清理按钮（仅在开发环境显示）
+                    #if DEBUG
+                    Button {
+                        showTestDataCleanupAlert = true
+                    } label: {
+                        SettingRow(
+                            icon: "trash.circle.fill",
+                            iconColor: .red,
+                            title: "清理测试数据",
+                            subtitle: isCleaningTestData ? "正在清理..." : "删除所有默认分类、标签和示例产品"
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(isCleaningTestData)
+                    #endif
+
                     NavigationLink(destination: DataExportView()) {
                         SettingRow(
                             icon: "arrow.up.doc.fill",
@@ -190,7 +209,7 @@ struct DataSettingsPanel: View {
                 }
             }
         } message: {
-            Text("⚠️ 此操作将删除所有数据，包括产品、分类、标签、订单、说明书等。此操作不可撤销，确定要继续吗？")
+            Text("⚠️ 此操作将删除所有数据，包括产品、分类、标签、订单、说明书等，然后重新创建默认分类和标签。此操作不可撤销，确定要继续吗？")
         }
         .alert("重置完成", isPresented: .constant(!resetMessage.isEmpty)) {
             Button("确定") {
@@ -198,6 +217,23 @@ struct DataSettingsPanel: View {
             }
         } message: {
             Text(resetMessage)
+        }
+        .alert("清理测试数据", isPresented: $showTestDataCleanupAlert) {
+            Button("取消", role: .cancel) { }
+            Button("清理", role: .destructive) {
+                Task {
+                    await cleanupTestData()
+                }
+            }
+        } message: {
+            Text("这将删除所有默认分类、标签和示例产品数据。此操作不可撤销，确定要继续吗？")
+        }
+        .alert("测试数据清理完成", isPresented: .constant(!testDataCleanupMessage.isEmpty)) {
+            Button("确定") {
+                testDataCleanupMessage = ""
+            }
+        } message: {
+            Text(testDataCleanupMessage)
         }
     }
 
@@ -230,7 +266,7 @@ struct DataSettingsPanel: View {
             let result = await persistenceController.completelyResetDatabase()
 
             if result.success {
-                resetMessage = "✅ 数据库已完全清零！应用已重置为初始状态。\n\n请重启应用以完成重置。"
+                resetMessage = "✅ 数据库已完全重置！默认分类和标签已恢复。\n\n请重启应用以完成重置。"
                 // 重新运行诊断
                 await runDiagnostics()
             } else {
@@ -241,6 +277,29 @@ struct DataSettingsPanel: View {
         }
 
         isResetting = false
+    }
+
+    // MARK: - 清理测试数据
+    @MainActor
+    private func cleanupTestData() async {
+        isCleaningTestData = true
+
+        do {
+            let testDataCleanupService = TestDataCleanupService(context: viewContext)
+            let result = await testDataCleanupService.cleanupAllTestData()
+
+            if result.success {
+                testDataCleanupMessage = "✅ \(result.message)"
+                // 重新运行诊断
+                await runDiagnostics()
+            } else {
+                testDataCleanupMessage = "❌ \(result.message)"
+            }
+        } catch {
+            testDataCleanupMessage = "❌ 清理失败：\(error.localizedDescription)"
+        }
+
+        isCleaningTestData = false
     }
 
     // MARK: - 数据诊断

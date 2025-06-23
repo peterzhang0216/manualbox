@@ -27,6 +27,9 @@ struct SettingsState: StateProtocol {
     var enableOCRByDefault = true
     var enableNotifications = true
     var notificationTime = Date()
+    var enableSilentPeriod = false
+    var silentStartTime: Double = 22 * 3600 // 22:00
+    var silentEndTime: Double = 8 * 3600 // 08:00
     
     // 操作状态
     var isResetting = false
@@ -45,6 +48,9 @@ enum SettingsAction: ActionProtocol {
     case updateEnableOCRByDefault(Bool)
     case updateEnableNotifications(Bool)
     case updateNotificationTime(Date)
+    case updateSilentPeriod(Bool)
+    case updateSilentStartTime(Double)
+    case updateSilentEndTime(Double)
     case resetAllData
     case exportData
     case importData
@@ -67,6 +73,9 @@ class SettingsViewModel: BaseViewModel<SettingsState, SettingsAction> {
     var enableOCRByDefault: Bool { state.enableOCRByDefault }
     var enableNotifications: Bool { state.enableNotifications }
     var notificationTime: Date { state.notificationTime }
+    var enableSilentPeriod: Bool { state.enableSilentPeriod }
+    var silentStartTime: Double { state.silentStartTime }
+    var silentEndTime: Double { state.silentEndTime }
     var isResetting: Bool { state.isResetting }
     var resetError: String? { state.resetError }
     var isExporting: Bool { state.isExporting }
@@ -108,7 +117,19 @@ class SettingsViewModel: BaseViewModel<SettingsState, SettingsAction> {
         case .updateNotificationTime(let time):
             updateState { $0.notificationTime = time }
             saveNotificationTime(time)
-            
+
+        case .updateSilentPeriod(let enabled):
+            updateState { $0.enableSilentPeriod = enabled }
+            saveSilentPeriod(enabled)
+
+        case .updateSilentStartTime(let time):
+            updateState { $0.silentStartTime = time }
+            saveSilentStartTime(time)
+
+        case .updateSilentEndTime(let time):
+            updateState { $0.silentEndTime = time }
+            saveSilentEndTime(time)
+
         case .resetAllData:
             await resetAllData()
             
@@ -139,10 +160,17 @@ class SettingsViewModel: BaseViewModel<SettingsState, SettingsAction> {
         updateState {
             $0.defaultWarrantyPeriod = defaults.integer(forKey: "defaultWarrantyPeriod")
             if $0.defaultWarrantyPeriod == 0 { $0.defaultWarrantyPeriod = 12 }
-            
+
             $0.enableOCRByDefault = defaults.bool(forKey: "enableOCRByDefault")
             $0.enableNotifications = defaults.bool(forKey: "enableNotifications")
-            
+            $0.enableSilentPeriod = defaults.bool(forKey: "enableSilentPeriod")
+
+            $0.silentStartTime = defaults.double(forKey: "silentStartTime")
+            if $0.silentStartTime == 0 { $0.silentStartTime = 22 * 3600 }
+
+            $0.silentEndTime = defaults.double(forKey: "silentEndTime")
+            if $0.silentEndTime == 0 { $0.silentEndTime = 8 * 3600 }
+
             if let timeData = defaults.data(forKey: "notificationTime"),
                let time = try? JSONDecoder().decode(Date.self, from: timeData) {
                 $0.notificationTime = time
@@ -162,6 +190,18 @@ class SettingsViewModel: BaseViewModel<SettingsState, SettingsAction> {
         if let timeData = try? JSONEncoder().encode(time) {
             UserDefaults.standard.set(timeData, forKey: "notificationTime")
         }
+    }
+
+    private func saveSilentPeriod(_ enabled: Bool) {
+        UserDefaults.standard.set(enabled, forKey: "enableSilentPeriod")
+    }
+
+    private func saveSilentStartTime(_ time: Double) {
+        UserDefaults.standard.set(time, forKey: "silentStartTime")
+    }
+
+    private func saveSilentEndTime(_ time: Double) {
+        UserDefaults.standard.set(time, forKey: "silentEndTime")
     }
     
     private func updateNotificationSettings(_ enabled: Bool) async {
@@ -215,6 +255,9 @@ class SettingsViewModel: BaseViewModel<SettingsState, SettingsAction> {
             defaults.removeObject(forKey: "enableOCRByDefault")
             defaults.removeObject(forKey: "enableNotifications")
             defaults.removeObject(forKey: "notificationTime")
+            defaults.removeObject(forKey: "enableSilentPeriod")
+            defaults.removeObject(forKey: "silentStartTime")
+            defaults.removeObject(forKey: "silentEndTime")
             
             // 重新加载默认设置
             loadSettings()

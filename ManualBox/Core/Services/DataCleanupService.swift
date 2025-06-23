@@ -120,18 +120,18 @@ class DataCleanupService {
         }
     }
     
-    /// 清理所有数据（危险操作，仅用于重置）
+    /// 清理所有用户数据（保留默认分类和标签）
     func clearAllData() async -> (success: Bool, message: String) {
         return await withCheckedContinuation { continuation in
             context.perform {
                 do {
-                    print("[DataCleanup] 开始清理所有数据...")
-                    
-                    // 删除所有实体的数据
-                    let entityNames = ["Product", "Category", "Tag", "Order", "Manual", "RepairRecord"]
+                    print("[DataCleanup] 开始清理所有用户数据...")
+
+                    // 1. 删除产品相关数据
+                    let productEntityNames = ["Product", "Order", "Manual", "RepairRecord"]
                     var totalDeleted = 0
-                    
-                    for entityName in entityNames {
+
+                    for entityName in productEntityNames {
                         let request = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
                         let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
                         let result = try self.context.execute(deleteRequest) as? NSBatchDeleteResult
@@ -139,14 +139,46 @@ class DataCleanupService {
                         totalDeleted += deletedCount
                         print("[DataCleanup] 删除 \(entityName): \(deletedCount) 个")
                     }
+
+                    // 2. 删除非默认分类（保留默认分类）
+                    let categoryRequest: NSFetchRequest<Category> = Category.fetchRequest()
+                    let allCategories = try self.context.fetch(categoryRequest)
+                    let defaultCategoryNames = Set(Category.defaultCategories.keys)
+
+                    for category in allCategories {
+                        if let categoryName = category.name, !defaultCategoryNames.contains(categoryName) {
+                            self.context.delete(category)
+                            totalDeleted += 1
+                            print("[DataCleanup] 删除非默认分类: \(categoryName)")
+                        }
+                    }
+
+                    // 3. 删除非默认标签（保留默认标签）
+                    let tagRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+                    let allTags = try self.context.fetch(tagRequest)
+                    let defaultTagNames = Set(Tag.defaultTags.map { $0.0 })
+
+                    for tag in allTags {
+                        if let tagName = tag.name, !defaultTagNames.contains(tagName) {
+                            self.context.delete(tag)
+                            totalDeleted += 1
+                            print("[DataCleanup] 删除非默认标签: \(tagName)")
+                        }
+                    }
                     
-                    // 重置初始化标记
-                    UserDefaults.standard.removeObject(forKey: "ManualBox_HasInitializedDefaultData")
-                    
-                    // 保存更改
+                    // 保存删除操作
                     try self.context.save()
-                    
-                    let message = "成功清理所有数据，共删除 \(totalDeleted) 个项目"
+
+                    // 重新创建默认分类和标签（如果不存在）
+                    Category.createDefaultCategories(in: self.context)
+                    Tag.createDefaultTags(in: self.context)
+
+                    // 保存默认数据创建
+                    if self.context.hasChanges {
+                        try self.context.save()
+                    }
+
+                    let message = "成功清理用户数据，共删除 \(totalDeleted) 个项目，并确保默认分类和标签存在"
                     print("[DataCleanup] \(message)")
                     continuation.resume(returning: (true, message))
                     

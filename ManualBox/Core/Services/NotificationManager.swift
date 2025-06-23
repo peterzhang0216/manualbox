@@ -37,6 +37,24 @@ class AppNotificationManager: ObservableObject {
             }
         }
     }
+
+    // 异步请求通知权限
+    func requestPermission() async {
+        do {
+            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound])
+            if granted {
+                print("✅ 通知权限已获得")
+            } else {
+                print("⚠️ 通知权限被拒绝")
+            }
+            // 更新权限状态
+            await MainActor.run {
+                self.checkNotificationAuthorizationStatus()
+            }
+        } catch {
+            print("❌ 请求通知权限失败: \(error.localizedDescription)")
+        }
+    }
     
     // 打开系统设置
     func openNotificationSettings() {

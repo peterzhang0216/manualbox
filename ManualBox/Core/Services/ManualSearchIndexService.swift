@@ -52,9 +52,9 @@ class ManualSearchIndexService: ObservableObject {
                 }
             }
             
-            indexQueue.async {
-                self.searchIndex = newIndex
-                self.saveSearchIndex()
+            indexQueue.async { [weak self] in
+                self?.searchIndex = newIndex
+                self?.saveSearchIndex()
             }
             
             await MainActor.run {
@@ -275,7 +275,8 @@ class ManualSearchIndexService: ObservableObject {
         // 添加新索引
         let entries = createIndexEntries(for: content, manual: manual)
         
-        indexQueue.async {
+        indexQueue.async { [weak self] in
+            guard let self = self else { return }
             for entry in entries {
                 let keyword = entry.keyword.lowercased()
                 if self.searchIndex[keyword] == nil {
@@ -289,7 +290,8 @@ class ManualSearchIndexService: ObservableObject {
     
     /// 从索引中移除说明书
     func removeFromIndex(manualId: UUID) async {
-        indexQueue.async {
+        indexQueue.async { [weak self] in
+            guard let self = self else { return }
             for (keyword, entries) in self.searchIndex {
                 self.searchIndex[keyword] = entries.filter { $0.manualId != manualId }
             }

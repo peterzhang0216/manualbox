@@ -84,12 +84,13 @@ protocol SyncServiceProtocol: ServiceProtocol {
 enum SyncStatus: Equatable {
     case idle
     case syncing
+    case paused
     case completed
     case failed(Error)
-    
+
     static func == (lhs: SyncStatus, rhs: SyncStatus) -> Bool {
         switch (lhs, rhs) {
-        case (.idle, .idle), (.syncing, .syncing), (.completed, .completed):
+        case (.idle, .idle), (.syncing, .syncing), (.paused, .paused), (.completed, .completed):
             return true
         case (.failed(let lhsError), (.failed(let rhsError))):
             return lhsError.localizedDescription == rhsError.localizedDescription

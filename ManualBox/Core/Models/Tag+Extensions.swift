@@ -137,12 +137,14 @@ extension Tag {
 
 // 默认标签列表
 extension Tag {
-    static let defaultTags = [
-        ("需维修", "red"),
+    static let defaultTags: [(String, String)] = [
         ("重要", "orange"),
         ("收藏", "yellow"),
         ("新购", "green"),
-        ("待退货", "blue")
+        ("需维修", "red"),
+        ("待退货", "blue"),
+        ("保修中", "purple"),
+        ("已过保", "gray")
     ]
     
     // 在应用首次启动时创建默认标签

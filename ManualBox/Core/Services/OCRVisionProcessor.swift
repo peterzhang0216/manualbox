@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Vision
+@preconcurrency import Vision
 import SwiftUI
 import NaturalLanguage
 
@@ -75,16 +75,16 @@ extension OCRService {
             
             let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             self.activeRequests[requestId] = handler
-            
-            DispatchQueue.global(qos: .userInitiated).async {
+
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 do {
                     try handler.perform([request])
                 } catch {
                     continuation.resume(throwing: OCRError.processingFailed(error.localizedDescription))
                 }
-                
-                Task { @MainActor in
-                    self.activeRequests.removeValue(forKey: requestId)
+
+                Task { @MainActor [weak self] in
+                    self?.activeRequests.removeValue(forKey: requestId)
                 }
             }
         }

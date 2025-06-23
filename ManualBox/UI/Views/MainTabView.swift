@@ -434,16 +434,62 @@ struct MainTabView: View {
     // 设置详情视图（中间栏）
     @ViewBuilder
     private func settingsDetailView(for panel: SettingsPanel) -> some View {
-        SettingsDetailView(viewModel: settingsViewModel)
-            .id(panel.rawValue) // 确保面板切换时视图刷新
-            .onAppear {
-                // 确保选中的面板与ViewModel同步
-                if settingsViewModel.selectedPanel != panel {
-                    Task {
-                        settingsViewModel.send(.selectPanel(panel))
-                    }
-                }
+        // 直接根据传入的panel参数显示对应的设置面板，而不依赖于viewModel的selectedPanel
+        Group {
+            switch panel {
+            case .notification:
+                NotificationAdvancedSettingsPanel()
+                    .environmentObject(settingsViewModel)
+            case .theme:
+                ThemeSettingsPanel()
+                    .environmentObject(settingsViewModel)
+            case .data:
+                DataSettingsPanel(
+                    defaultWarrantyPeriod: Binding(
+                        get: { settingsViewModel.defaultWarrantyPeriod },
+                        set: { period in
+                            Task {
+                                settingsViewModel.send(.updateDefaultWarrantyPeriod(period))
+                            }
+                        }
+                    ),
+                    enableOCRByDefault: Binding(
+                        get: { settingsViewModel.enableOCRByDefault },
+                        set: { enabled in
+                            Task {
+                                settingsViewModel.send(.updateEnableOCRByDefault(enabled))
+                            }
+                        }
+                    )
+                )
+            case .about:
+                AboutSettingsPanel(
+                    showPrivacySheet: Binding(
+                        get: { settingsViewModel.showPrivacySheet },
+                        set: { show in
+                            Task {
+                                settingsViewModel.send(.togglePrivacySheet)
+                            }
+                        }
+                    ),
+                    showAgreementSheet: Binding(
+                        get: { settingsViewModel.showAgreementSheet },
+                        set: { show in
+                            Task {
+                                settingsViewModel.send(.toggleAgreementSheet)
+                            }
+                        }
+                    )
+                )
             }
+        }
+        .id(panel.rawValue) // 确保面板切换时视图刷新
+        .onAppear {
+            // 同步选中的面板到ViewModel，用于右侧栏显示
+            Task {
+                settingsViewModel.send(.selectPanel(panel))
+            }
+        }
     }
 
     // 设置详情面板视图（右侧栏）

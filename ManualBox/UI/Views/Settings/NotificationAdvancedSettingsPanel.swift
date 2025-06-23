@@ -5,6 +5,7 @@ struct NotificationAdvancedSettingsPanel: View {
     @AppStorage("silentStartTime") private var silentStartTime: Double = 22 * 3600 // 22:00
     @AppStorage("silentEndTime") private var silentEndTime: Double = 8 * 3600 // 08:00
     @AppStorage("enableSilentPeriod") private var enableSilentPeriod: Bool = false
+    @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     var body: some View {
         ScrollView {
@@ -31,11 +32,18 @@ struct NotificationAdvancedSettingsPanel: View {
                         
                         Spacer()
                         
-                        Toggle("", isOn: $enableSilentPeriod)
+                        Toggle("", isOn: Binding(
+                            get: { settingsViewModel.enableSilentPeriod },
+                            set: { enabled in
+                                Task {
+                                    await settingsViewModel.send(.updateSilentPeriod(enabled))
+                                }
+                            }
+                        ))
                             .toggleStyle(SwitchToggleStyle(tint: .accentColor))
                     }
                     
-                    if enableSilentPeriod {
+                    if settingsViewModel.enableSilentPeriod {
                         VStack(spacing: 12) {
                             HStack {
                                 Text(NSLocalizedString("Start Time", comment: ""))
@@ -44,14 +52,18 @@ struct NotificationAdvancedSettingsPanel: View {
                                 DatePicker(
                                     "",
                                     selection: Binding(
-                                        get: { Date(timeIntervalSince1970: silentStartTime) },
-                                        set: { silentStartTime = $0.timeIntervalSince1970 }
+                                        get: { Date(timeIntervalSince1970: settingsViewModel.silentStartTime) },
+                                        set: { time in
+                                            Task {
+                                                await settingsViewModel.send(.updateSilentStartTime(time.timeIntervalSince1970))
+                                            }
+                                        }
                                     ),
                                     displayedComponents: .hourAndMinute
                                 )
                                 .labelsHidden()
                             }
-                            
+
                             HStack {
                                 Text(NSLocalizedString("End Time", comment: ""))
                                     .foregroundColor(.secondary)
@@ -59,8 +71,12 @@ struct NotificationAdvancedSettingsPanel: View {
                                 DatePicker(
                                     "",
                                     selection: Binding(
-                                        get: { Date(timeIntervalSince1970: silentEndTime) },
-                                        set: { silentEndTime = $0.timeIntervalSince1970 }
+                                        get: { Date(timeIntervalSince1970: settingsViewModel.silentEndTime) },
+                                        set: { time in
+                                            Task {
+                                                await settingsViewModel.send(.updateSilentEndTime(time.timeIntervalSince1970))
+                                            }
+                                        }
                                     ),
                                     displayedComponents: .hourAndMinute
                                 )
@@ -91,4 +107,5 @@ struct NotificationAdvancedSettingsPanel: View {
 
 #Preview {
     NotificationAdvancedSettingsPanel()
+        .environmentObject(SettingsViewModel(viewContext: PersistenceController.preview.container.viewContext))
 }

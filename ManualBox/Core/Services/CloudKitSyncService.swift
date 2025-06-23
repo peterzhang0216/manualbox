@@ -120,6 +120,9 @@ class CloudKitSyncService: SyncServiceProtocol, ObservableObject {
         await MainActor.run {
             syncStatus = .syncing
             syncProgress = 0.0
+            // 发布同步开始事件
+            EventBus.shared.publishSyncEvent(syncType: .cloudKit, status: .syncing, progress: 0.0)
+            AppStateManager.shared.updateSyncStatus(.syncing, progress: 0.0)
         }
         
         do {
@@ -134,6 +137,9 @@ class CloudKitSyncService: SyncServiceProtocol, ObservableObject {
                 syncStatus = .completed
                 lastSyncDate = Date()
                 syncProgress = 1.0
+                // 发布同步完成事件
+                EventBus.shared.publishSyncEvent(syncType: .cloudKit, status: .completed, progress: 1.0)
+                AppStateManager.shared.updateSyncStatus(.completed, progress: 1.0)
             }
             
             print("✅ 从云端同步数据完成")
@@ -142,6 +148,11 @@ class CloudKitSyncService: SyncServiceProtocol, ObservableObject {
             await MainActor.run {
                 syncStatus = .failed(error)
                 syncProgress = 0.0
+                // 发布同步失败事件
+                EventBus.shared.publishSyncEvent(syncType: .cloudKit, status: .failed(error), progress: 0.0)
+                EventBus.shared.publishError(error, context: "CloudKit同步")
+                AppStateManager.shared.updateSyncStatus(.failed(error), progress: 0.0)
+                AppStateManager.shared.handleError(error, context: "CloudKit同步")
             }
             print("❌ 从云端同步失败: \(error.localizedDescription)")
             throw error

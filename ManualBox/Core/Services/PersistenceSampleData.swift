@@ -321,10 +321,13 @@ extension PersistenceController {
                 do {
                     print("[Persistence] 开始完全重置数据库...")
 
-                    // 1. 先清理内存中的数据
+                    // 1. 先强制删除所有已知的示例产品
                     let context = container.viewContext
                     await context.perform {
                         do {
+                            // 强制删除特定的示例产品
+                            self.forceDeleteKnownSampleProducts(in: context)
+
                             // 删除所有实体的数据
                             let entityNames = ["Product", "Category", "Tag", "Order", "Manual", "RepairRecord"]
                             var totalDeleted = 0
@@ -337,6 +340,9 @@ extension PersistenceController {
                                 totalDeleted += deletedCount
                                 print("[Persistence] 删除 \(entityName): \(deletedCount) 个")
                             }
+
+                            // 强制重置上下文
+                            context.reset()
 
                             // 保存更改
                             if context.hasChanges {
@@ -381,7 +387,22 @@ extension PersistenceController {
                     }
                     UserDefaults.standard.synchronize()
 
-                    let message = "数据库完全重置成功，删除了 \(deletedFiles) 个文件"
+                    // 4. 重新创建默认分类和标签
+                    await context.perform {
+                        Category.createDefaultCategories(in: context)
+                        Tag.createDefaultTags(in: context)
+
+                        if context.hasChanges {
+                            do {
+                                try context.save()
+                                print("[Persistence] 默认分类和标签重新创建完成")
+                            } catch {
+                                print("[Persistence] 重新创建默认数据时出错: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+
+                    let message = "数据库完全重置成功，删除了 \(deletedFiles) 个文件，并重新创建了默认分类和标签"
                     print("[Persistence] \(message)")
                     continuation.resume(returning: (true, message))
 
@@ -391,6 +412,63 @@ extension PersistenceController {
                     continuation.resume(returning: (false, message))
                 }
             }
+        }
+    }
+
+    /// 强制删除已知的示例产品
+    private func forceDeleteKnownSampleProducts(in context: NSManagedObjectContext) {
+        let knownSampleProducts = [
+            ("iPhone", "Apple"),
+            ("iPhone 15 Pro", "Apple"),
+            ("轮胎", "米其林"),
+            ("戴森吹风机", "戴森"),
+            ("戴森吸尘器", "Dyson"),
+            ("MacBook Pro", "Apple"),
+            ("iPad", "Apple"),
+            ("AirPods", "Apple")
+        ]
+
+        do {
+            let request: NSFetchRequest<Product> = Product.fetchRequest()
+            let allProducts = try context.fetch(request)
+
+            var deletedCount = 0
+            for product in allProducts {
+                let productName = product.name ?? ""
+                let productBrand = product.brand ?? ""
+
+                // 检查是否匹配已知的示例产品
+                let shouldDelete = knownSampleProducts.contains { (name, brand) in
+                    productName.contains(name) && productBrand.contains(brand)
+                }
+
+                if shouldDelete {
+                    // 删除关联的订单
+                    if let order = product.order {
+                        context.delete(order)
+                    }
+
+                    // 删除关联的说明书
+                    if let manuals = product.manuals as? Set<Manual> {
+                        for manual in manuals {
+                            context.delete(manual)
+                        }
+                    }
+
+                    // 删除产品本身
+                    context.delete(product)
+                    deletedCount += 1
+                    print("[Persistence] 强制删除示例产品: \(productName) - \(productBrand)")
+                }
+            }
+
+            if deletedCount > 0 {
+                try context.save()
+                print("[Persistence] 强制删除了 \(deletedCount) 个已知示例产品")
+            }
+
+        } catch {
+            print("[Persistence] 强制删除示例产品时出错: \(error.localizedDescription)")
         }
     }
 } 

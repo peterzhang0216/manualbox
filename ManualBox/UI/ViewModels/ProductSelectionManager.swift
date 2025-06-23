@@ -43,27 +43,71 @@ enum ProductSelectionAction: ActionProtocol {
 
 // MARK: - 产品选择管理器
 @MainActor
-class ProductSelectionManager: BaseViewModel<ProductSelectionState, ProductSelectionAction> {
+class ProductSelectionManager: BaseViewModel<ProductSelectionState, ProductSelectionAction>, EventSubscriber {
+
+    // EventSubscriber 协议要求
+    let subscriberId = UUID()
+
     private let viewContext: NSManagedObjectContext
-    
+    private var cancellables = Set<AnyCancellable>()
+
     // 发布选择变化的通知
     @Published var currentProduct: Product?
-    
+
     // 便利属性
     var selectedProduct: Product? { state.selectedProduct }
     var hasSelection: Bool { state.selectedProduct != nil }
     var canGoBack: Bool { state.previousProduct != nil }
     var selectionHistory: [Product] { state.selectionHistory }
-    
+
     init(viewContext: NSManagedObjectContext) {
         self.viewContext = viewContext
         super.init(initialState: ProductSelectionState())
-        
+
+        // 注册到状态监控器
+        StateMonitor.shared.registerViewModel(self, name: "ProductSelectionManager")
+
         // 监听状态变化并发布通知
         $state
             .map(\.selectedProduct)
             .removeDuplicates { $0?.objectID == $1?.objectID }
-            .assign(to: &$currentProduct)
+            .sink { [weak self] product in
+                self?.currentProduct = product
+                // 发布产品选择事件
+                EventBus.shared.publishProductSelection(product, previousProduct: self?.state.previousProduct)
+                // 更新全局状态
+                AppStateManager.shared.updateSelection(product)
+            }
+            .store(in: &cancellables)
+
+        // 订阅事件总线
+        setupEventSubscriptions()
+    }
+
+    // MARK: - EventSubscriber 实现
+    func handleEvent<T: AppEvent>(_ event: T) {
+        switch event {
+        case let dataEvent as DataChangeEvent where dataEvent.entityType == "Product":
+            handleProductDataChange(dataEvent)
+        default:
+            break
+        }
+    }
+
+    private func setupEventSubscriptions() {
+        EventBus.shared.subscribe(to: DataChangeEvent.self, subscriber: self) { [weak self] event in
+            self?.handleEvent(event)
+        }
+    }
+
+    private func handleProductDataChange(_ event: DataChangeEvent) {
+        // 如果当前选择的产品被删除，清除选择
+        if event.changeType == .deleted,
+           let entityId = event.entityId,
+           let selectedProduct = state.selectedProduct,
+           selectedProduct.id == entityId {
+            send(.clearSelection)
+        }
     }
     
     // MARK: - Action Handler

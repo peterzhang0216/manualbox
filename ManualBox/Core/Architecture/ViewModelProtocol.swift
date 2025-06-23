@@ -64,6 +64,11 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
         cancellables.removeAll()
     }
     
+    // 准备销毁时的清理方法
+    func prepareForDeallocation() {
+        cleanup()
+    }
+
     deinit {
         // 在 Swift 6 中，避免在 deinit 中使用 Task 捕获 self
         // cleanup() 不能在 deinit 中调用，因为它是 MainActor 隔离的
@@ -75,23 +80,55 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
         var newState = state
         update(&newState)
         state = newState
+
+        // 记录状态变化到监控器
+        StateMonitor.shared.recordStateChange(newState, viewModel: String(describing: type(of: self)))
     }
-    
+
     func setLoading(_ isLoading: Bool) {
         updateState { state in
             state.isLoading = isLoading
         }
     }
-    
+
     func setError(_ error: Error?) {
         updateState { state in
             state.errorMessage = error?.localizedDescription
         }
     }
-    
+
     func setError(_ errorMessage: String?) {
         updateState { state in
             state.errorMessage = errorMessage
+        }
+    }
+
+    // MARK: - 任务管理增强
+    func performTask<T>(_ task: @escaping () async throws -> T) async -> T? {
+        setLoading(true)
+        defer { setLoading(false) }
+
+        do {
+            let result = try await task()
+            setError(nil as String?)
+            return result
+        } catch {
+            handleError(error, context: String(describing: type(of: self)))
+            return nil
+        }
+    }
+
+    func performTaskWithResult<T>(_ task: @escaping () async throws -> T) async -> Result<T, Error> {
+        setLoading(true)
+        defer { setLoading(false) }
+
+        do {
+            let result = try await task()
+            setError(nil as String?)
+            return .success(result)
+        } catch {
+            handleError(error, context: String(describing: type(of: self)))
+            return .failure(error)
         }
     }
     

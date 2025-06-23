@@ -55,6 +55,9 @@ class CategoriesViewModel: BaseViewModel<CategoriesState, CategoriesAction> {
     init(viewContext: NSManagedObjectContext) {
         self.viewContext = viewContext
         super.init(initialState: CategoriesState())
+
+        // 注册到状态监控器
+        StateMonitor.shared.registerViewModel(self, name: "CategoriesViewModel")
     }
     
     // MARK: - Action Handler
@@ -117,15 +120,28 @@ class CategoriesViewModel: BaseViewModel<CategoriesState, CategoriesAction> {
             self.updateState { $0.saveError = self.state.errorMessage }
             return
         }
-        
-        // 使用统一的加载状态管理
-        await self.performTask { [self] in
-            let _ = Category.createCategoryIfNotExists(
+
+        // 使用新的任务管理方法
+        let result = await performTaskWithResult { [self] in
+            let category = Category.createCategoryIfNotExists(
                 in: self.viewContext,
                 name: self.state.newCategoryName,
                 icon: self.state.selectedIcon
             )
             try self.viewContext.save()
+
+            // 发布数据变更事件
+            EventBus.shared.publishDataChange(
+                entityType: "Category",
+                changeType: .created,
+                entityId: category.id
+            )
+
+            return category
+        }
+
+        switch result {
+        case .success(let category):
             // 保存成功，关闭表单并清空状态
             self.updateState {
                 $0.showingAddSheet = false
@@ -134,13 +150,37 @@ class CategoriesViewModel: BaseViewModel<CategoriesState, CategoriesAction> {
                 $0.saveError = nil
                 $0.isSaving = false
             }
+            print("✅ 分类创建成功: \(category.name ?? "未知")")
+
+        case .failure(let error):
+            // 错误已经通过 performTaskWithResult 处理
+            print("❌ 分类创建失败: \(error.localizedDescription)")
         }
     }
     
     private func deleteCategory(_ category: Category) async {
-        await self.performTask { [self] in
+        let categoryId = category.id
+        let categoryName = category.name
+
+        let result = await performTaskWithResult { [self] in
             self.viewContext.delete(category)
             try self.viewContext.save()
+        }
+
+        switch result {
+        case .success:
+            // 发布数据变更事件
+            if let id = categoryId {
+                EventBus.shared.publishDataChange(
+                    entityType: "Category",
+                    changeType: .deleted,
+                    entityId: id
+                )
+            }
+            print("✅ 分类删除成功: \(categoryName ?? "未知")")
+
+        case .failure(let error):
+            print("❌ 分类删除失败: \(error.localizedDescription)")
         }
     }
     
