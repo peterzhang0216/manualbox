@@ -9,43 +9,87 @@ struct SettingRow: View {
     var warning: Bool = false
     var showChevron: Bool = false
     var trailingContent: (() -> AnyView)? = nil
-    
+    var isInteractive: Bool = true
+
+    @State private var isPressed = false
+
     var body: some View {
-        HStack(spacing: 12) {
-            // 图标
-            Image(systemName: icon)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(warning ? .red : iconColor == .accentColor ? .accentColor : iconColor)
-                .frame(width: 28, height: 28)
-                .background((iconColor == .accentColor ? Color.accentColor : iconColor).opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-            
-            // 标题和副标题
-            VStack(alignment: .leading, spacing: 1) {
-                Text(title)
-                    .font(.body)
-                    .foregroundColor(warning ? .red : .primary)
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundColor(warning ? .red : .secondary)
+        HStack(spacing: 16) {
+            // 增强的图标设计
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(
+                        warning ?
+                        LinearGradient(colors: [.red, .red.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing) :
+                        LinearGradient(colors: [iconColor, iconColor.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                    .frame(width: 32, height: 32)
+                    .shadow(color: (warning ? .red : iconColor).opacity(0.25), radius: 3, x: 0, y: 2)
+
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
             }
-            
+            .scaleEffect(isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: isPressed)
+
+            // 改进的文本布局
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(warning ? .red : .primary)
+                    .lineLimit(1)
+
+                Text(subtitle)
+                    .font(.system(size: 13))
+                    .foregroundColor(warning ? .red.opacity(0.8) : .secondary)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+
             Spacer()
-            
+
             // 可选的末尾内容
             if let trailingContent = trailingContent {
                 trailingContent()
             }
-            
-            // 可选的箭头图标
+
+            // 改进的箭头图标
             if showChevron {
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 14))
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(Color.secondary)
+                    .scaleEffect(isPressed ? 0.9 : 1.0)
+                    .animation(.easeInOut(duration: 0.1), value: isPressed)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 6)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(isPressed ? Color.secondary.opacity(0.08) : Color.clear)
+                .animation(.easeInOut(duration: 0.15), value: isPressed)
+        )
+        .scaleEffect(isPressed ? 0.98 : 1.0)
+        .animation(.easeInOut(duration: 0.1), value: isPressed)
         .contentShape(Rectangle())
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    if isInteractive && !isPressed {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            isPressed = true
+                        }
+                    }
+                }
+                .onEnded { _ in
+                    if isPressed {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            isPressed = false
+                        }
+                    }
+                }
+        )
     }
 }
 

@@ -10,71 +10,71 @@ struct NotificationAdvancedSettingsPanel: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text(NSLocalizedString("Notification Settings", comment: ""))
-                    .font(.title2).bold()
-                    .padding(.top, 24)
-                    .foregroundColor(.accentColor)
-                
-                Divider().background(Color.accentColor.opacity(0.3))
-                
-                // 免打扰时段设置
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(spacing: 12) {
-                        Image(systemName: "moon.fill")
-                            .font(.system(size: 22))
-                            .foregroundColor(.accentColor)
-                            .frame(width: 36, height: 36)
-                            .background(Color.accentColor.opacity(0.1))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        
-                        Text(NSLocalizedString("Silent Period", comment: ""))
-                            .font(.headline)
-                        
-                        Spacer()
-                        
-                        Toggle("", isOn: Binding(
-                            get: { settingsViewModel.enableSilentPeriod },
-                            set: { enabled in
-                                Task {
-                                    await settingsViewModel.send(.updateSilentPeriod(enabled))
+                // 页面标题
+                HStack {
+                    Image(systemName: "bell.badge.fill")
+                        .font(.title2)
+                        .foregroundColor(.orange)
+                    Text(NSLocalizedString("Notification Settings", comment: ""))
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    Spacer()
+                }
+                .padding(.top, 24)
+
+                // 通知权限状态卡片
+                SettingsCard(
+                    title: "通知权限",
+                    icon: "bell.circle.fill",
+                    iconColor: .orange,
+                    description: "管理应用的通知权限和基本设置"
+                ) {
+                    SettingsGroup {
+                        SettingsToggle(
+                            title: "启用通知",
+                            description: "允许应用发送通知提醒",
+                            icon: "bell.fill",
+                            iconColor: .orange,
+                            isOn: Binding(
+                                get: { settingsViewModel.enableNotifications },
+                                set: { enabled in
+                                    Task {
+                                        await settingsViewModel.send(.updateEnableNotifications(enabled))
+                                    }
                                 }
-                            }
-                        ))
-                            .toggleStyle(SwitchToggleStyle(tint: .accentColor))
-                    }
-                    
-                    if settingsViewModel.enableSilentPeriod {
-                        VStack(spacing: 12) {
-                            HStack {
-                                Text(NSLocalizedString("Start Time", comment: ""))
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                                DatePicker(
-                                    "",
-                                    selection: Binding(
-                                        get: { Date(timeIntervalSince1970: settingsViewModel.silentStartTime) },
-                                        set: { time in
-                                            Task {
-                                                await settingsViewModel.send(.updateSilentStartTime(time.timeIntervalSince1970))
-                                            }
-                                        }
-                                    ),
-                                    displayedComponents: .hourAndMinute
-                                )
-                                .labelsHidden()
-                            }
+                            )
+                        )
+
+                        if settingsViewModel.enableNotifications {
+                            Divider()
+                                .padding(.vertical, 8)
 
                             HStack {
-                                Text(NSLocalizedString("End Time", comment: ""))
-                                    .foregroundColor(.secondary)
+                                Image(systemName: "clock.fill")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.blue)
+                                    .frame(width: 28, height: 28)
+                                    .background(Color.blue.opacity(0.1))
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("默认提醒时间")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.primary)
+                                    Text("设置新产品的默认提醒时间")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.secondary)
+                                }
+
                                 Spacer()
+
                                 DatePicker(
                                     "",
                                     selection: Binding(
-                                        get: { Date(timeIntervalSince1970: settingsViewModel.silentEndTime) },
+                                        get: { settingsViewModel.notificationTime },
                                         set: { time in
                                             Task {
-                                                await settingsViewModel.send(.updateSilentEndTime(time.timeIntervalSince1970))
+                                                await settingsViewModel.send(.updateNotificationTime(time))
                                             }
                                         }
                                     ),
@@ -82,25 +82,126 @@ struct NotificationAdvancedSettingsPanel: View {
                                 )
                                 .labelsHidden()
                             }
+                            .padding(.vertical, 4)
                         }
-                        .padding()
-                        .background(Color.secondary.opacity(0.05))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
-                    
-                    Text(NSLocalizedString("Notifications will be silenced during this period", comment: ""))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
-                .padding()
-                .background(Color.secondary.opacity(0.05))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                
+
+                // 免打扰时段设置卡片
+                SettingsCard(
+                    title: "免打扰时段",
+                    icon: "moon.fill",
+                    iconColor: .purple,
+                    description: "在指定时间段内静音所有通知"
+                ) {
+                    SettingsGroup {
+                        SettingsToggle(
+                            title: "启用免打扰",
+                            description: "在指定时间段内不发送通知",
+                            icon: "moon.fill",
+                            iconColor: .purple,
+                            isOn: Binding(
+                                get: { settingsViewModel.enableSilentPeriod },
+                                set: { enabled in
+                                    Task {
+                                        await settingsViewModel.send(.updateSilentPeriod(enabled))
+                                    }
+                                }
+                            )
+                        )
+
+                        if settingsViewModel.enableSilentPeriod {
+                            Divider()
+                                .padding(.vertical, 8)
+
+                            VStack(spacing: 16) {
+                                HStack {
+                                    Image(systemName: "sunrise.fill")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.orange)
+                                        .frame(width: 28, height: 28)
+                                        .background(Color.orange.opacity(0.1))
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("开始时间")
+                                            .font(.system(size: 16, weight: .medium))
+                                            .foregroundColor(.primary)
+                                        Text("免打扰时段开始时间")
+                                            .font(.system(size: 13))
+                                            .foregroundColor(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    DatePicker(
+                                        "",
+                                        selection: Binding(
+                                            get: { Date(timeIntervalSince1970: settingsViewModel.silentStartTime) },
+                                            set: { time in
+                                                Task {
+                                                    await settingsViewModel.send(.updateSilentStartTime(time.timeIntervalSince1970))
+                                                }
+                                            }
+                                        ),
+                                        displayedComponents: .hourAndMinute
+                                    )
+                                    .labelsHidden()
+                                }
+
+                                HStack {
+                                    Image(systemName: "sunset.fill")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.red)
+                                        .frame(width: 28, height: 28)
+                                        .background(Color.red.opacity(0.1))
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("结束时间")
+                                            .font(.system(size: 16, weight: .medium))
+                                            .foregroundColor(.primary)
+                                        Text("免打扰时段结束时间")
+                                            .font(.system(size: 13))
+                                            .foregroundColor(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    DatePicker(
+                                        "",
+                                        selection: Binding(
+                                            get: { Date(timeIntervalSince1970: settingsViewModel.silentEndTime) },
+                                            set: { time in
+                                                Task {
+                                                    await settingsViewModel.send(.updateSilentEndTime(time.timeIntervalSince1970))
+                                                }
+                                            }
+                                        ),
+                                        displayedComponents: .hourAndMinute
+                                    )
+                                    .labelsHidden()
+                                }
+                            }
+
+                            // 提示信息
+                            HStack {
+                                Image(systemName: "info.circle.fill")
+                                    .foregroundColor(.blue)
+                                Text("在此时间段内，应用将不会发送任何通知提醒")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.top, 8)
+                        }
+                    }
+                }
+
                 Spacer()
             }
             .padding(.horizontal, 32)
             .padding(.bottom, 32)
-            .frame(maxWidth: 600, alignment: .leading)
+            .frame(maxWidth: 700, alignment: .leading)
         }
     }
 }

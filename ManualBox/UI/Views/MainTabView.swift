@@ -529,43 +529,10 @@ struct MainTabView: View {
     // 设置详情面板视图（右侧栏）
     @ViewBuilder
     private func settingsDetailPanelView(for panel: SettingsPanel) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // 面板标题
-            HStack {
-                Image(systemName: panel.icon)
-                    .font(.title2)
-                    .foregroundColor(.accentColor)
-                Text(panel.title)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.top)
-
-            Divider()
-
-            // 面板描述和快速操作
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    switch panel {
-                    case .notification:
-                        settingsNotificationSummary()
-                    case .theme:
-                        settingsThemeSummary()
-                    case .data:
-                        settingsDataSummary()
-                    case .about:
-                        settingsAboutSummary()
-                    }
-                }
-                .padding(.horizontal)
-            }
-
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+        SettingsSummaryView(panel: panel)
+            .environmentObject(settingsViewModel)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
     }
 
     // MARK: - 设置面板摘要视图

@@ -9,67 +9,88 @@ struct ThemeSettingsPanel: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text(NSLocalizedString("Appearance & Theme", comment: ""))
-                    .font(.title2).bold()
-                    .padding(.top, 24)
-                    .foregroundColor(.accentColor)
-                
-                Divider().background(Color.accentColor.opacity(0.3))
-                
-                // 主题设置卡片
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(spacing: 12) {
-                        Image(systemName: "circle.lefthalf.filled")
-                            .font(.system(size: 22))
-                            .foregroundColor(.accentColor)
-                            .frame(width: 36, height: 36)
-                            .background(Color.accentColor.opacity(0.1))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        
-                        Text(NSLocalizedString("Theme Mode", comment: ""))
-                            .font(.headline)
-                        
-                        Spacer()
-                    }
-                    
-                    ThemePickerView()
-                        .padding(.leading, 8)
+                // 页面标题
+                HStack {
+                    Image(systemName: "paintbrush.fill")
+                        .font(.title2)
+                        .foregroundColor(.purple)
+                    Text(NSLocalizedString("Appearance & Theme", comment: ""))
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    Spacer()
                 }
-                .padding()
-                .background(Color.secondary.opacity(0.05))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                
+                .padding(.top, 24)
+
+                // 主题模式设置卡片
+                SettingsCard(
+                    title: "主题模式",
+                    icon: "circle.lefthalf.filled",
+                    iconColor: .blue,
+                    description: "选择应用的显示主题模式"
+                ) {
+                    SettingsGroup {
+                        ThemePickerView()
+                    }
+                }
+
                 // 主题色设置卡片
-                AccentColorPickerView()
-                
-                // 语言设置卡片
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(spacing: 12) {
-                        Image(systemName: "globe")
-                            .font(.system(size: 22))
-                            .foregroundColor(.accentColor)
-                            .frame(width: 36, height: 36)
-                            .background(Color.accentColor.opacity(0.1))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        
-                        Text(NSLocalizedString("Language", comment: ""))
-                            .font(.headline)
-                        
-                        Spacer()
+                SettingsCard(
+                    title: "主题色彩",
+                    icon: "paintpalette.fill",
+                    iconColor: .purple,
+                    description: "自定义应用的主题色彩"
+                ) {
+                    SettingsGroup {
+                        AccentColorPickerView()
                     }
-                    
-                    LanguagePickerView()
-                        .padding(.leading, 8)
                 }
-                .padding()
-                .background(Color.secondary.opacity(0.05))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                
+
+                // 语言设置卡片
+                SettingsCard(
+                    title: "语言设置",
+                    icon: "globe",
+                    iconColor: .green,
+                    description: "选择应用的显示语言"
+                ) {
+                    SettingsGroup {
+                        LanguagePickerView()
+                    }
+                }
+
+                // 显示设置卡片
+                SettingsCard(
+                    title: "显示设置",
+                    icon: "display",
+                    iconColor: .orange,
+                    description: "调整应用的显示效果和动画"
+                ) {
+                    SettingsGroup {
+                        SettingsToggle(
+                            title: "减少动画",
+                            description: "减少界面动画效果以提升性能",
+                            icon: "speedometer",
+                            iconColor: .orange,
+                            isOn: .constant(false)
+                        )
+
+                        Divider()
+                            .padding(.vertical, 8)
+
+                        SettingsToggle(
+                            title: "高对比度",
+                            description: "增强界面对比度以提升可读性",
+                            icon: "circle.lefthalf.filled",
+                            iconColor: .gray,
+                            isOn: .constant(false)
+                        )
+                    }
+                }
+
                 Spacer()
             }
             .padding(.horizontal, 32)
             .padding(.bottom, 32)
-            .frame(maxWidth: 600, alignment: .leading)
+            .frame(maxWidth: 700, alignment: .leading)
         }
     }
 }
