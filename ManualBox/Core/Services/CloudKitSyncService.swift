@@ -1,189 +1,292 @@
-import Foundation
+//
+//  CloudKitSyncService.swift
+//  ManualBox
+//
+//  Created by Assistant on 2024/12/19.
+//  重构后的CloudKit同步服务主文件
+//
+
 import CloudKit
 import CoreData
 import Combine
 import Network
 
-// MARK: - CloudKit同步服务实现
-@MainActor
+// MARK: - CloudKit同步服务主类
 class CloudKitSyncService: SyncServiceProtocol, ObservableObject {
     
-    // MARK: - Properties
-    @Published private(set) var syncStatus: SyncStatus = .idle
+    // MARK: - Singleton
+    static let shared = CloudKitSyncService(
+        persistentContainer: PersistenceController.shared.container,
+        configuration: CloudKitSyncConfiguration.default
+    )
+    
+    // MARK: - Published Properties
+    @Published private(set) var syncStatus: CloudKitSyncStatus = .idle
     @Published private(set) var lastSyncDate: Date?
     @Published private(set) var syncProgress: Double = 0.0
+    @Published private(set) var conflictCount: Int = 0
+    @Published private(set) var pendingChanges: Int = 0
+    @Published private(set) var syncDetails: SyncDetails?
+    @Published private(set) var syncHistory: [SyncHistoryItem] = []
+    @Published private(set) var pendingUploads: Int = 0
+    @Published private(set) var pendingDownloads: Int = 0
+    @Published private(set) var failedRecords: Int = 0
     
+    // MARK: - Core Properties
     private let container: CKContainer
     private let persistentContainer: NSPersistentCloudKitContainer
-    private let configuration: CloudKitConfiguration
+    private let configuration: CloudKitSyncConfiguration
     private var cancellables = Set<AnyCancellable>()
     private let networkMonitor = NWPathMonitor()
     private var isNetworkAvailable = true
     private var pendingSync: (() async throws -> Void)?
     
+    // MARK: - 组件
+    private let changeTokenStore: ChangeTokenStore
+    private let conflictResolver: CloudKitConflictResolver
+    private let recordProcessor: CloudKitRecordProcessor
+    private let syncOperations: CloudKitSyncOperations
+    
+    // MARK: - 冲突相关
+    private var pendingConflicts: [SyncConflict] = []
+    var pendingConflictsPublic: [SyncConflict] { pendingConflicts }
+    
     // MARK: - Initialization
-    init(persistentContainer: NSPersistentCloudKitContainer, configuration: CloudKitConfiguration) {
+    init(persistentContainer: NSPersistentCloudKitContainer, configuration: CloudKitSyncConfiguration) {
         self.persistentContainer = persistentContainer
         self.configuration = configuration
         self.container = CKContainer(identifier: configuration.containerIdentifier)
         
+        // 初始化组件
+        self.changeTokenStore = ChangeTokenStore()
+        self.conflictResolver = CloudKitConflictResolver(context: persistentContainer.viewContext)
+        self.recordProcessor = CloudKitRecordProcessor(context: persistentContainer.viewContext)
+        self.syncOperations = CloudKitSyncOperations(
+            container: container,
+            configuration: configuration
+        )
+        
         setupRemoteChangeNotifications()
         setupNetworkMonitor()
+        loadSyncHistory()
     }
     
     // MARK: - ServiceProtocol
     nonisolated func initialize() async throws {
         try await checkCloudKitAvailability()
-        await setupAutomaticSync()
     }
     
     nonisolated func cleanup() {
         Task { @MainActor in
             cancellables.removeAll()
+            networkMonitor.cancel()
         }
     }
     
     // MARK: - SyncServiceProtocol
     nonisolated func syncToCloud() async throws {
-        let currentSyncStatus = await syncStatus
+        let currentSyncStatus = await MainActor.run { syncStatus }
         guard currentSyncStatus != .syncing else {
-            print("🔄 同步已在进行中，跳过此次请求")
-            return
-        }
-        
-        let networkAvailable = await isNetworkAvailable
-        if !networkAvailable {
-            print("⚠️ 网络不可用，已缓存同步请求，待恢复后自动执行")
-            await MainActor.run {
-                pendingSync = { [weak self] in try await self?.syncToCloud() }
-            }
-            return
-        }
-        
-        await MainActor.run {
-            syncStatus = .syncing
-            syncProgress = 0.0
+            throw CloudKitSyncError.syncInProgress
         }
         
         do {
-            // 检查CloudKit可用性
-            try await checkCloudKitAvailability()
+            try await checkAccountStatus()
             
-            // 保存本地更改到CloudKit
-            try await saveLocalChangesToCloud()
-            
-            // 更新同步状态
             await MainActor.run {
-                syncStatus = .completed
-                lastSyncDate = Date()
-                syncProgress = 1.0
+                syncStatus = .syncing
+                syncProgress = 0.0
+                syncDetails = SyncDetails(
+                    startTime: Date(),
+                    endTime: nil,
+                    totalRecords: 0,
+                    processedRecords: 0,
+                    failedRecords: 0,
+                    conflictedRecords: 0,
+                    syncType: .full,
+                    phase: .uploading
+                )
             }
             
-            print("✅ 数据同步到云端完成")
+            try await performUploadSync()
+            
+            await MainActor.run {
+                syncStatus = .completed
+                syncProgress = 1.0
+                lastSyncDate = Date()
+                if var details = syncDetails {
+                    details = SyncDetails(
+                        startTime: details.startTime,
+                        endTime: Date(),
+                        totalRecords: details.totalRecords,
+                        processedRecords: details.processedRecords,
+                        failedRecords: details.failedRecords,
+                        conflictedRecords: details.conflictedRecords,
+                        syncType: details.syncType,
+                        phase: .completed
+                    )
+                    syncDetails = details
+                }
+            }
             
         } catch {
             await MainActor.run {
                 syncStatus = .failed(error)
                 syncProgress = 0.0
             }
-            print("❌ 同步到云端失败: \(error.localizedDescription)")
             throw error
-        }
-        
-        // 重置状态
-        Task {
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            await MainActor.run {
-                if case .completed = syncStatus {
-                    syncStatus = .idle
-                }
-            }
         }
     }
     
     nonisolated func syncFromCloud() async throws {
-        let currentSyncStatus = await syncStatus
-        guard currentSyncStatus != .syncing else {
-            print("🔄 同步已在进行中，跳过此次请求")
-            return
-        }
-        
-        let networkAvailable = await isNetworkAvailable
-        if !networkAvailable {
-            print("⚠️ 网络不可用，已缓存同步请求，待恢复后自动执行")
-            await MainActor.run {
-                pendingSync = { [weak self] in try await self?.syncFromCloud() }
-            }
-            return
-        }
-        
         await MainActor.run {
-            syncStatus = .syncing
-            syncProgress = 0.0
-            // 发布同步开始事件
-            EventBus.shared.publishSyncEvent(syncType: .cloudKit, status: .syncing, progress: 0.0)
-            AppStateManager.shared.updateSyncStatus(.syncing, progress: 0.0)
+            if case .completed = syncStatus {
+                syncStatus = .idle
+            }
+        }
+        
+        let currentSyncStatus = await MainActor.run { syncStatus }
+        guard currentSyncStatus != .syncing else {
+            throw CloudKitSyncError.syncInProgress
         }
         
         do {
-            // 检查CloudKit可用性
-            try await checkCloudKitAvailability()
+            try await checkAccountStatus()
             
-            // 从CloudKit获取更改
-            try await fetchCloudChanges()
-            
-            // 更新同步状态
             await MainActor.run {
-                syncStatus = .completed
-                lastSyncDate = Date()
-                syncProgress = 1.0
-                // 发布同步完成事件
-                EventBus.shared.publishSyncEvent(syncType: .cloudKit, status: .completed, progress: 1.0)
-                AppStateManager.shared.updateSyncStatus(.completed, progress: 1.0)
+                syncStatus = .syncing
+                syncProgress = 0.0
+                syncDetails = SyncDetails(
+                    startTime: Date(),
+                    endTime: nil,
+                    totalRecords: 0,
+                    processedRecords: 0,
+                    failedRecords: 0,
+                    conflictedRecords: 0,
+                    syncType: .full,
+                    phase: .downloading
+                )
             }
             
-            print("✅ 从云端同步数据完成")
+            try await performDownloadSync()
+            
+            await MainActor.run {
+                syncStatus = .completed
+                syncProgress = 1.0
+                lastSyncDate = Date()
+                if var details = syncDetails {
+                    details = SyncDetails(
+                        startTime: details.startTime,
+                        endTime: Date(),
+                        totalRecords: details.totalRecords,
+                        processedRecords: details.processedRecords,
+                        failedRecords: details.failedRecords,
+                        conflictedRecords: details.conflictedRecords,
+                        syncType: details.syncType,
+                        phase: .completed
+                    )
+                    syncDetails = details
+                }
+            }
             
         } catch {
             await MainActor.run {
                 syncStatus = .failed(error)
                 syncProgress = 0.0
-                // 发布同步失败事件
-                EventBus.shared.publishSyncEvent(syncType: .cloudKit, status: .failed(error), progress: 0.0)
-                EventBus.shared.publishError(error, context: "CloudKit同步")
-                AppStateManager.shared.updateSyncStatus(.failed(error), progress: 0.0)
-                AppStateManager.shared.handleError(error, context: "CloudKit同步")
             }
-            print("❌ 从云端同步失败: \(error.localizedDescription)")
             throw error
-        }
-        
-        // 重置状态
-        Task {
-            try await Task.sleep(nanoseconds: 2_000_000_000)
-            await MainActor.run {
-                if case .completed = syncStatus {
-                    syncStatus = .idle
-                }
-            }
         }
     }
     
     nonisolated func resolveConflicts() async throws {
-        let context = persistentContainer.viewContext
+        print("🔄 开始解决同步冲突")
         
-        // 获取有冲突的对象
-        let conflicts = try await getConflictedObjects()
-        
+        let conflicts = await MainActor.run { pendingConflicts }
         for conflict in conflicts {
-            try await resolveConflict(conflict, in: context)
+            try await resolveConflict(conflict, strategy: .lastModifiedWins)
         }
         
-        try context.save()
-        print("✅ 数据冲突解决完成")
+        await MainActor.run {
+            conflictCount = 0
+        }
     }
     
-    // MARK: - Private Methods
+    // MARK: - 冲突解决
+    func resolveConflict(_ conflict: SyncConflict, strategy: ConflictResolutionStrategy) async throws {
+        print("🔧 解决冲突: \(conflict.recordID.recordName)")
+        
+        // 使用冲突解决器处理
+        let resolvedRecord = conflictResolver.resolveConflict(
+            localRecord: conflict.localRecord,
+            serverRecord: conflict.serverRecord,
+            strategy: strategy
+        )
+        
+        // 应用解决方案
+        try await applyConflictResolution(conflict, resolvedRecord: resolvedRecord)
+        
+        await MainActor.run {
+            pendingConflicts.removeAll { $0.id == conflict.id }
+            conflictCount = pendingConflicts.count
+        }
+    }
+    
+    // MARK: - 私有同步方法
+    
+    private func performUploadSync() async throws {
+        print("📤 开始上传同步")
+        
+        // 获取本地未同步的记录
+        let unsyncedRecords = try await getUnsyncedLocalRecords()
+        
+        await MainActor.run {
+            pendingUploads = unsyncedRecords.count
+        }
+        
+        // 批量上传
+        try await syncOperations.uploadRecords(unsyncedRecords) { progress in
+            Task { @MainActor in
+                self.syncProgress = progress
+            }
+        }
+        
+        await MainActor.run {
+            pendingUploads = 0
+        }
+    }
+    
+    private func performDownloadSync() async throws {
+        print("📥 开始下载同步")
+        
+        // 获取服务器变更
+        let changes = try await syncOperations.fetchChanges(
+            since: changeTokenStore.loadToken()
+        ) { progress in
+            Task { @MainActor in
+                self.syncProgress = progress
+            }
+        }
+        
+        // 处理变更
+        for record in changes.changedRecords {
+            recordProcessor.processChangedRecord(record)
+        }
+        
+        for recordID in changes.deletedRecordIDs {
+            recordProcessor.processDeletedRecord(
+                recordID: recordID.recordID,
+                recordType: recordID.recordType
+            )
+        }
+        
+        // 保存新的变更令牌
+        if let newToken = changes.changeToken {
+            changeTokenStore.saveToken(newToken)
+        }
+    }
+    
+    // MARK: - 辅助方法
+    
     private func checkCloudKitAvailability() async throws {
         let accountStatus = try await container.accountStatus()
         
@@ -191,162 +294,101 @@ class CloudKitSyncService: SyncServiceProtocol, ObservableObject {
         case .available:
             print("✅ CloudKit账户可用")
         case .noAccount:
-            throw SyncError.noAccount
+            throw CloudKitSyncError.noAccount
         case .restricted:
-            throw SyncError.accountRestricted
+            throw CloudKitSyncError.accountRestricted
         case .couldNotDetermine:
-            throw SyncError.accountStatusUnknown
+            throw CloudKitSyncError.accountStatusUnknown
         case .temporarilyUnavailable:
-            throw SyncError.temporarilyUnavailable
+            throw CloudKitSyncError.temporarilyUnavailable
         @unknown default:
-            throw SyncError.accountStatusUnknown
+            throw CloudKitSyncError.accountStatusUnknown
         }
     }
     
-    private func saveLocalChangesToCloud() async throws {
-        let context = persistentContainer.viewContext
+    private func checkAccountStatus() async throws {
+        try await checkCloudKitAvailability()
         
-        // 确保有待同步的更改
-        if context.hasChanges {
-            try context.save()
-            await MainActor.run {
-                syncProgress = 0.5
-            }
-        }
-        
-        // CloudKit Core Data集成会自动处理上传
-        // 等待同步完成
-        try await waitForSyncCompletion()
-        
-        await MainActor.run {
-            syncProgress = 1.0
+        guard isNetworkAvailable else {
+            throw CloudKitSyncError.networkUnavailable
         }
     }
     
-    private func fetchCloudChanges() async throws {
-        // CloudKit Core Data集成会自动处理下载
-        // 触发远程更改通知处理
-        NotificationCenter.default.post(
-            name: .NSPersistentStoreRemoteChange,
-            object: persistentContainer.persistentStoreCoordinator
-        )
-        
-        await MainActor.run {
-            syncProgress = 0.5
-        }
-        
-        // 等待同步完成
-        try await waitForSyncCompletion()
-        
-        await MainActor.run {
-            syncProgress = 1.0
-        }
-    }
-    
-    private func waitForSyncCompletion() async throws {
-        // 等待CloudKit同步完成
-        // 这是一个简化的实现，实际中可能需要更复杂的状态检查
-        try await Task.sleep(nanoseconds: 1_000_000_000) // 1秒
-    }
-    
-    private func getConflictedObjects() async throws -> [NSManagedObject] {
-        // 简化实现：通过Core Data的持久化历史来检测冲突
-        let context = persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<Product>(entityName: "Product")
-        
-        // 获取所有产品，实际实现中可以通过NSPersistentHistory来检测冲突
-        let _ = try context.fetch(fetchRequest)
-        
-        // 这里简化处理，实际中需要通过CloudKit记录版本来检测冲突
+    private func getUnsyncedLocalRecords() async throws -> [CKRecord] {
+        // 这里应该查询本地数据库中未同步的记录
+        // 简化实现，返回空数组
         return []
     }
     
-    private func resolveConflict(_ conflict: NSManagedObject, in context: NSManagedObjectContext) async throws {
-        guard let product = conflict as? Product else { return }
-        
-        // 简化的冲突解决：使用最新的updatedAt时间戳
-        // 在实际实现中，需要通过CloudKit的CKRecord来比较版本
-        let _ = product.updatedAt ?? .distantPast
-        
-        // 实际实现中需要从CloudKit获取服务器版本进行比较
-        // 这里简化处理，直接保留本地版本
-        print("处理产品冲突: \(product.name ?? "未知产品")")
+    private func applyConflictResolution(_ conflict: SyncConflict, resolvedRecord: CKRecord) async throws {
+        // 应用冲突解决方案
+        recordProcessor.processChangedRecord(resolvedRecord)
+        print("✅ 冲突解决完成: \(conflict.recordID.recordName)")
     }
     
-    private func setupRemoteChangeNotifications() {
-        NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
-            .sink { [weak self] notification in
-                Task {
-                    await self?.handleRemoteChange(notification)
-                }
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func handleRemoteChange(_ notification: Notification) async {
-        print("📡 收到远程数据变更通知")
-        
-        // 处理远程数据变更
-        let context = persistentContainer.viewContext
-        
-        await context.perform {
-            // 刷新所有对象以获取最新数据
-            context.refreshAllObjects()
-        }
-    }
+    // MARK: - 网络监控
     
     private func setupNetworkMonitor() {
         networkMonitor.pathUpdateHandler = { [weak self] path in
             Task { @MainActor in
                 self?.isNetworkAvailable = path.status == .satisfied
-                if let self = self, self.isNetworkAvailable, let pending = self.pendingSync {
-                    Task {
-                        do {
-                            try await pending()
-                            await MainActor.run {
-                                self.pendingSync = nil
-                            }
-                        } catch {
-                            print("⚠️ 网络恢复后同步失败: \(error.localizedDescription)")
+                if path.status == .satisfied {
+                    print("🌐 网络连接恢复")
+                    // 如果有待处理的同步，执行它
+                    if let pendingSync = self?.pendingSync {
+                        self?.pendingSync = nil
+                        Task {
+                            try await pendingSync()
                         }
                     }
+                } else {
+                    print("❌ 网络连接断开")
                 }
             }
         }
-        let queue = DispatchQueue(label: "CloudKitSyncNetworkMonitor")
+        
+        let queue = DispatchQueue(label: "NetworkMonitor")
         networkMonitor.start(queue: queue)
     }
     
-    private func setupAutomaticSync() async {
-        guard configuration.enableSync else { return }
-        
-        Timer.publish(every: configuration.syncInterval, on: .main, in: .common)
-            .autoconnect()
-            .sink { [weak self] _ in
-                Task {
-                    do {
-                        try await self?.syncFromCloud()
-                    } catch {
-                        print("⚠️ 自动同步失败: \(error.localizedDescription)")
-                    }
-                }
+    private func setupRemoteChangeNotifications() {
+        // 设置远程变更通知
+        NotificationCenter.default.addObserver(
+            forName: .CKAccountChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task {
+                try? await self?.handleAccountChange()
             }
-            .store(in: &cancellables)
+        }
+    }
+    
+    private func handleAccountChange() async throws {
+        print("👤 CloudKit账户状态变更")
+        try await checkAccountStatus()
+    }
+    
+    private func loadSyncHistory() {
+        // 加载同步历史
+        // 这里可以从UserDefaults或数据库加载
+        syncHistory = []
     }
 }
 
-// MARK: - SyncError
-enum SyncError: LocalizedError {
+// MARK: - 错误定义
+enum CloudKitSyncError: LocalizedError {
+    case syncInProgress
     case noAccount
     case accountRestricted
     case accountStatusUnknown
     case temporarilyUnavailable
     case networkUnavailable
-    case quotaExceeded
-    case syncInProgress
     
     var errorDescription: String? {
         switch self {
+        case .syncInProgress:
+            return "同步正在进行中"
         case .noAccount:
             return "未登录iCloud账户"
         case .accountRestricted:
@@ -357,10 +399,6 @@ enum SyncError: LocalizedError {
             return "iCloud服务暂时不可用"
         case .networkUnavailable:
             return "网络连接不可用"
-        case .quotaExceeded:
-            return "iCloud存储空间不足"
-        case .syncInProgress:
-            return "同步正在进行中"
         }
     }
 }

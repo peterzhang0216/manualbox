@@ -1,4 +1,0 @@
-"NSUserNotificationsUsageDescription" = "我们需要通知权限来提醒您商品保修期的到期时间。";
-"NSPhotoLibraryUsageDescription" = "需要访问您的照片用于商品图片和说明书上传。";
-"NSCameraUsageDescription" = "需要使用相机拍摄商品图片和发票。";
-"NSMicrophoneUsageDescription" = "如需录音功能，请授权麦克风访问。";

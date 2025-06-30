@@ -21,33 +21,77 @@ extension Category {
         get { icon ?? "folder" }
         set { icon = newValue }
     }
-    
+
+    var categoryColor: String {
+        get { color ?? "blue" }
+        set { color = newValue }
+    }
+
     var categoryProducts: [Product] {
         let productsSet = products as? Set<Product> ?? []
         return Array(productsSet).sorted { $0.productName < $1.productName }
     }
-    
-    // 添加createdAt和updatedAt属性
-    var createdAt: Date? {
-        get { objc_getAssociatedObject(self, AssociatedKeys.createdAtKey) as? Date }
-        set { objc_setAssociatedObject(self, AssociatedKeys.createdAtKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+
+    // MARK: - 层级结构属性
+
+    var parentCategory: Category? {
+        get { parent }
+        set { parent = newValue }
     }
 
-    var updatedAt: Date? {
-        get { objc_getAssociatedObject(self, AssociatedKeys.updatedAtKey) as? Date }
-        set { objc_setAssociatedObject(self, AssociatedKeys.updatedAtKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    var childCategories: [Category] {
+        let childrenSet = children as? Set<Category> ?? []
+        return Array(childrenSet).sorted { $0.sortOrder < $1.sortOrder }
+    }
+
+    var isRootCategory: Bool {
+        return parent == nil
+    }
+
+    var hasChildren: Bool {
+        return !childCategories.isEmpty
+    }
+
+    var level: Int {
+        var currentLevel = 0
+        var currentParent = parent
+        while currentParent != nil {
+            currentLevel += 1
+            currentParent = currentParent?.parent
+        }
+        return currentLevel
+    }
+
+    var fullPath: String {
+        var path: [String] = []
+        var current: Category? = self
+
+        while let category = current {
+            path.insert(category.categoryName, at: 0)
+            current = category.parent
+        }
+
+        return path.joined(separator: " > ")
     }
     
     // MARK: - 工厂方法
     static func createCategory(
         in context: NSManagedObjectContext,
         name: String,
-        icon: String = "folder"
+        icon: String = "folder",
+        color: String = "blue",
+        parent: Category? = nil,
+        sortOrder: Int32 = 0,
+        isDefault: Bool = false
     ) -> Category {
         let category = Category(context: context)
         category.id = UUID()
         category.name = name
         category.icon = icon
+        category.color = color
+        category.parent = parent
+        category.sortOrder = sortOrder
+        category.isDefault = isDefault
         category.createdAt = Date()
         category.updatedAt = Date()
         return category
@@ -142,8 +186,107 @@ extension Category {
         if categoryName == "其他" {
             return 999 // 最大值，确保排在最后
         } else {
-            return 0 // 其他分类正常排序
+            return Int(sortOrder)
         }
+    }
+
+    // MARK: - 层级管理方法
+
+    /// 添加子分类
+    func addChild(_ child: Category) {
+        child.parent = self
+        child.sortOrder = Int32(childCategories.count)
+
+        var currentChildren = children as? Set<Category> ?? Set<Category>()
+        currentChildren.insert(child)
+        children = currentChildren as NSSet
+
+        updatedAt = Date()
+    }
+
+    /// 移除子分类
+    func removeChild(_ child: Category) {
+        child.parent = nil
+
+        var currentChildren = children as? Set<Category> ?? Set<Category>()
+        currentChildren.remove(child)
+        children = currentChildren as NSSet
+
+        // 重新排序剩余的子分类
+        reorderChildren()
+        updatedAt = Date()
+    }
+
+    /// 重新排序子分类
+    func reorderChildren() {
+        let sortedChildren = childCategories
+        for (index, child) in sortedChildren.enumerated() {
+            child.sortOrder = Int32(index)
+        }
+    }
+
+    /// 移动到新的父分类
+    func moveTo(parent newParent: Category?) {
+        // 检查是否会造成循环引用
+        if let newParent = newParent, isAncestor(of: newParent) {
+            print("警告：无法移动分类，会造成循环引用")
+            return
+        }
+
+        // 从当前父分类中移除
+        parent?.removeChild(self)
+
+        // 添加到新的父分类
+        if let newParent = newParent {
+            newParent.addChild(self)
+        } else {
+            parent = nil
+            sortOrder = 0
+        }
+    }
+
+    /// 检查是否是指定分类的祖先
+    func isAncestor(of category: Category) -> Bool {
+        var current = category.parent
+        while let parent = current {
+            if parent == self {
+                return true
+            }
+            current = parent.parent
+        }
+        return false
+    }
+
+    /// 获取所有后代分类（包括子分类的子分类）
+    func getAllDescendants() -> [Category] {
+        var descendants: [Category] = []
+
+        for child in childCategories {
+            descendants.append(child)
+            descendants.append(contentsOf: child.getAllDescendants())
+        }
+
+        return descendants
+    }
+
+    /// 获取所有后代分类中的产品总数
+    var totalProductCount: Int {
+        var count = productCount
+        for child in childCategories {
+            count += child.totalProductCount
+        }
+        return count
+    }
+
+    /// 获取所有后代分类中的产品总价值
+    var totalDescendantValue: Double? {
+        var total = totalProductValue ?? 0
+
+        for child in childCategories {
+            total += child.totalDescendantValue ?? 0
+        }
+
+        return total > 0 ? total : nil
     }
 }
 

@@ -61,6 +61,18 @@ struct ThemeSettingsPanel: View {
                     }
                 }
 
+                // 语言设置卡片
+                SettingsCard(
+                    title: "语言设置",
+                    icon: "globe",
+                    iconColor: .green,
+                    description: "选择应用的显示语言"
+                ) {
+                    SettingsGroup {
+                        LanguageSettingsCard()
+                    }
+                }
+
                 Spacer()
             }
             .padding(.horizontal, 32)

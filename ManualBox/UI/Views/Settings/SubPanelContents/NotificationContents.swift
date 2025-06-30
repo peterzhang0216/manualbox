@@ -1,7 +1,7 @@
 import SwiftUI
 
-// MARK: - 通知权限内容
-struct NotificationPermissionsContent: View {
+// MARK: - 通知权限内容（旧版本）
+struct LegacyNotificationPermissionsContent: View {
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     var body: some View {
@@ -11,7 +11,7 @@ struct NotificationPermissionsContent: View {
             iconColor: .orange,
             description: "管理应用的通知权限和基本设置"
         ) {
-            SettingsGroup {
+            LegacySettingsGroup {
                 SettingsToggle(
                     title: "启用通知",
                     description: "允许应用发送通知提醒",
@@ -20,9 +20,7 @@ struct NotificationPermissionsContent: View {
                     isOn: Binding(
                         get: { settingsViewModel.enableNotifications },
                         set: { enabled in
-                            Task {
-                                await settingsViewModel.send(.updateEnableNotifications(enabled))
-                            }
+                            settingsViewModel.send(.updateEnableNotifications(enabled))
                         }
                     )
                 )
@@ -47,8 +45,8 @@ struct NotificationPermissionsContent: View {
     }
 }
 
-// MARK: - 提醒计划内容
-struct NotificationScheduleContent: View {
+// MARK: - 提醒计划内容（旧版本）
+struct LegacyNotificationScheduleContent: View {
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     var body: some View {
@@ -58,7 +56,7 @@ struct NotificationScheduleContent: View {
             iconColor: .blue,
             description: "设置默认提醒时间和通知计划"
         ) {
-            SettingsGroup {
+            LegacySettingsGroup {
                 HStack {
                     Image(systemName: "clock.fill")
                         .font(.system(size: 16, weight: .medium))
@@ -83,9 +81,7 @@ struct NotificationScheduleContent: View {
                         selection: Binding(
                             get: { settingsViewModel.notificationTime },
                             set: { time in
-                                Task {
-                                    await settingsViewModel.send(.updateNotificationTime(time))
-                                }
+                                settingsViewModel.send(.updateNotificationTime(time))
                             }
                         ),
                         displayedComponents: .hourAndMinute
@@ -98,8 +94,8 @@ struct NotificationScheduleContent: View {
     }
 }
 
-// MARK: - 免打扰时段内容
-struct SilentPeriodContent: View {
+// MARK: - 免打扰时段内容（旧版本）
+struct LegacySilentPeriodContent: View {
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     var body: some View {
@@ -109,7 +105,7 @@ struct SilentPeriodContent: View {
             iconColor: .purple,
             description: "在指定时间段内静音所有通知"
         ) {
-            SettingsGroup {
+            LegacySettingsGroup {
                 SettingsToggle(
                     title: "启用免打扰",
                     description: "在指定时间段内不发送通知",
@@ -118,9 +114,7 @@ struct SilentPeriodContent: View {
                     isOn: Binding(
                         get: { settingsViewModel.enableSilentPeriod },
                         set: { enabled in
-                            Task {
-                                await settingsViewModel.send(.updateSilentPeriod(enabled))
-                            }
+                            settingsViewModel.send(.updateSilentPeriod(enabled))
                         }
                     )
                 )
@@ -194,10 +188,10 @@ struct SilentPeriodContent: View {
 
 #Preview {
     VStack(spacing: 20) {
-        NotificationPermissionsContent()
-        NotificationScheduleContent()
-        SilentPeriodContent()
+        LegacyNotificationPermissionsContent()
+        LegacyNotificationScheduleContent()
+        LegacySilentPeriodContent()
     }
-    .environmentObject(SettingsViewModel(viewContext: PersistenceController.preview.container.viewContext))
+    .environmentObject(SettingsManager.shared)
     .padding()
 }

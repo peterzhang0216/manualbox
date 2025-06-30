@@ -78,25 +78,30 @@ protocol SyncServiceProtocol: ServiceProtocol {
     func syncToCloud() async throws
     func syncFromCloud() async throws
     func resolveConflicts() async throws
-    var syncStatus: SyncStatus { get }
+    var syncStatus: CloudKitSyncStatus { get }
 }
 
-enum SyncStatus: Equatable {
+enum CloudKitSyncStatus: Equatable, Codable {
     case idle
     case syncing
     case paused
     case completed
-    case failed(Error)
+    case failed(String) // 改为 String 以支持 Codable
 
-    static func == (lhs: SyncStatus, rhs: SyncStatus) -> Bool {
+    static func == (lhs: CloudKitSyncStatus, rhs: CloudKitSyncStatus) -> Bool {
         switch (lhs, rhs) {
         case (.idle, .idle), (.syncing, .syncing), (.paused, .paused), (.completed, .completed):
             return true
         case (.failed(let lhsError), (.failed(let rhsError))):
-            return lhsError.localizedDescription == rhsError.localizedDescription
+            return lhsError == rhsError
         default:
             return false
         }
+    }
+
+    // 便利方法：从 Error 创建 failed 状态
+    static func failed(_ error: Error) -> CloudKitSyncStatus {
+        return .failed(error.localizedDescription)
     }
 }
 

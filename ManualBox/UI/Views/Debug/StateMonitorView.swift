@@ -372,7 +372,24 @@ struct EventRowView: View {
         case let dataEvent as DataChangeEvent:
             return "\(dataEvent.entityType) \(dataEvent.changeType)"
         case let syncEvent as SyncEvent:
-            return "\(syncEvent.syncType) - \(syncEvent.status)"
+            switch syncEvent {
+            case .started(let type):
+                return "同步开始: \(type)"
+            case .progressUpdated(let progress, let phase):
+                return "同步进度: \(Int(progress * 100))% - \(phase)"
+            case .conflictDetected(let conflict):
+                return "检测到冲突: \(conflict.id)"
+            case .conflictResolved(let conflictID):
+                return "冲突已解决: \(conflictID)"
+            case .completed(let statistics):
+                return "同步完成: \(statistics.totalRecords) 条记录"
+            case .failed(let error):
+                return "同步失败: \(error.localizedDescription)"
+            case .paused:
+                return "同步已暂停"
+            case .resumed:
+                return "同步已恢复"
+            }
         case let errorEvent as ErrorEvent:
             return errorEvent.error.localizedDescription
         case let perfEvent as PerformanceEvent:

@@ -10,6 +10,8 @@ struct ManualPreviewView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var previewImage: PlatformImage?
     @State private var previewURL: URL?
+    @State private var showingAnnotationView = false
+    @State private var showingVersionView = false
     
     private var contentView: some View {
         Group {
@@ -59,9 +61,27 @@ struct ManualPreviewView: View {
                     dismiss()
                 }
             }
-            
+
+            SwiftUI.ToolbarItem(placement: .primaryAction) {
+                Menu {
+                    Button {
+                        showingAnnotationView = true
+                    } label: {
+                        Label("标注", systemImage: "highlighter")
+                    }
+
+                    Button {
+                        showingVersionView = true
+                    } label: {
+                        Label("版本历史", systemImage: "clock.arrow.circlepath")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+            }
+
             if let fileData = manual.fileData {
-                SwiftUI.ToolbarItem(placement: .primaryAction) {
+                SwiftUI.ToolbarItem(placement: .secondaryAction) {
                     Button {
                         exportFile(data: fileData, name: manual.fileName ?? "manual.pdf")
                     } label: {
@@ -69,6 +89,12 @@ struct ManualPreviewView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $showingAnnotationView) {
+            AnnotatedManualView(manual: manual)
+        }
+        .sheet(isPresented: $showingVersionView) {
+            ManualVersionView(manual: manual)
         }
         .onAppear {
             loadPreview()

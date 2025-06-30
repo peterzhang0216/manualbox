@@ -86,8 +86,8 @@ struct SettingsCard<Content: View>: View {
     }
 }
 
-/// 设置组件，用于包装单个设置项
-struct SettingsGroup<Content: View>: View {
+/// 设置组件，用于包装单个设置项（旧版本）
+struct LegacySettingsGroup<Content: View>: View {
     let title: String?
     let content: Content
     
@@ -220,7 +220,7 @@ struct SettingsPicker<SelectionValue: Hashable>: View {
                 iconColor: .orange,
                 description: "管理应用通知和提醒设置"
             ) {
-                SettingsGroup(title: "基本设置") {
+                LegacySettingsGroup(title: "基本设置") {
                     SettingsToggle(
                         title: "启用通知",
                         description: "允许应用发送通知提醒",
@@ -245,7 +245,7 @@ struct SettingsPicker<SelectionValue: Hashable>: View {
                 iconColor: .blue,
                 description: "自定义应用的外观和主题"
             ) {
-                SettingsGroup(title: "主题模式") {
+                LegacySettingsGroup(title: "主题模式") {
                     SettingsPicker(
                         title: "主题模式",
                         description: "选择应用的显示主题",

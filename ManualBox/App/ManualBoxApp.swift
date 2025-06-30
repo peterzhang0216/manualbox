@@ -13,6 +13,7 @@ struct ManualBoxApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject private var notificationManager = AppNotificationManager()
     @StateObject private var settingsViewModel: SettingsViewModel
+    @StateObject private var settingsManager = SettingsManager.shared
     @State private var hasInitialized = false
 
     init() {
@@ -29,6 +30,7 @@ struct ManualBoxApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(notificationManager)
                 .environmentObject(settingsViewModel)
+                .environmentObject(settingsManager)
                 .withLocalization()
                 .onAppear {
                     // 防止重复初始化

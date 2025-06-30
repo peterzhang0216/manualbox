@@ -95,9 +95,11 @@ struct NotificationSettingsView: View {
                     Toggle("启用保修到期提醒", isOn: $notificationManager.enableWarrantyReminders)
                     
                     if notificationManager.enableWarrantyReminders {
-                        Stepper("提前 \(notificationManager.warrantyReminderDays) 天提醒",
-                                value: $notificationManager.warrantyReminderDays,
-                                in: 1...90)
+                        InlineStepper(
+                            "提前 \(notificationManager.warrantyReminderDays) 天提醒",
+                            value: $notificationManager.warrantyReminderDays,
+                            in: 1...90
+                        )
                     }
                 }
             }

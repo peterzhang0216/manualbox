@@ -8,24 +8,39 @@ struct SettingsDetailView: View {
         switch viewModel.selectedPanel {
         case .notification:
             NotificationAdvancedSettingsPanel()
-        case .theme:
+        case .appearance:
             ThemeSettingsPanel()
-        case .data:
+        case .appSettings:
             DataSettingsPanel(
                 defaultWarrantyPeriod: Binding(
                     get: { viewModel.defaultWarrantyPeriod },
                     set: { period in
-                        Task {
-                            await viewModel.send(.updateDefaultWarrantyPeriod(period))
-                        }
+                        // 直接同步更新，避免异步延迟
+                        viewModel.updateDefaultWarrantyPeriodSync(period)
                     }
                 ),
                 enableOCRByDefault: Binding(
                     get: { viewModel.enableOCRByDefault },
                     set: { enabled in
-                        Task {
-                            await viewModel.send(.updateEnableOCRByDefault(enabled))
-                        }
+                        // 直接同步更新，避免异步延迟
+                        viewModel.updateEnableOCRByDefaultSync(enabled)
+                    }
+                )
+            )
+        case .dataManagement:
+            DataSettingsPanel(
+                defaultWarrantyPeriod: Binding(
+                    get: { viewModel.defaultWarrantyPeriod },
+                    set: { period in
+                        // 直接同步更新，避免异步延迟
+                        viewModel.updateDefaultWarrantyPeriodSync(period)
+                    }
+                ),
+                enableOCRByDefault: Binding(
+                    get: { viewModel.enableOCRByDefault },
+                    set: { enabled in
+                        // 直接同步更新，避免异步延迟
+                        viewModel.updateEnableOCRByDefaultSync(enabled)
                     }
                 )
             )
@@ -34,17 +49,15 @@ struct SettingsDetailView: View {
                 showPrivacySheet: Binding(
                     get: { viewModel.showPrivacySheet },
                     set: { show in
-                        Task {
-                            await viewModel.send(.togglePrivacySheet)
-                        }
+                        // 直接同步更新，避免异步延迟
+                        viewModel.togglePrivacySheetSync()
                     }
                 ),
                 showAgreementSheet: Binding(
                     get: { viewModel.showAgreementSheet },
                     set: { show in
-                        Task {
-                            await viewModel.send(.toggleAgreementSheet)
-                        }
+                        // 直接同步更新，避免异步延迟
+                        viewModel.toggleAgreementSheetSync()
                     }
                 )
             )

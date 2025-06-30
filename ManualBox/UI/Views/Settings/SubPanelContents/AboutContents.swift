@@ -5,8 +5,8 @@ import UIKit
 import AppKit
 #endif
 
-// MARK: - 应用信息内容
-struct AppInfoContent: View {
+// MARK: - 应用信息内容（旧版本）
+struct LegacyAppInfoContent: View {
     var body: some View {
         SettingsCard(
             title: "应用详细信息",
@@ -21,8 +21,8 @@ struct AppInfoContent: View {
     }
 }
 
-// MARK: - 语言设置内容
-struct LanguageSettingsContent: View {
+// MARK: - 语言设置内容（旧版本）
+struct LegacyLanguageSettingsContent: View {
     var body: some View {
         SettingsCard(
             title: "显示语言",
@@ -174,13 +174,14 @@ private func checkForUpdate() {
 
 #Preview {
     VStack(spacing: 20) {
-        AppInfoContent()
-        LanguageSettingsContent()
+        LegacyAppInfoContent()
+        LegacyLanguageSettingsContent()
         LegalPoliciesContent(
             showPrivacySheet: .constant(false),
             showAgreementSheet: .constant(false)
         )
         UpdateSupportContent()
     }
+    .environmentObject(SettingsManager.shared)
     .padding()
 }

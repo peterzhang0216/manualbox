@@ -129,11 +129,8 @@ struct EventSystemSection: View {
                 .buttonStyle(.bordered)
                 
                 Button("发布同步事件") {
-                    eventBus.publishSyncEvent(
-                        syncType: .localBackup,
-                        status: .completed,
-                        progress: 1.0
-                    )
+                    // 同步事件发布功能已移至CloudKit服务中
+                    eventBus.publishPerformance(metricName: "sync_demo", value: 1.0, unit: "count")
                 }
                 .buttonStyle(.bordered)
             }

@@ -134,18 +134,24 @@ struct TagDetailView: View {
                 // 统计卡片
                 StatisticCard(
                     title: "最新添加",
-                    value: products.first?.productName ?? "暂无产品",
                     icon: "clock",
                     color: .blue
-                )
+                ) {
+                    Text(products.first?.productName ?? "暂无产品")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                }
 
                 // 价值统计
                 StatisticCard(
                     title: "总价值",
-                    value: products.count > 0 ? String(format: "¥%.2f", calculateTotalValue()) : "¥0.00",
                     icon: "creditcard",
                     color: .green
-                )
+                ) {
+                    Text(products.count > 0 ? String(format: "¥%.2f", calculateTotalValue()) : "¥0.00")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                }
             }
             .padding(.horizontal)
             .padding(.bottom)

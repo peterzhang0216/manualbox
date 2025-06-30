@@ -10,7 +10,15 @@ class LocalizationManager: ObservableObject {
     // 统一的本地化字典
     private let localizations: [String: [String: String]] = [
         "en": LocalizationData.english,
-        "zh-Hans": LocalizationData.chinese
+        "zh-Hans": LocalizationData.chinese,
+        "ja": LocalizationData.japanese,
+        "ko": LocalizationData.korean,
+        "fr": LocalizationData.french,
+        "de": LocalizationData.german,
+        "es": LocalizationData.spanish,
+        "pt": LocalizationData.portuguese,
+        "ru": LocalizationData.russian,
+        "ar": LocalizationData.arabic
     ]
 
     private init() {
@@ -34,17 +42,69 @@ class LocalizationManager: ObservableObject {
             return "zh-Hans"
         case "en":
             return "en"
+        case "ja":
+            return "ja"
+        case "ko":
+            return "ko"
+        case "fr":
+            return "fr"
+        case "de":
+            return "de"
+        case "es":
+            return "es"
+        case "pt":
+            return "pt"
+        case "ru":
+            return "ru"
+        case "ar":
+            return "ar"
         case "auto":
             let systemLanguage = Locale.current.language.languageCode?.identifier ?? "zh-Hans"
-            // 如果系统语言是中文相关，返回简体中文，否则返回英文
-            if systemLanguage.hasPrefix("zh") {
+            // 根据系统语言返回对应的语言代码
+            switch systemLanguage {
+            case "zh", "zh-Hans", "zh-Hant":
                 return "zh-Hans"
-            } else {
-                return systemLanguage == "en" ? "en" : "zh-Hans"
+            case "en":
+                return "en"
+            case "ja":
+                return "ja"
+            case "ko":
+                return "ko"
+            case "fr":
+                return "fr"
+            case "de":
+                return "de"
+            case "es":
+                return "es"
+            case "pt":
+                return "pt"
+            case "ru":
+                return "ru"
+            case "ar":
+                return "ar"
+            default:
+                return "en" // 默认使用英文
             }
         default:
-            return "zh-Hans" // 默认使用中文
+            return "en" // 默认使用英文
         }
+    }
+
+    // 获取支持的语言列表
+    var supportedLanguages: [LanguageInfo] {
+        return [
+            LanguageInfo(code: "auto", name: "跟随系统", nativeName: "Follow System"),
+            LanguageInfo(code: "zh-Hans", name: "简体中文", nativeName: "简体中文"),
+            LanguageInfo(code: "en", name: "English", nativeName: "English"),
+            LanguageInfo(code: "ja", name: "日本語", nativeName: "日本語"),
+            LanguageInfo(code: "ko", name: "한국어", nativeName: "한국어"),
+            LanguageInfo(code: "fr", name: "Français", nativeName: "Français"),
+            LanguageInfo(code: "de", name: "Deutsch", nativeName: "Deutsch"),
+            LanguageInfo(code: "es", name: "Español", nativeName: "Español"),
+            LanguageInfo(code: "pt", name: "Português", nativeName: "Português"),
+            LanguageInfo(code: "ru", name: "Русский", nativeName: "Русский"),
+            LanguageInfo(code: "ar", name: "العربية", nativeName: "العربية")
+        ]
     }
 
     // 获取本地化字符串 - 优先使用内置字典
@@ -56,7 +116,17 @@ class LocalizationManager: ObservableObject {
             return translation
         }
 
-        // 如果内置字典没有，回退到系统本地化
+        // 如果当前语言没有，尝试回退到英文
+        if languageCode != "en", let englishTranslation = localizations["en"]?[key] {
+            return englishTranslation
+        }
+
+        // 如果英文也没有，尝试回退到中文
+        if languageCode != "zh-Hans", let chineseTranslation = localizations["zh-Hans"]?[key] {
+            return chineseTranslation
+        }
+
+        // 如果内置字典都没有，回退到系统本地化
         let bundle: Bundle
         if currentLanguage == "auto" {
             bundle = Bundle.main
@@ -69,7 +139,54 @@ class LocalizationManager: ObservableObject {
         }
 
         let result = NSLocalizedString(key, bundle: bundle, comment: comment)
-        return result == key ? (localizations["zh-Hans"]?[key] ?? localizations["en"]?[key] ?? key) : result
+        return result == key ? key : result
+    }
+
+    // 检查语言是否支持RTL（从右到左）
+    var isRTL: Bool {
+        return currentLanguageCode == "ar"
+    }
+
+    // 获取语言的显示名称
+    func getLanguageDisplayName(for code: String) -> String {
+        return supportedLanguages.first { $0.code == code }?.nativeName ?? code
+    }
+}
+
+// MARK: - 语言信息结构
+struct LanguageInfo: Identifiable, Codable {
+    let id = UUID()
+    let code: String
+    let name: String
+    let nativeName: String
+
+    var flag: String {
+        switch code {
+        case "zh-Hans":
+            return "🇨🇳"
+        case "en":
+            return "🇺🇸"
+        case "ja":
+            return "🇯🇵"
+        case "ko":
+            return "🇰🇷"
+        case "fr":
+            return "🇫🇷"
+        case "de":
+            return "🇩🇪"
+        case "es":
+            return "🇪🇸"
+        case "pt":
+            return "🇵🇹"
+        case "ru":
+            return "🇷🇺"
+        case "ar":
+            return "🇸🇦"
+        case "auto":
+            return "🌐"
+        default:
+            return "🌍"
+        }
     }
 }
 
@@ -364,6 +481,537 @@ struct LocalizationData {
         "维修进度推送": "维修进度推送",
         "资产定期巡检/保养": "资产定期巡检/保养",
         "通知方式": "通知方式",
+    ]
+
+    // MARK: - 日文本地化
+    static let japanese: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "設定",
+        "通知与提醒": "通知とリマインダー",
+        "外观与主题": "外観とテーマ",
+        "数据与默认": "データとデフォルト",
+        "关于与支持": "情報とサポート",
+        "跟随系统": "システムに従う",
+        "中文": "中国語",
+        "英文": "英語",
+        "语言": "言語",
+        "导出数据": "データエクスポート",
+        "导入数据": "データインポート",
+        "数据备份与恢复": "データバックアップと復元",
+        "重置应用数据": "アプリデータリセット",
+        "隐私政策": "プライバシーポリシー",
+        "用户协议": "利用規約",
+        "检查更新": "アップデート確認",
+
+        // 操作按钮
+        "保存": "保存",
+        "取消": "キャンセル",
+        "删除": "削除",
+        "编辑": "編集",
+        "添加": "追加",
+        "完成": "完了",
+        "关闭": "閉じる",
+        "确认": "確認",
+
+        // 状态消息
+        "加载中": "読み込み中",
+        "错误": "エラー",
+        "成功": "成功",
+        "警告": "警告",
+
+        // 产品管理
+        "添加产品": "製品追加",
+        "产品名称": "製品名",
+        "品牌": "ブランド",
+        "型号": "モデル",
+        "备注": "備考",
+        "产品图片": "製品画像",
+        "选择图片": "画像選択",
+        "拍照": "写真撮影",
+        "从相册选择": "アルバムから選択",
+        "产品详情": "製品詳細",
+
+        // 分类管理
+        "添加分类": "カテゴリ追加",
+        "分类名称": "カテゴリ名",
+        "分类图标": "カテゴリアイコン",
+        "删除分类": "カテゴリ削除",
+        "编辑分类": "カテゴリ編集",
+        "分类": "カテゴリ",
+
+        // 标签管理
+        "添加标签": "タグ追加",
+        "标签名称": "タグ名",
+        "标签颜色": "タグ色",
+        "删除标签": "タグ削除",
+        "编辑标签": "タグ編集",
+        "标签": "タグ",
+    ]
+
+    // MARK: - 韩文本地化
+    static let korean: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "설정",
+        "通知与提醒": "알림 및 리마인더",
+        "外观与主题": "외관 및 테마",
+        "数据与默认": "데이터 및 기본값",
+        "关于与支持": "정보 및 지원",
+        "跟随系统": "시스템 따르기",
+        "中文": "중국어",
+        "英文": "영어",
+        "语言": "언어",
+        "导出数据": "데이터 내보내기",
+        "导入数据": "데이터 가져오기",
+        "数据备份与恢复": "데이터 백업 및 복원",
+        "重置应用数据": "앱 데이터 재설정",
+        "隐私政策": "개인정보 처리방침",
+        "用户协议": "이용약관",
+        "检查更新": "업데이트 확인",
+
+        // 操作按钮
+        "保存": "저장",
+        "取消": "취소",
+        "删除": "삭제",
+        "编辑": "편집",
+        "添加": "추가",
+        "完成": "완료",
+        "关闭": "닫기",
+        "确认": "확인",
+
+        // 状态消息
+        "加载中": "로딩 중",
+        "错误": "오류",
+        "成功": "성공",
+        "警告": "경고",
+
+        // 产品管理
+        "添加产品": "제품 추가",
+        "产品名称": "제품명",
+        "品牌": "브랜드",
+        "型号": "모델",
+        "备注": "비고",
+        "产品图片": "제품 이미지",
+        "选择图片": "이미지 선택",
+        "拍照": "사진 촬영",
+        "从相册选择": "앨범에서 선택",
+        "产品详情": "제품 상세",
+
+        // 分类管理
+        "添加分类": "카테고리 추가",
+        "分类名称": "카테고리명",
+        "分类图标": "카테고리 아이콘",
+        "删除分类": "카테고리 삭제",
+        "编辑分类": "카테고리 편집",
+        "分类": "카테고리",
+
+        // 标签管理
+        "添加标签": "태그 추가",
+        "标签名称": "태그명",
+        "标签颜色": "태그 색상",
+        "删除标签": "태그 삭제",
+        "编辑标签": "태그 편집",
+        "标签": "태그",
+    ]
+
+    // MARK: - 法文本地化
+    static let french: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "Paramètres",
+        "通知与提醒": "Notifications et Rappels",
+        "外观与主题": "Apparence et Thème",
+        "数据与默认": "Données et Défauts",
+        "关于与支持": "À propos et Support",
+        "跟随系统": "Suivre le Système",
+        "中文": "Chinois",
+        "英文": "Anglais",
+        "语言": "Langue",
+        "导出数据": "Exporter les Données",
+        "导入数据": "Importer les Données",
+        "数据备份与恢复": "Sauvegarde et Restauration",
+        "重置应用数据": "Réinitialiser les Données",
+        "隐私政策": "Politique de Confidentialité",
+        "用户协议": "Accord Utilisateur",
+        "检查更新": "Vérifier les Mises à Jour",
+
+        // 操作按钮
+        "保存": "Enregistrer",
+        "取消": "Annuler",
+        "删除": "Supprimer",
+        "编辑": "Modifier",
+        "添加": "Ajouter",
+        "完成": "Terminé",
+        "关闭": "Fermer",
+        "确认": "Confirmer",
+
+        // 状态消息
+        "加载中": "Chargement",
+        "错误": "Erreur",
+        "成功": "Succès",
+        "警告": "Avertissement",
+
+        // 产品管理
+        "添加产品": "Ajouter un Produit",
+        "产品名称": "Nom du Produit",
+        "品牌": "Marque",
+        "型号": "Modèle",
+        "备注": "Remarques",
+        "产品图片": "Image du Produit",
+        "选择图片": "Choisir une Image",
+        "拍照": "Prendre une Photo",
+        "从相册选择": "Choisir dans l'Album",
+        "产品详情": "Détails du Produit",
+
+        // 分类管理
+        "添加分类": "Ajouter une Catégorie",
+        "分类名称": "Nom de la Catégorie",
+        "分类图标": "Icône de la Catégorie",
+        "删除分类": "Supprimer la Catégorie",
+        "编辑分类": "Modifier la Catégorie",
+        "分类": "Catégorie",
+
+        // 标签管理
+        "添加标签": "Ajouter un Tag",
+        "标签名称": "Nom du Tag",
+        "标签颜色": "Couleur du Tag",
+        "删除标签": "Supprimer le Tag",
+        "编辑标签": "Modifier le Tag",
+        "标签": "Tag",
+    ]
+
+    // MARK: - 德文本地化
+    static let german: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "Einstellungen",
+        "通知与提醒": "Benachrichtigungen und Erinnerungen",
+        "外观与主题": "Aussehen und Thema",
+        "数据与默认": "Daten und Standards",
+        "关于与支持": "Über und Support",
+        "跟随系统": "System folgen",
+        "中文": "Chinesisch",
+        "英文": "Englisch",
+        "语言": "Sprache",
+        "导出数据": "Daten exportieren",
+        "导入数据": "Daten importieren",
+        "数据备份与恢复": "Datensicherung und Wiederherstellung",
+        "重置应用数据": "App-Daten zurücksetzen",
+        "隐私政策": "Datenschutzrichtlinie",
+        "用户协议": "Nutzungsvereinbarung",
+        "检查更新": "Nach Updates suchen",
+
+        // 操作按钮
+        "保存": "Speichern",
+        "取消": "Abbrechen",
+        "删除": "Löschen",
+        "编辑": "Bearbeiten",
+        "添加": "Hinzufügen",
+        "完成": "Fertig",
+        "关闭": "Schließen",
+        "确认": "Bestätigen",
+
+        // 状态消息
+        "加载中": "Wird geladen",
+        "错误": "Fehler",
+        "成功": "Erfolg",
+        "警告": "Warnung",
+
+        // 产品管理
+        "添加产品": "Produkt hinzufügen",
+        "产品名称": "Produktname",
+        "品牌": "Marke",
+        "型号": "Modell",
+        "备注": "Notizen",
+        "产品图片": "Produktbild",
+        "选择图片": "Bild auswählen",
+        "拍照": "Foto aufnehmen",
+        "从相册选择": "Aus Album auswählen",
+        "产品详情": "Produktdetails",
+
+        // 分类管理
+        "添加分类": "Kategorie hinzufügen",
+        "分类名称": "Kategoriename",
+        "分类图标": "Kategorie-Symbol",
+        "删除分类": "Kategorie löschen",
+        "编辑分类": "Kategorie bearbeiten",
+        "分类": "Kategorie",
+
+        // 标签管理
+        "添加标签": "Tag hinzufügen",
+        "标签名称": "Tag-Name",
+        "标签颜色": "Tag-Farbe",
+        "删除标签": "Tag löschen",
+        "编辑标签": "Tag bearbeiten",
+        "标签": "Tag",
+    ]
+
+    // MARK: - 西班牙文本地化
+    static let spanish: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "Configuración",
+        "通知与提醒": "Notificaciones y Recordatorios",
+        "外观与主题": "Apariencia y Tema",
+        "数据与默认": "Datos y Predeterminados",
+        "关于与支持": "Acerca de y Soporte",
+        "跟随系统": "Seguir Sistema",
+        "中文": "Chino",
+        "英文": "Inglés",
+        "语言": "Idioma",
+        "导出数据": "Exportar Datos",
+        "导入数据": "Importar Datos",
+        "数据备份与恢复": "Copia de Seguridad y Restauración",
+        "重置应用数据": "Restablecer Datos de la App",
+        "隐私政策": "Política de Privacidad",
+        "用户协议": "Acuerdo de Usuario",
+        "检查更新": "Buscar Actualizaciones",
+
+        // 操作按钮
+        "保存": "Guardar",
+        "取消": "Cancelar",
+        "删除": "Eliminar",
+        "编辑": "Editar",
+        "添加": "Agregar",
+        "完成": "Completado",
+        "关闭": "Cerrar",
+        "确认": "Confirmar",
+
+        // 状态消息
+        "加载中": "Cargando",
+        "错误": "Error",
+        "成功": "Éxito",
+        "警告": "Advertencia",
+
+        // 产品管理
+        "添加产品": "Agregar Producto",
+        "产品名称": "Nombre del Producto",
+        "品牌": "Marca",
+        "型号": "Modelo",
+        "备注": "Notas",
+        "产品图片": "Imagen del Producto",
+        "选择图片": "Seleccionar Imagen",
+        "拍照": "Tomar Foto",
+        "从相册选择": "Seleccionar del Álbum",
+        "产品详情": "Detalles del Producto",
+
+        // 分类管理
+        "添加分类": "Agregar Categoría",
+        "分类名称": "Nombre de la Categoría",
+        "分类图标": "Icono de la Categoría",
+        "删除分类": "Eliminar Categoría",
+        "编辑分类": "Editar Categoría",
+        "分类": "Categoría",
+
+        // 标签管理
+        "添加标签": "Agregar Etiqueta",
+        "标签名称": "Nombre de la Etiqueta",
+        "标签颜色": "Color de la Etiqueta",
+        "删除标签": "Eliminar Etiqueta",
+        "编辑标签": "Editar Etiqueta",
+        "标签": "Etiqueta",
+    ]
+
+    // MARK: - 葡萄牙文本地化
+    static let portuguese: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "Configurações",
+        "通知与提醒": "Notificações e Lembretes",
+        "外观与主题": "Aparência e Tema",
+        "数据与默认": "Dados e Padrões",
+        "关于与支持": "Sobre e Suporte",
+        "跟随系统": "Seguir Sistema",
+        "中文": "Chinês",
+        "英文": "Inglês",
+        "语言": "Idioma",
+        "导出数据": "Exportar Dados",
+        "导入数据": "Importar Dados",
+        "数据备份与恢复": "Backup e Restauração de Dados",
+        "重置应用数据": "Redefinir Dados do App",
+        "隐私政策": "Política de Privacidade",
+        "用户协议": "Acordo do Usuário",
+        "检查更新": "Verificar Atualizações",
+
+        // 操作按钮
+        "保存": "Salvar",
+        "取消": "Cancelar",
+        "删除": "Excluir",
+        "编辑": "Editar",
+        "添加": "Adicionar",
+        "完成": "Concluído",
+        "关闭": "Fechar",
+        "确认": "Confirmar",
+
+        // 状态消息
+        "加载中": "Carregando",
+        "错误": "Erro",
+        "成功": "Sucesso",
+        "警告": "Aviso",
+
+        // 产品管理
+        "添加产品": "Adicionar Produto",
+        "产品名称": "Nome do Produto",
+        "品牌": "Marca",
+        "型号": "Modelo",
+        "备注": "Observações",
+        "产品图片": "Imagem do Produto",
+        "选择图片": "Selecionar Imagem",
+        "拍照": "Tirar Foto",
+        "从相册选择": "Selecionar do Álbum",
+        "产品详情": "Detalhes do Produto",
+
+        // 分类管理
+        "添加分类": "Adicionar Categoria",
+        "分类名称": "Nome da Categoria",
+        "分类图标": "Ícone da Categoria",
+        "删除分类": "Excluir Categoria",
+        "编辑分类": "Editar Categoria",
+        "分类": "Categoria",
+
+        // 标签管理
+        "添加标签": "Adicionar Tag",
+        "标签名称": "Nome da Tag",
+        "标签颜色": "Cor da Tag",
+        "删除标签": "Excluir Tag",
+        "编辑标签": "Editar Tag",
+        "标签": "Tag",
+    ]
+
+    // MARK: - 俄文本地化
+    static let russian: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "Настройки",
+        "通知与提醒": "Уведомления и Напоминания",
+        "外观与主题": "Внешний вид и Тема",
+        "数据与默认": "Данные и Настройки по умолчанию",
+        "关于与支持": "О программе и Поддержка",
+        "跟随系统": "Следовать системе",
+        "中文": "Китайский",
+        "英文": "Английский",
+        "语言": "Язык",
+        "导出数据": "Экспорт данных",
+        "导入数据": "Импорт данных",
+        "数据备份与恢复": "Резервное копирование и восстановление",
+        "重置应用数据": "Сброс данных приложения",
+        "隐私政策": "Политика конфиденциальности",
+        "用户协议": "Пользовательское соглашение",
+        "检查更新": "Проверить обновления",
+
+        // 操作按钮
+        "保存": "Сохранить",
+        "取消": "Отмена",
+        "删除": "Удалить",
+        "编辑": "Редактировать",
+        "添加": "Добавить",
+        "完成": "Готово",
+        "关闭": "Закрыть",
+        "确认": "Подтвердить",
+
+        // 状态消息
+        "加载中": "Загрузка",
+        "错误": "Ошибка",
+        "成功": "Успех",
+        "警告": "Предупреждение",
+
+        // 产品管理
+        "添加产品": "Добавить продукт",
+        "产品名称": "Название продукта",
+        "品牌": "Бренд",
+        "型号": "Модель",
+        "备注": "Заметки",
+        "产品图片": "Изображение продукта",
+        "选择图片": "Выбрать изображение",
+        "拍照": "Сделать фото",
+        "从相册选择": "Выбрать из альбома",
+        "产品详情": "Детали продукта",
+
+        // 分类管理
+        "添加分类": "Добавить категорию",
+        "分类名称": "Название категории",
+        "分类图标": "Иконка категории",
+        "删除分类": "Удалить категорию",
+        "编辑分类": "Редактировать категорию",
+        "分类": "Категория",
+
+        // 标签管理
+        "添加标签": "Добавить тег",
+        "标签名称": "Название тега",
+        "标签颜色": "Цвет тега",
+        "删除标签": "Удалить тег",
+        "编辑标签": "Редактировать тег",
+        "标签": "Тег",
+    ]
+
+    // MARK: - 阿拉伯文本地化 (暂时禁用以避免重复键)
+    static let arabic: [String: String] = [:]
+
+    /*
+    static let arabic_disabled: [String: String] = [
+        // 主界面
+        "ManualBox": "ManualBox",
+        "设置": "الإعدادات",
+        "通知与提醒": "الإشعارات والتذكيرات",
+        "外观与主题": "المظهر والموضوع",
+        "数据与默认": "البيانات والافتراضيات",
+        "关于与支持": "حول والدعم",
+        "跟随系统": "اتباع النظام",
+        "中文": "الصينية",
+        "英文": "الإنجليزية",
+        "语言": "اللغة",
+        "导出数据": "تصدير البيانات",
+        "导入数据": "استيراد البيانات",
+        "数据备份与恢复": "النسخ الاحتياطي واستعادة البيانات",
+        "重置应用数据": "إعادة تعيين بيانات التطبيق",
+        "隐私政策": "سياسة الخصوصية",
+        "用户协议": "اتفاقية المستخدم",
+        "检查更新": "التحقق من التحديثات",
+
+        // 操作按钮
+        "保存": "حفظ",
+        "取消": "إلغاء",
+        "删除": "حذف",
+        "编辑": "تحرير",
+        "添加": "إضافة",
+        "完成": "تم",
+        "关闭": "إغلاق",
+        "确认": "تأكيد",
+
+        // 状态消息
+        "加载中": "جاري التحميل",
+        "错误": "خطأ",
+        "成功": "نجح",
+        "警告": "تحذير",
+
+        // 产品管理
+        "添加产品": "إضافة منتج",
+        "产品名称": "اسم المنتج",
+        "品牌": "العلامة التجارية",
+        "型号": "الطراز",
+        "备注": "ملاحظات",
+        "产品图片": "صورة المنتج",
+        "选择图片": "اختيار صورة",
+        "拍照": "التقاط صورة",
+        "从相册选择": "اختيار من الألبوم",
+        "产品详情": "تفاصيل المنتج",
+
+        // 分类管理
+        "添加分类": "إضافة فئة",
+        "分类名称": "اسم الفئة",
+        "分类图标": "أيقونة الفئة",
+        "删除分类": "حذف الفئة",
+        "编辑分类": "تحرير الفئة",
+        "分类": "الفئة",
+
+        // 标签管理
+        "添加标签": "إضافة علامة",
+        "标签名称": "اسم العلامة",
+        "标签颜色": "لون العلامة",
+        "删除标签": "حذف العلامة",
+        "编辑标签": "تحرير العلامة",
+        "标签": "العلامة",
 
         // 维修记录
         "维修记录": "维修记录",
@@ -508,6 +1156,7 @@ struct LocalizationData {
         "删除失败": "删除失败",
         "操作成功完成": "操作成功完成"
     ]
+    */
 }
 
 // MARK: - 便利的本地化字符串常量

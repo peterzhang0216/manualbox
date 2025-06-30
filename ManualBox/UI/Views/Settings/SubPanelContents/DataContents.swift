@@ -13,7 +13,7 @@ struct DefaultSettingsContent: View {
             iconColor: .blue,
             description: "设置新增商品时的默认参数"
         ) {
-            SettingsGroup {
+            LegacySettingsGroup {
                 WarrantyDefaultView(period: $defaultWarrantyPeriod)
 
                 Divider()
@@ -40,7 +40,7 @@ struct DataManagementContent: View {
                 iconColor: .green,
                 description: "检测数据完整性，确保应用正常运行"
             ) {
-                SettingsGroup {
+                LegacySettingsGroup {
                     Button {
                         Task {
                             await runDiagnostics()
@@ -119,7 +119,7 @@ struct DataManagementContent: View {
                 iconColor: .orange,
                 description: "备份、导出和导入您的商品数据"
             ) {
-                SettingsGroup {
+                LegacySettingsGroup {
                     NavigationLink(destination: DataExportView()) {
                         SettingRow(
                             icon: "arrow.up.doc.fill",
@@ -198,7 +198,7 @@ struct DangerousOperationsContent: View {
             iconColor: .red,
             description: "⚠️ 危险操作：此操作将永久删除所有数据"
         ) {
-            SettingsGroup {
+            LegacySettingsGroup {
                 Button(role: .destructive) {
                     showResetAlert = true
                 } label: {

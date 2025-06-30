@@ -132,18 +132,24 @@ struct CategoryDetailView: View {
                 // 统计卡片
                 StatisticCard(
                     title: "最新添加",
-                    value: products.first?.productName ?? "暂无产品",
                     icon: "clock",
                     color: .blue
-                )
+                ) {
+                    Text(products.first?.productName ?? "暂无产品")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
 
                 // 价值统计
                 StatisticCard(
                     title: "总价值",
-                    value: products.count > 0 ? String(format: "¥%.2f", calculateTotalValue()) : "¥0.00",
                     icon: "creditcard",
                     color: .green
-                )
+                ) {
+                    Text(products.count > 0 ? String(format: "¥%.2f", calculateTotalValue()) : "¥0.00")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
             }
             .padding(.horizontal)
             .padding(.bottom)
@@ -185,33 +191,7 @@ struct CategoryDetailView: View {
     }
 }
 
-// 统计卡片组件
-struct StatisticCard: View {
-    let title: String
-    let value: String
-    let icon: String
-    let color: Color
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Text(value)
-                .font(.headline)
-                .foregroundColor(.primary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(color.opacity(0.1))
-        .cornerRadius(8)
-    }
-}
+// 统计卡片组件 (使用 DashboardView.swift 中的定义)
 
 // 预览
 #Preview {

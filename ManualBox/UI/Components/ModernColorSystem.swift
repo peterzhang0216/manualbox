@@ -216,7 +216,7 @@ struct ModernColors {
         /// 系统灰色5
         static let gray5: Color = {
             #if os(macOS)
-            return Color(.systemGray)
+            return Color(nsColor: .windowBackgroundColor)
             #else
             return Color(.systemGray5)
             #endif

@@ -14,113 +14,11 @@ extension View {
     }
 }
 
-// MARK: - 选择值枚举 (统一定义)
-enum SelectionValue: Hashable {
-    case main(Int)
-    case category(UUID)
-    case tag(UUID)
-    case settings(SettingsPanel)
-}
+// MARK: - 选择值枚举已移至MainTabViewModels.swift
 
-// MARK: - 设置面板枚举
-enum SettingsPanel: String, CaseIterable, Hashable {
-    case notification = "notification"
-    case theme = "theme"
-    case data = "data"
-    case about = "about"
+// MARK: - 设置面板枚举已移至ThreeColumnSettingsViewModels.swift
 
-    var title: String {
-        switch self {
-        case .notification: return "通知与提醒"
-        case .theme: return "外观与主题"
-        case .data: return "数据与默认"
-        case .about: return "关于与支持"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .notification: return "bell.badge"
-        case .theme: return "paintbrush.pointed"
-        case .data: return "externaldrive"
-        case .about: return "info.circle"
-        }
-    }
-}
-
-// MARK: - 设置子面板枚举
-enum SettingsSubPanel: String, CaseIterable, Hashable {
-    // 通知与提醒子项
-    case notificationPermissions = "notification_permissions"
-    case notificationSchedule = "notification_schedule"
-    case silentPeriod = "silent_period"
-
-    // 外观与主题子项
-    case themeMode = "theme_mode"
-    case displaySettings = "display_settings"
-
-    // 数据与默认子项
-    case defaultSettings = "default_settings"
-    case dataManagement = "data_management"
-    case dangerousOperations = "dangerous_operations"
-
-    // 关于与支持子项
-    case appInfo = "app_info"
-    case languageSettings = "language_settings"
-    case legalPolicies = "legal_policies"
-    case updateSupport = "update_support"
-
-    var title: String {
-        switch self {
-        case .notificationPermissions: return "通知权限"
-        case .notificationSchedule: return "提醒计划"
-        case .silentPeriod: return "免打扰时段"
-        case .themeMode: return "主题模式"
-        case .displaySettings: return "显示设置"
-        case .defaultSettings: return "默认配置"
-        case .dataManagement: return "数据管理"
-        case .dangerousOperations: return "重置数据"
-        case .appInfo: return "应用信息"
-        case .languageSettings: return "语言设置"
-        case .legalPolicies: return "法律与政策"
-        case .updateSupport: return "更新与支持"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .notificationPermissions: return "bell.circle.fill"
-        case .notificationSchedule: return "clock.fill"
-        case .silentPeriod: return "moon.fill"
-        case .themeMode: return "circle.lefthalf.filled"
-        case .displaySettings: return "display"
-        case .defaultSettings: return "gearshape.fill"
-        case .dataManagement: return "externaldrive.fill"
-        case .dangerousOperations: return "exclamationmark.triangle.fill"
-        case .appInfo: return "app.badge.fill"
-        case .languageSettings: return "globe"
-        case .legalPolicies: return "doc.text.fill"
-        case .updateSupport: return "arrow.triangle.2.circlepath"
-        }
-    }
-
-    var parentPanel: SettingsPanel {
-        switch self {
-        case .notificationPermissions, .notificationSchedule, .silentPeriod:
-            return .notification
-        case .themeMode, .displaySettings:
-            return .theme
-        case .defaultSettings, .dataManagement, .dangerousOperations:
-            return .data
-        case .appInfo, .languageSettings, .legalPolicies, .updateSupport:
-            return .about
-        }
-    }
-
-    var color: Color {
-        return parentPanel.color
-    }
-}
+// MARK: - SettingsSubPanel 已移至 ThreeColumnSettingsViewModels.swift
 
 // MARK: - 平台颜色适配
 @available(iOS 14.0, macOS 11.0, *)

@@ -100,9 +100,9 @@ extension Order {
     }
     
     // 获取保修状态
-    var warrantyStatus: WarrantyStatus {
+    var warrantyStatus: ProductSearchFilters.WarrantyStatus {
         guard let endDate = warrantyEndDate else {
-            return .noWarranty
+            return .expired
         }
         
         let now = Date()
@@ -114,7 +114,7 @@ extension Order {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.day], from: now, to: endDate)
         if let days = components.day, days <= 30 {
-            return .expiringSoon
+            return .expiring
         }
         
         return .active
@@ -155,37 +155,7 @@ extension Order {
     }
 }
 
-// 保修状态枚举
-enum WarrantyStatus {
-    case active        // 保修有效
-    case expiringSoon  // 即将到期（30天内）
-    case expired       // 已过期
-    case noWarranty    // 无保修信息
-    
-    var color: Color {
-        switch self {
-        case .active:
-            return .green
-        case .expiringSoon:
-            return .orange
-        case .expired, .noWarranty:
-            return .red
-        }
-    }
-    
-    var description: String {
-        switch self {
-        case .active:
-            return "保修有效"
-        case .expiringSoon:
-            return "即将到期"
-        case .expired:
-            return "已过期"
-        case .noWarranty:
-            return "无保修"
-        }
-    }
-}
+// WarrantyStatus 枚举已移至 SearchFilters.swift
 
 // 预览支持
 extension Order {

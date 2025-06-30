@@ -361,6 +361,10 @@ enum AnnotationColor: String, Codable, CaseIterable {
             return .orange
         }
     }
+
+    var swiftUIColor: Color {
+        return color
+    }
 }
 
 // MARK: - 标注统计

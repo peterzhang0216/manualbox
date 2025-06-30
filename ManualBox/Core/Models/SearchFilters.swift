@@ -1,4 +1,88 @@
 import Foundation
+import CoreData
+
+// MARK: - 产品搜索结果
+struct ProductSearchResult: Identifiable {
+    let id = UUID()
+    let product: Product
+    let relevanceScore: Float
+    let highlights: [String]
+    let matchedFields: [String]
+}
+
+// MARK: - 产品搜索排序
+enum ProductSearchSort: String, CaseIterable {
+    case relevance = "relevance"
+    case name = "name"
+    case createdDate = "created_date"
+    case updatedDate = "updated_date"
+    case price = "price"
+
+    var displayName: String {
+        switch self {
+        case .relevance: return "相关性"
+        case .name: return "名称"
+        case .createdDate: return "创建时间"
+        case .updatedDate: return "更新时间"
+        case .price: return "价格"
+        }
+    }
+}
+
+
+
+// MARK: - 产品搜索过滤器
+struct ProductSearchFilters {
+    var categoryId: UUID?
+    var tagIds: [UUID] = []
+    var minPrice: Decimal?
+    var maxPrice: Decimal?
+    var startDate: Date?
+    var endDate: Date?
+    var warrantyStatus: WarrantyStatus?
+    var hasManuals: Bool?
+    var hasImages: Bool?
+
+    enum WarrantyStatus: String, CaseIterable {
+        case active = "active"
+        case expiring = "expiring"
+        case expired = "expired"
+
+        var displayName: String {
+            switch self {
+            case .active: return "在保修期内"
+            case .expiring: return "即将过期"
+            case .expired: return "已过期"
+            }
+        }
+    }
+
+    var hasActiveFilters: Bool {
+        return categoryId != nil ||
+               !tagIds.isEmpty ||
+               minPrice != nil ||
+               maxPrice != nil ||
+               startDate != nil ||
+               endDate != nil ||
+               warrantyStatus != nil ||
+               hasManuals != nil ||
+               hasImages != nil
+    }
+
+    var filterCount: Int {
+        var count = 0
+        if categoryId != nil { count += 1 }
+        if !tagIds.isEmpty { count += 1 }
+        if minPrice != nil || maxPrice != nil { count += 1 }
+        if startDate != nil || endDate != nil { count += 1 }
+        if warrantyStatus != nil { count += 1 }
+        if hasManuals != nil { count += 1 }
+        if hasImages != nil { count += 1 }
+        return count
+    }
+
+    init() {}
+}
 
 struct SearchFilters {
     // 搜索范围

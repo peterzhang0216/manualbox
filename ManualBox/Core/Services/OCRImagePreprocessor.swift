@@ -175,7 +175,7 @@ class ImagePreprocessor: @unchecked Sendable {
     // MARK: - 高级预处理方法
     
     /// 针对特定文档类型的预处理
-    func preprocessForDocumentType(_ image: PlatformImage, documentType: DocumentType) async -> PlatformImage {
+    func preprocessForDocumentType(_ image: PlatformImage, documentType: ImageDocumentType) async -> PlatformImage {
         switch documentType {
         case .manual:
             return await preprocessForManual(image)
@@ -305,10 +305,10 @@ class ImagePreprocessor: @unchecked Sendable {
     }
 }
 
-// MARK: - 文档类型枚举
-enum DocumentType {
+// MARK: - 图像预处理文档类型枚举
+enum ImageDocumentType {
     case manual    // 说明书
     case invoice   // 发票
     case receipt   // 收据
     case general   // 通用
-} 
+}

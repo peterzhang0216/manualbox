@@ -47,11 +47,12 @@ struct DuplicateDetectionConfig {
     )
 }
 
-// MARK: - 通用重复检测服务
+// MARK: - 重复检测服务 (重构后使用统一诊断服务)
 class DuplicateDetectionService {
     private let context: NSManagedObjectContext
     private let config: DuplicateDetectionConfig
-    
+    @MainActor private lazy var unifiedService = UnifiedDataDiagnosticsService.shared
+
     init(context: NSManagedObjectContext, config: DuplicateDetectionConfig = .default) {
         self.context = context
         self.config = config

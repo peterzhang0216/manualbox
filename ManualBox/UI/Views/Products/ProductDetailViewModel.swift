@@ -115,10 +115,10 @@ class ProductDetailViewModel: BaseViewModel<ProductDetailState, ProductDetailAct
     }
     
     // MARK: - Public Methods
-    func getWarrantyStatus() -> (status: WarrantyStatus, daysRemaining: Int?) {
+    func getWarrantyStatus() -> (status: ProductSearchFilters.WarrantyStatus, daysRemaining: Int?) {
         guard let order = product.order,
               let warrantyEndDate = order.warrantyEndDate else {
-            return (.noWarranty, nil)
+            return (.expired, nil)
         }
         
         let today = Date()
@@ -126,7 +126,7 @@ class ProductDetailViewModel: BaseViewModel<ProductDetailState, ProductDetailAct
         if today <= warrantyEndDate {
             let daysRemaining = Calendar.current.dateComponents([.day], from: today, to: warrantyEndDate).day ?? 0
             if daysRemaining <= 30 {
-                return (.expiringSoon, daysRemaining)
+                return (.expiring, daysRemaining)
             } else {
                 return (.active, daysRemaining)
             }
@@ -145,7 +145,7 @@ class ProductDetailViewModel: BaseViewModel<ProductDetailState, ProductDetailAct
             } else {
                 return "保修期内"
             }
-        case .expiringSoon:
+        case .expiring:
             if let days = daysRemaining {
                 return "保修期即将到期（剩余 \(days) 天）"
             } else {
@@ -153,8 +153,6 @@ class ProductDetailViewModel: BaseViewModel<ProductDetailState, ProductDetailAct
             }
         case .expired:
             return "保修期已过期"
-        case .noWarranty:
-            return "保修信息未知"
         }
     }
     

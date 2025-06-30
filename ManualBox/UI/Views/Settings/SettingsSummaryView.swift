@@ -28,9 +28,11 @@ struct SettingsSummaryView: View {
                     switch panel {
                     case .notification:
                         notificationSummary()
-                    case .theme:
+                    case .appearance:
                         themeSummary()
-                    case .data:
+                    case .appSettings:
+                        appSettingsSummary()
+                    case .dataManagement:
                         dataSummary()
                     case .about:
                         aboutSummary()
@@ -235,7 +237,75 @@ struct SettingsSummaryView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
-    
+
+    // MARK: - 应用设置总结
+    @ViewBuilder
+    private func appSettingsSummary() -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("应用设置概览")
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            // 默认参数状态
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "calendar.badge.clock")
+                        .foregroundColor(.blue)
+                    Text("默认保修期")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Spacer()
+                    Text("\(settingsViewModel.defaultWarrantyPeriod) 个月")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Image(systemName: "doc.text.viewfinder")
+                        .foregroundColor(.purple)
+                    Text("OCR 识别")
+                        .font(.subheadline)
+                    Spacer()
+                    Text(settingsViewModel.enableOCRByDefault ? "默认启用" : "默认禁用")
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(settingsViewModel.enableOCRByDefault ? Color.green.opacity(0.2) : Color.gray.opacity(0.2))
+                        .foregroundColor(settingsViewModel.enableOCRByDefault ? .green : .gray)
+                        .clipShape(Capsule())
+                }
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // 快速操作
+            Text("快速操作")
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            VStack(spacing: 8) {
+                Button {
+                    Task {
+                        await settingsViewModel.send(.updateEnableOCRByDefault(!settingsViewModel.enableOCRByDefault))
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: settingsViewModel.enableOCRByDefault ? "doc.text.viewfinder.slash" : "doc.text.viewfinder")
+                            .foregroundColor(.purple)
+                        Text(settingsViewModel.enableOCRByDefault ? "禁用OCR" : "启用OCR")
+                            .font(.subheadline)
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color.purple.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
     // MARK: - 数据设置总结
     @ViewBuilder
     private func dataSummary() -> some View {
@@ -415,17 +485,7 @@ struct SettingsSummaryView: View {
     }
 }
 
-// MARK: - 设置面板扩展
-extension SettingsPanel {
-    var color: Color {
-        switch self {
-        case .notification: return .orange
-        case .theme: return .purple
-        case .data: return .blue
-        case .about: return .green
-        }
-    }
-}
+
 
 #Preview {
     SettingsSummaryView(panel: .notification)

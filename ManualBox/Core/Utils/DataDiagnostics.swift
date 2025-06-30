@@ -8,12 +8,17 @@
 import Foundation
 import CoreData
 
-/// 数据诊断工具
+/// 数据诊断工具 (重构后使用统一诊断服务)
 struct DataDiagnostics {
     private let context: NSManagedObjectContext
-    
+
     init(context: NSManagedObjectContext) {
         self.context = context
+    }
+
+    @MainActor
+    private var unifiedService: UnifiedDataDiagnosticsService {
+        UnifiedDataDiagnosticsService.shared
     }
     
     /// 诊断结果
@@ -125,57 +130,31 @@ struct DataDiagnostics {
         }
     }
     
-    /// 执行数据诊断
+    /// 执行数据诊断 (重构后使用统一诊断服务)
+    @MainActor
     func diagnose() async -> DiagnosticResult {
-        return await withCheckedContinuation { continuation in
-            context.perform {
-                let duplicateCategories = self.findDuplicateCategories()
-                let duplicateTags = self.findDuplicateTags()
-                let totalCategories = self.getTotalCount(for: "Category")
-                let totalTags = self.getTotalCount(for: "Tag")
-                let totalProducts = self.getTotalCount(for: "Product")
-                let totalOrders = self.getTotalCount(for: "Order")
-                let totalManuals = self.getTotalCount(for: "Manual")
-                let totalRepairRecords = self.getTotalCount(for: "RepairRecord")
-                let orphanedProducts = self.findOrphanedProducts()
-                let orphanedOrders = self.findOrphanedOrders()
-                let orphanedManuals = self.findOrphanedManuals()
-                let emptyCategories = self.findEmptyCategories()
-                let emptyTags = self.findEmptyTags()
-                let productsWithoutCategory = self.findProductsWithoutCategory()
-                let hasInitializationFlag = UserDefaults.standard.bool(forKey: "ManualBox_HasInitializedDefaultData")
+        // 使用统一诊断服务进行快速诊断
+        let quickResult = await unifiedService.performQuickDiagnosis()
 
-                let hasIssues = !duplicateCategories.isEmpty ||
-                               !duplicateTags.isEmpty ||
-                               orphanedProducts > 0 ||
-                               orphanedOrders > 0 ||
-                               orphanedManuals > 0 ||
-                               !emptyCategories.isEmpty ||
-                               !emptyTags.isEmpty ||
-                               productsWithoutCategory > 0
-
-                let result = DiagnosticResult(
-                    duplicateCategories: duplicateCategories,
-                    duplicateTags: duplicateTags,
-                    totalCategories: totalCategories,
-                    totalTags: totalTags,
-                    totalProducts: totalProducts,
-                    totalOrders: totalOrders,
-                    totalManuals: totalManuals,
-                    totalRepairRecords: totalRepairRecords,
-                    orphanedProducts: orphanedProducts,
-                    orphanedOrders: orphanedOrders,
-                    orphanedManuals: orphanedManuals,
-                    emptyCategories: emptyCategories,
-                    emptyTags: emptyTags,
-                    productsWithoutCategory: productsWithoutCategory,
-                    hasInitializationFlag: hasInitializationFlag,
-                    hasIssues: hasIssues
-                )
-
-                continuation.resume(returning: result)
-            }
-        }
+        // 转换为原有的DiagnosticResult格式
+        return DiagnosticResult(
+            duplicateCategories: quickResult.duplicateCategories,
+            duplicateTags: quickResult.duplicateTags,
+            totalCategories: getTotalCount(for: "Category"),
+            totalTags: getTotalCount(for: "Tag"),
+            totalProducts: getTotalCount(for: "Product"),
+            totalOrders: getTotalCount(for: "Order"),
+            totalManuals: getTotalCount(for: "Manual"),
+            totalRepairRecords: getTotalCount(for: "RepairRecord"),
+            orphanedProducts: quickResult.orphanedProducts,
+            orphanedOrders: quickResult.orphanedOrders,
+            orphanedManuals: quickResult.orphanedManuals,
+            emptyCategories: findEmptyCategories(),
+            emptyTags: findEmptyTags(),
+            productsWithoutCategory: quickResult.orphanedProducts,
+            hasInitializationFlag: UserDefaults.standard.bool(forKey: "ManualBox_HasInitializedDefaultData"),
+            hasIssues: quickResult.hasIssues
+        )
     }
     
     // MARK: - Private Methods

@@ -43,20 +43,7 @@ struct DataChangeEvent: AppEvent {
     }
 }
 
-struct SyncEvent: AppEvent {
-    let timestamp: Date = Date()
-    let eventId: UUID = UUID()
-    let syncType: SyncType
-    let status: SyncStatus
-    let progress: Double?
-    
-    enum SyncType {
-        case cloudKit
-        case localBackup
-        case dataExport
-        case dataImport
-    }
-}
+// SyncEvent已移至CloudKitSyncTypes.swift
 
 struct ErrorEvent: AppEvent {
     let timestamp: Date = Date()
@@ -225,10 +212,7 @@ class EventBus: ObservableObject {
         publish(event)
     }
     
-    func publishSyncEvent(syncType: SyncEvent.SyncType, status: SyncStatus, progress: Double? = nil) {
-        let event = SyncEvent(syncType: syncType, status: status, progress: progress)
-        publish(event)
-    }
+    // publishSyncEvent方法已删除，因为SyncEvent已移至CloudKitSyncTypes.swift
     
     func publishError(_ error: Error, context: String, severity: AppError.ErrorSeverity = .error) {
         let event = ErrorEvent(error: error, context: context, severity: severity)

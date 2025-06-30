@@ -40,11 +40,21 @@ struct UnifiedDetailPanel: View {
                 CategoriesView()
             case .tagList:
                 TagsView()
+            case .dataExport:
+                DataExportView()
+            case .dataImport:
+                DataImportView()
+            case .dataBackup:
+                DataBackupView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .frame(minWidth: 320) // 确保最小宽度
+        #if os(macOS)
         .background(Color(NSColor.controlBackgroundColor).opacity(0.3))
+        #else
+        .background(Color(.systemGroupedBackground).opacity(0.3))
+        #endif
         .animation(.easeInOut(duration: 0.25), value: stateManager.currentState)
     }
     

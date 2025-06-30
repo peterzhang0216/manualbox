@@ -74,17 +74,12 @@ extension OCRService {
             }
             
             let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            self.activeRequests[requestId] = handler
 
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 do {
                     try handler.perform([request])
                 } catch {
                     continuation.resume(throwing: OCRError.processingFailed(error.localizedDescription))
-                }
-
-                Task { @MainActor [weak self] in
-                    self?.activeRequests.removeValue(forKey: requestId)
                 }
             }
         }

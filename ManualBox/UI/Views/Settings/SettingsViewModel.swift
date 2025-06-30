@@ -294,6 +294,25 @@ class SettingsViewModel: BaseViewModel<SettingsState, SettingsAction> {
         // 这里应该实现从文件导入数据到Core Data的功能
     }
     
+    // MARK: - Synchronous Update Methods
+    func updateDefaultWarrantyPeriodSync(_ period: Int) {
+        updateState { $0.defaultWarrantyPeriod = period }
+        saveDefaultWarrantyPeriod(period)
+    }
+
+    func updateEnableOCRByDefaultSync(_ enabled: Bool) {
+        updateState { $0.enableOCRByDefault = enabled }
+        saveEnableOCRByDefault(enabled)
+    }
+
+    func togglePrivacySheetSync() {
+        updateState { $0.showPrivacySheet.toggle() }
+    }
+
+    func toggleAgreementSheetSync() {
+        updateState { $0.showAgreementSheet.toggle() }
+    }
+
     // MARK: - Public Methods
     func getAppVersion() -> String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "未知"

@@ -17,7 +17,7 @@ struct AppGlobalState {
     var detailPanelState: DetailPanelState = .empty
     
     // 同步状态
-    var syncStatus: SyncStatus = .idle
+    var syncStatus: CloudKitSyncStatus = .idle
     var lastSyncDate: Date?
     var syncProgress: Double = 0.0
     
@@ -56,12 +56,20 @@ struct AppError: Identifiable, Equatable {
 }
 
 // MARK: - 性能指标
-struct PerformanceMetrics {
-    var memoryUsage: Double = 0.0
-    var cpuUsage: Double = 0.0
-    var diskUsage: Double = 0.0
-    var networkLatency: Double = 0.0
-    var lastUpdated: Date = Date()
+struct PerformanceMetrics: Codable {
+    var memoryUsage: Double
+    var cpuUsage: Double
+    var diskUsage: Double
+    var networkLatency: Double
+    var lastUpdated: Date
+
+    init(memoryUsage: Double = 0.0, cpuUsage: Double = 0.0, diskUsage: Double = 0.0, networkLatency: Double = 0.0, lastUpdated: Date = Date()) {
+        self.memoryUsage = memoryUsage
+        self.cpuUsage = cpuUsage
+        self.diskUsage = diskUsage
+        self.networkLatency = networkLatency
+        self.lastUpdated = lastUpdated
+    }
 }
 
 // MARK: - 统一状态管理中心
@@ -159,7 +167,7 @@ class AppStateManager: ObservableObject {
     
     // MARK: - 同步状态管理
     
-    func updateSyncStatus(_ status: SyncStatus, progress: Double = 0.0) {
+    func updateSyncStatus(_ status: CloudKitSyncStatus, progress: Double = 0.0) {
         state.syncStatus = status
         state.syncProgress = progress
 

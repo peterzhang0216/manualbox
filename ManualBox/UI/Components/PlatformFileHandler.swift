@@ -395,7 +395,7 @@ class PlatformFileManager: ObservableObject {
 }
 
 // MARK: - 文件信息结构
-struct FileInfo {
+struct PlatformFileInfo {
     let url: URL
     let name: String
     let size: Int64

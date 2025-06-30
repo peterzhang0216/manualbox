@@ -8,163 +8,219 @@ import PDFKit
 import SwiftUI
 import NaturalLanguage
 
-// MARK: - 增强版OCR服务
+// MARK: - OCR协调器服务 (重构后的主服务)
 @MainActor
 class OCRService: ObservableObject {
     static let shared = OCRService()
-    
+
     @Published var isProcessing = false
     @Published var currentProgress: Float = 0.0
     @Published var processingQueue: [UUID] = []
-    
-    private let imagePreprocessor = ImagePreprocessor()
-    private let textPostprocessor = TextPostprocessor()
-    var activeRequests: [UUID: VNImageRequestHandler] = [:]
-    
-    private init() {}
-    
-    // MARK: - 主要OCR方法
+    @Published var batchProgress: BatchProgress?
+    @Published var lastError: OCRError?
+    @Published var processingStats: OCRProcessingStats = OCRProcessingStats()
+
+    // 拆分后的专门组件
+    private let coordinator: OCRCoordinator
+    private let imageProcessor: OCRImageProcessor
+    private let textProcessor: OCRTextProcessor
+    private let performanceMonitor: OCRPerformanceMonitor
+
+    private let maxConcurrentRequests = 3
+
+    private init() {
+        self.coordinator = OCRCoordinator()
+        self.imageProcessor = OCRImageProcessor()
+        self.textProcessor = OCRTextProcessor()
+        self.performanceMonitor = OCRPerformanceMonitor()
+
+        setupPerformanceMonitoring()
+    }
+
+    // MARK: - 主要OCR方法 (重构后使用组件架构)
     func performOCR(
         on manual: Manual,
         configuration: OCRConfiguration = .default,
         completion: @escaping (Result<OCRResult, OCRError>) -> Void
     ) {
-        guard !isProcessing || processingQueue.count < 3 else {
+        // 检查队列容量
+        guard processingQueue.count < maxConcurrentRequests else {
+            lastError = .queueFull
+            Task {
+                await performanceMonitor.recordError(.queueFull, context: "队列已满")
+            }
             completion(.failure(.queueFull))
             return
         }
-        
+
         let requestId = UUID()
         processingQueue.append(requestId)
-        
+        isProcessing = true
+
         Task {
             do {
-                let result = try await processManual(manual, configuration: configuration, requestId: requestId)
-                await MainActor.run {
-                    self.processingQueue.removeAll { $0 == requestId }
-                    completion(.success(result))
-                }
-            } catch let error as OCRError {
-                await MainActor.run {
-                    self.processingQueue.removeAll { $0 == requestId }
-                    completion(.failure(error))
-                }
-            } catch {
-                await MainActor.run {
-                    self.processingQueue.removeAll { $0 == requestId }
-                    completion(.failure(.processingFailed(error.localizedDescription)))
-                }
-            }
-        }
-    }
-    
-    // MARK: - 私有处理方法
-    private func processManual(
-        _ manual: Manual,
-        configuration: OCRConfiguration,
-        requestId: UUID
-    ) async throws -> OCRResult {
-        let startTime = Date()
-        
-        // 更新处理状态
-        await MainActor.run {
-            self.isProcessing = true
-            self.currentProgress = 0.1
-            configuration.progressCallback?(0.1)
-        }
-        
-        // 获取并预处理图像
-        guard let originalImage = await getOptimizedImage(from: manual) else {
-            throw OCRError.imageExtractionFailed
-        }
-        
-        await MainActor.run {
-            self.currentProgress = 0.3
-            configuration.progressCallback?(0.3)
-        }
-        
-        // 预处理图像以提高OCR准确性
-        let preprocessedImage = await imagePreprocessor.enhance(originalImage)
-        
-        await MainActor.run {
-            self.currentProgress = 0.4
-            configuration.progressCallback?(0.4)
-        }
-        
-        // 执行OCR识别
-        let ocrResult = try await performVisionOCR(
-            on: preprocessedImage,
-            configuration: configuration,
-            requestId: requestId
-        )
-        
-        await MainActor.run {
-            self.currentProgress = 0.8
-            configuration.progressCallback?(0.8)
-        }
-        
-        // 后处理文本
-        let processedText = textPostprocessor.enhance(ocrResult.text)
-        
-        await MainActor.run {
-            self.currentProgress = 1.0
-            configuration.progressCallback?(1.0)
-            self.isProcessing = false
-        }
-        
-        let processingTime = Date().timeIntervalSince(startTime)
-        
-        return OCRResult(
-            text: processedText,
-            confidence: ocrResult.confidence,
-            boundingBoxes: ocrResult.boundingBoxes,
-            processingTime: processingTime,
-            languageDetected: detectLanguage(from: processedText)
-        )
-    }
-    
-    // MARK: - 批量处理
-    func batchProcessManuals(
-        _ manuals: [Manual],
-        configuration: OCRConfiguration = .default,
-        progressCallback: @escaping @Sendable (Int, Int, Manual?) -> Void,
-        completion: @escaping @Sendable ([Manual: Result<OCRResult, OCRError>]) -> Void
-    ) {
-        Task {
-            var results: [Manual: Result<OCRResult, OCRError>] = [:]
-            
-            for (index, manual) in manuals.enumerated() {
-                let result = await withCheckedContinuation { (continuation: CheckedContinuation<Result<OCRResult, OCRError>, Never>) in
+                let result = try await coordinator.coordinateOCR(
+                    on: manual,
+                    configuration: configuration,
+                    imageProcessor: imageProcessor,
+                    textProcessor: textProcessor,
+                    performanceMonitor: performanceMonitor
+                ) { [weak self] progress in
                     Task { @MainActor in
-                        self.performOCR(on: manual, configuration: configuration) { result in
-                            continuation.resume(returning: result)
-                        }
+                        self?.currentProgress = progress
+                        configuration.progressCallback?(progress)
                     }
                 }
-                
-                results[manual] = result
-                
+
                 await MainActor.run {
-                    progressCallback(index + 1, manuals.count, manual)
+                    self.processingQueue.removeAll { $0 == requestId }
+                    self.isProcessing = self.processingQueue.isEmpty ? false : true
+                    self.currentProgress = 0.0
                 }
+
+                completion(.success(result))
+
+            } catch {
+                let ocrError = error as? OCRError ?? .processingFailed(error.localizedDescription)
+
+                await MainActor.run {
+                    self.lastError = ocrError
+                    self.processingQueue.removeAll { $0 == requestId }
+                    self.isProcessing = self.processingQueue.isEmpty ? false : true
+                    self.currentProgress = 0.0
+                }
+
+                await performanceMonitor.recordError(ocrError, context: "单个OCR处理")
+                completion(.failure(ocrError))
             }
-            
+        }
+
+    }
+
+    // MARK: - 批量OCR处理
+    func performBatchOCR(
+        on manuals: [Manual],
+        configuration: OCRConfiguration = .default,
+        progressCallback: @escaping (Int, Int) -> Void
+    ) async -> [UUID: Result<OCRResult, OCRError>] {
+
+        batchProgress = BatchProgress(
+            totalItems: manuals.count,
+            completedItems: 0,
+            currentItem: nil,
+            overallProgress: 0.0,
+            estimatedTimeRemaining: nil
+        )
+
+        let results = await coordinator.coordinateBatchOCR(
+            manuals: manuals,
+            configuration: configuration,
+            imageProcessor: imageProcessor,
+            textProcessor: textProcessor,
+            performanceMonitor: performanceMonitor,
+            progressCallback: progressCallback
+        )
+
+        await MainActor.run {
+            self.batchProgress = nil
+        }
+
+        // 记录批量处理统计
+        let successCount = results.values.compactMap { result in
+            if case .success = result { return 1 } else { return nil }
+        }.count
+
+        await performanceMonitor.recordBatchProcessing(
+            totalItems: manuals.count,
+            successCount: successCount,
+            totalDuration: 0 // 这里需要实际计算总时间
+        )
+
+        return results
+    }
+
+    // MARK: - 智能重试OCR
+    func performOCRWithRetry(
+        on manual: Manual,
+        maxRetries: Int = 3,
+        configuration: OCRConfiguration = .default,
+        completion: @escaping (Result<OCRResult, OCRError>) -> Void
+    ) {
+        Task {
+            let result = await coordinator.coordinateOCRWithRetry(
+                on: manual,
+                maxRetries: maxRetries,
+                configuration: configuration,
+                imageProcessor: imageProcessor,
+                textProcessor: textProcessor,
+                performanceMonitor: performanceMonitor
+            )
+
             await MainActor.run {
-                completion(results)
+                completion(result)
             }
         }
     }
-    
+
+    // MARK: - 性能监控和统计
+    func getPerformanceReport() -> OCRPerformanceReport {
+        return performanceMonitor.getPerformanceReport()
+    }
+
+    func getRealtimeMetrics() -> OCRRealtimeMetrics {
+        return performanceMonitor.getRealtimeMetrics()
+    }
+
+    func resetPerformanceStats() {
+        Task {
+            await performanceMonitor.resetStats()
+        }
+    }
+
+    func resetStatistics() {
+        processingStats = OCRProcessingStats()
+        Task {
+            await performanceMonitor.resetStats()
+        }
+    }
+
+    // MARK: - 性能监控设置
+    private func setupPerformanceMonitoring() {
+        // 监控内存使用情况
+        #if os(iOS)
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleMemoryWarning()
+        }
+        #endif
+    }
+
+    private func handleMemoryWarning() {
+        // 通知性能监控器
+        Task {
+            await performanceMonitor.recordError(.insufficientMemory, context: "内存警告")
+        }
+
+        // 重置处理队列
+        processingQueue.removeAll()
+        // 更新状态
+        isProcessing = false
+        currentProgress = 0.0
+        lastError = .insufficientMemory
+    }
+
     // MARK: - 取消处理
     func cancelProcessing(for requestId: UUID) {
         processingQueue.removeAll { $0 == requestId }
-        activeRequests.removeValue(forKey: requestId)
     }
-    
+
     func cancelAllProcessing() {
         processingQueue.removeAll()
-        activeRequests.removeAll()
         isProcessing = false
         currentProgress = 0.0
+        batchProgress = nil
     }
-} 
+}

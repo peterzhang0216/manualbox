@@ -10,27 +10,65 @@ import NaturalLanguage
 
 // MARK: - 增强版文本后处理器
 class TextPostprocessor {
-    
+
+    // 缓存常用的正则表达式
+    private lazy var regexCache: [String: NSRegularExpression] = [:]
+
+    // 常见词汇字典
+    private lazy var commonWordsDictionary: Set<String> = {
+        loadCommonWordsDictionary()
+    }()
+
+    // 技术术语字典
+    private lazy var technicalTermsDictionary: [String: String] = {
+        loadTechnicalTermsDictionary()
+    }()
+
     // MARK: - 主要处理方法
     func enhance(_ text: String) -> String {
         var processedText = text
-        
+
         // 1. 基础清理
         processedText = performBasicCleaning(processedText)
-        
+
         // 2. 修正常见的OCR错误
         processedText = correctCommonOCRErrors(processedText)
-        
+
         // 3. 语言特定的修正
         processedText = applyLanguageSpecificCorrections(processedText)
-        
-        // 4. 格式化处理
+
+        // 4. 技术术语修正
+        processedText = correctTechnicalTerms(processedText)
+
+        // 5. 格式化处理
         processedText = formatText(processedText)
-        
-        // 5. 智能分段
+
+        // 6. 智能分段
         processedText = applySmartParagraphing(processedText)
-        
+
+        // 7. 最终质量检查
+        processedText = performFinalQualityCheck(processedText)
+
         return processedText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    // MARK: - 增强的处理方法
+    func enhanceWithContext(_ text: String, documentType: OCRDocumentType = .manual) -> String {
+        var processedText = text
+
+        // 根据文档类型应用特定的处理规则
+        switch documentType {
+        case .manual:
+            processedText = applyManualSpecificCorrections(processedText)
+        case .invoice:
+            processedText = applyInvoiceSpecificCorrections(processedText)
+        case .receipt:
+            processedText = applyReceiptSpecificCorrections(processedText)
+        case .general:
+            break
+        }
+
+        return enhance(processedText)
     }
     
     // MARK: - 基础清理
@@ -488,6 +526,168 @@ class TextPostprocessor {
         
         return paragraphs.joined(separator: "\n\n")
     }
+
+    // MARK: - 新增的增强处理方法
+
+    /// 技术术语修正
+    private func correctTechnicalTerms(_ text: String) -> String {
+        var correctedText = text
+
+        for (incorrect, correct) in technicalTermsDictionary {
+            correctedText = correctedText.replacingOccurrences(
+                of: incorrect,
+                with: correct,
+                options: [.caseInsensitive, .regularExpression]
+            )
+        }
+
+        return correctedText
+    }
+
+    /// 说明书特定修正
+    private func applyManualSpecificCorrections(_ text: String) -> String {
+        var correctedText = text
+
+        // 修正常见的说明书术语
+        let manualTerms = [
+            ("操作步骤", "操作步骤"),
+            ("注意事项", "注意事项"),
+            ("安全警告", "安全警告"),
+            ("技术参数", "技术参数"),
+            ("故障排除", "故障排除"),
+            ("维护保养", "维护保养")
+        ]
+
+        for (pattern, replacement) in manualTerms {
+            correctedText = applyPatternCorrection(correctedText, pattern: pattern, replacement: replacement)
+        }
+
+        // 修正数字和单位的分离问题
+        correctedText = correctNumberUnitSeparation(correctedText)
+
+        return correctedText
+    }
+
+    /// 发票特定修正
+    private func applyInvoiceSpecificCorrections(_ text: String) -> String {
+        var correctedText = text
+
+        // 修正金额格式
+        correctedText = correctCurrencyFormat(correctedText)
+
+        // 修正日期格式
+        correctedText = correctDateFormat(correctedText)
+
+        // 修正税号格式
+        correctedText = correctTaxNumberFormat(correctedText)
+
+        return correctedText
+    }
+
+    /// 收据特定修正
+    private func applyReceiptSpecificCorrections(_ text: String) -> String {
+        var correctedText = text
+
+        // 修正商品名称和价格的对应关系
+        correctedText = correctItemPriceAlignment(correctedText)
+
+        // 修正小计、税费、总计的格式
+        correctedText = correctReceiptTotals(correctedText)
+
+        return correctedText
+    }
+
+    /// 最终质量检查
+    private func performFinalQualityCheck(_ text: String) -> String {
+        var checkedText = text
+
+        // 检查并修正明显的错误
+        checkedText = removeObviousErrors(checkedText)
+
+        // 检查文本完整性
+        checkedText = ensureTextCompleteness(checkedText)
+
+        // 标准化空白字符
+        checkedText = normalizeWhitespace(checkedText)
+
+        return checkedText
+    }
+
+    // MARK: - 辅助方法
+
+    /// 修正数字和单位的分离问题
+    private func correctNumberUnitSeparation(_ text: String) -> String {
+        // 修正如 "5 0 0 m m" -> "500mm" 的问题
+        let pattern = #"(\d+(?:\s+\d+)*)\s*([a-zA-Z]+)"#
+
+        guard let regex = getCachedRegex(pattern) else { return text }
+
+        let range = NSRange(location: 0, length: text.utf16.count)
+        let result = regex.stringByReplacingMatches(
+            in: text,
+            options: [],
+            range: range,
+            withTemplate: "$1$2"
+        )
+
+        // 移除数字间的空格
+        return result.replacingOccurrences(
+            of: #"(\d)\s+(\d)"#,
+            with: "$1$2",
+            options: .regularExpression
+        )
+    }
+
+    /// 修正货币格式
+    private func correctCurrencyFormat(_ text: String) -> String {
+        var correctedText = text
+
+        // 修正如 "¥ 1 2 3 . 4 5" -> "¥123.45" 的问题
+        let currencyPatterns = [
+            (#"¥\s*(\d+(?:\s+\d+)*)\s*\.\s*(\d+(?:\s+\d+)*)"#, "¥$1.$2"),
+            (#"\$\s*(\d+(?:\s+\d+)*)\s*\.\s*(\d+(?:\s+\d+)*)"#, "$$$1.$2"),
+            (#"(\d+(?:\s+\d+)*)\s*元"#, "$1元")
+        ]
+
+        for (pattern, replacement) in currencyPatterns {
+            correctedText = correctedText.replacingOccurrences(
+                of: pattern,
+                with: replacement,
+                options: .regularExpression
+            )
+        }
+
+        // 移除货币数字间的空格
+        correctedText = correctedText.replacingOccurrences(
+            of: #"(¥|\$)(\d)\s+(\d)"#,
+            with: "$1$2$3",
+            options: .regularExpression
+        )
+
+        return correctedText
+    }
+
+    /// 修正日期格式
+    private func correctDateFormat(_ text: String) -> String {
+        var correctedText = text
+
+        // 修正如 "2 0 2 3 - 1 2 - 3 1" -> "2023-12-31" 的问题
+        let datePatterns = [
+            (#"(\d)\s+(\d)\s+(\d)\s+(\d)\s*-\s*(\d)\s+(\d)\s*-\s*(\d)\s+(\d)"#, "$1$2$3$4-$5$6-$7$8"),
+            (#"(\d)\s+(\d)\s+(\d)\s+(\d)\s*/\s*(\d)\s+(\d)\s*/\s*(\d)\s+(\d)"#, "$1$2$3$4/$5$6/$7$8"),
+            (#"(\d)\s+(\d)\s+(\d)\s+(\d)\s*年\s*(\d)\s+(\d)\s*月\s*(\d)\s+(\d)\s*日"#, "$1$2$3$4年$5$6月$7$8日")
+        ]
+
+        for (pattern, replacement) in datePatterns {
+            correctedText = correctedText.replacingOccurrences(
+                of: pattern,
+                with: replacement,
+                options: .regularExpression
+            )
+        }
+
+        return correctedText
+    }
     
     /// 分割成句子
     private func splitIntoSentences(_ text: String) -> [String] {
@@ -517,4 +717,201 @@ class TextPostprocessor {
         
         return false
     }
-} 
+
+    // MARK: - 字典加载方法
+
+    /// 加载常用词汇字典
+    private func loadCommonWordsDictionary() -> Set<String> {
+        // 这里可以从文件或网络加载，现在使用硬编码的常用词汇
+        return Set([
+            "产品", "说明书", "操作", "使用", "安装", "维护", "保养", "故障", "排除",
+            "技术", "参数", "规格", "型号", "品牌", "制造商", "生产日期", "保修期",
+            "注意事项", "安全", "警告", "禁止", "允许", "建议", "推荐", "可选",
+            "必须", "应该", "可以", "不能", "严禁", "确保", "检查", "测试",
+            "电源", "电压", "电流", "功率", "频率", "温度", "湿度", "压力",
+            "尺寸", "重量", "材质", "颜色", "包装", "配件", "附件", "工具"
+        ])
+    }
+
+    /// 加载技术术语字典
+    private func loadTechnicalTermsDictionary() -> [String: String] {
+        return [
+            // 常见OCR错误修正
+            "电阻": "电阻",
+            "电容": "电容",
+            "电感": "电感",
+            "二极管": "二极管",
+            "三极管": "三极管",
+            "集成电路": "集成电路",
+            "微处理器": "微处理器",
+            "传感器": "传感器",
+            "执行器": "执行器",
+            "控制器": "控制器",
+
+            // 单位修正
+            "毫米": "mm",
+            "厘米": "cm",
+            "米": "m",
+            "千米": "km",
+            "毫克": "mg",
+            "克": "g",
+            "千克": "kg",
+            "毫升": "ml",
+            "升": "L",
+            "伏特": "V",
+            "安培": "A",
+            "瓦特": "W",
+            "赫兹": "Hz",
+            "摄氏度": "°C",
+
+            // 常见错误修正
+            "O": "0",  // 字母O误识别为数字0
+            "l": "1",  // 小写l误识别为数字1
+            "S": "5",  // 在某些上下文中
+            "G": "6",  // 在某些上下文中
+        ]
+    }
+
+    /// 获取缓存的正则表达式
+    private func getCachedRegex(_ pattern: String) -> NSRegularExpression? {
+        if let cached = regexCache[pattern] {
+            return cached
+        }
+
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            regexCache[pattern] = regex
+            return regex
+        } catch {
+            print("正则表达式编译失败: \(pattern), 错误: \(error)")
+            return nil
+        }
+    }
+
+    /// 移除明显的错误
+    private func removeObviousErrors(_ text: String) -> String {
+        var cleanedText = text
+
+        // 移除单独的特殊字符行
+        cleanedText = cleanedText.replacingOccurrences(
+            of: #"^[^\w\s\u4e00-\u9fff]+$"#,
+            with: "",
+            options: [.regularExpression, .anchored]
+        )
+
+        // 移除过短的行（可能是识别错误）
+        let lines = cleanedText.components(separatedBy: .newlines)
+        let filteredLines = lines.filter { line in
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.count >= 2 || trimmed.isEmpty
+        }
+
+        return filteredLines.joined(separator: "\n")
+    }
+
+    /// 确保文本完整性
+    private func ensureTextCompleteness(_ text: String) -> String {
+        var completeText = text
+
+        // 检查是否有未完成的句子（以标点符号结尾）
+        let sentences = completeText.components(separatedBy: CharacterSet(charactersIn: "。！？.!?"))
+        if let lastSentence = sentences.last?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !lastSentence.isEmpty && sentences.count > 1 {
+            // 如果最后一句话没有标点符号，可能是不完整的
+            completeText += "..."
+        }
+
+        return completeText
+    }
+
+    /// 标准化空白字符
+    private func normalizeWhitespace(_ text: String) -> String {
+        var normalizedText = text
+
+        // 将多个连续空格替换为单个空格
+        normalizedText = normalizedText.replacingOccurrences(
+            of: #" +"#,
+            with: " ",
+            options: .regularExpression
+        )
+
+        // 将多个连续换行替换为最多两个换行
+        normalizedText = normalizedText.replacingOccurrences(
+            of: #"\n{3,}"#,
+            with: "\n\n",
+            options: .regularExpression
+        )
+
+        // 移除行首行尾的空格
+        let lines = normalizedText.components(separatedBy: .newlines)
+        let trimmedLines = lines.map { $0.trimmingCharacters(in: .whitespaces) }
+
+        return trimmedLines.joined(separator: "\n")
+    }
+
+    // MARK: - 其他辅助方法
+
+    /// 修正税号格式
+    private func correctTaxNumberFormat(_ text: String) -> String {
+        // 修正税号中的空格问题
+        return text.replacingOccurrences(
+            of: #"税号[：:]\s*(\d+(?:\s+\d+)*)"#,
+            with: "税号：$1",
+            options: .regularExpression
+        ).replacingOccurrences(
+            of: #"(\d)\s+(\d)"#,
+            with: "$1$2",
+            options: .regularExpression
+        )
+    }
+
+    /// 修正商品价格对齐
+    private func correctItemPriceAlignment(_ text: String) -> String {
+        // 这是一个复杂的功能，需要分析商品名称和价格的对应关系
+        // 现在先做简单的格式化
+        return text.replacingOccurrences(
+            of: #"(\S+)\s+(¥\d+\.?\d*)"#,
+            with: "$1 $2",
+            options: .regularExpression
+        )
+    }
+
+    /// 修正收据总计
+    private func correctReceiptTotals(_ text: String) -> String {
+        let totalPatterns = [
+            ("小计", "小计"),
+            ("税费", "税费"),
+            ("总计", "总计"),
+            ("合计", "合计"),
+            ("应付", "应付")
+        ]
+
+        var correctedText = text
+        for (pattern, replacement) in totalPatterns {
+            correctedText = correctedText.replacingOccurrences(
+                of: pattern + #"\s*[：:]\s*(¥?\d+\.?\d*)"#,
+                with: replacement + "：$1",
+                options: .regularExpression
+            )
+        }
+
+        return correctedText
+    }
+
+    /// 应用模式修正
+    private func applyPatternCorrection(_ text: String, pattern: String, replacement: String) -> String {
+        return text.replacingOccurrences(
+            of: pattern,
+            with: replacement,
+            options: .regularExpression
+        )
+    }
+}
+
+// MARK: - 文档类型枚举
+enum OCRPostprocessorDocumentType {
+    case manual      // 说明书
+    case invoice     // 发票
+    case receipt     // 收据
+    case general     // 通用文档
+}

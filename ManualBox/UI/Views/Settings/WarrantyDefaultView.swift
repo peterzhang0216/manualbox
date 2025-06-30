@@ -6,31 +6,7 @@ struct WarrantyDefaultView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // 标题部分使用更明显的设计
-            Label("默认保修期", systemImage: "clock.fill")
-                .foregroundColor(.accentColor)
-                .font(.headline)
-
-            // 数值展示部分
-            HStack(alignment: .center) {
-                Text("\(period)")
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(.accentColor)
-                    .frame(minWidth: 30, alignment: .trailing)
-
-                Text("个月")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-
-                Spacer()
-
-                // 修复 Stepper 组件，明确显示文本
-                Stepper(
-                    value: $period,
-                    in: 0...60,
-                    label: { Text("调整保修期").foregroundColor(.clear).frame(width: 0) }
-                )
-            }
+            CompactStepper("默认保修期", value: $period, in: 0...60, unit: "个月")
 
             // 说明文字
             Text("添加新商品时自动设置的保修期长度")

@@ -52,8 +52,87 @@ extension Manual {
         manual.fileType = fileType
         manual.isOCRProcessed = false
         manual.product = product
-        
+
+        // 创建初始版本
+        Task {
+            await ManualVersionService.shared.createVersion(
+                for: manual.id ?? UUID(),
+                fileData: fileData,
+                fileName: fileName,
+                fileType: fileType,
+                content: nil,
+                versionNote: "初始版本",
+                changeType: .initial
+            )
+        }
+
         return manual
+    }
+
+    // MARK: - 版本管理方法
+
+    /// 更新说明书并创建新版本
+    func updateManual(
+        fileName: String? = nil,
+        fileData: Data? = nil,
+        fileType: String? = nil,
+        content: String? = nil,
+        versionNote: String? = nil,
+        changeType: VersionChangeType = .update
+    ) async {
+        let oldFileName = self.fileName
+        let oldFileData = self.fileData
+        let oldFileType = self.fileType
+        let oldContent = self.content
+
+        // 更新属性
+        if let fileName = fileName {
+            self.fileName = fileName
+        }
+        if let fileData = fileData {
+            self.fileData = fileData
+        }
+        if let fileType = fileType {
+            self.fileType = fileType
+        }
+        if let content = content {
+            self.content = content
+        }
+
+        // 检查是否有实际变更
+        let hasChanges = (fileName != nil && fileName != oldFileName) ||
+                        (fileData != nil && fileData != oldFileData) ||
+                        (fileType != nil && fileType != oldFileType) ||
+                        (content != nil && content != oldContent)
+
+        // 如果有变更，创建新版本
+        if hasChanges {
+            await ManualVersionService.shared.createVersion(
+                for: self.id ?? UUID(),
+                fileData: self.fileData ?? Data(),
+                fileName: self.fileName ?? "",
+                fileType: self.fileType ?? "",
+                content: self.content,
+                versionNote: versionNote,
+                changeType: changeType
+            )
+        }
+    }
+
+    /// 处理OCR完成后的版本创建
+    func handleOCRCompletion(content: String) async {
+        self.content = content
+        self.isOCRProcessed = true
+
+        await ManualVersionService.shared.createVersion(
+            for: self.id ?? UUID(),
+            fileData: self.fileData ?? Data(),
+            fileName: self.fileName ?? "",
+            fileType: self.fileType ?? "",
+            content: content,
+            versionNote: "OCR处理完成",
+            changeType: .ocr
+        )
     }
     
     // MARK: - 文件处理方法
@@ -100,7 +179,7 @@ extension Manual {
     @MainActor
     func performOCR(completion: @escaping (Bool) -> Void) {
         let ocrService = OCRService.shared
-        
+
         ocrService.performOCR(on: self, configuration: .default) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -110,7 +189,7 @@ extension Manual {
                     // 注意：Core Data模型中可能没有这些字段，先注释掉
                     // self.ocrConfidence = ocrResult.confidence
                     // self.detectedLanguage = ocrResult.languageDetected
-                    
+
                     // 保存到Core Data
                     if let context = self.managedObjectContext {
                         do {
@@ -123,9 +202,53 @@ extension Manual {
                     } else {
                         completion(false)
                     }
-                    
+
                 case .failure(let error):
                     print("OCR处理失败: \(error.localizedDescription)")
+                    completion(false)
+                }
+            }
+        }
+    }
+
+    // 执行增强OCR处理（带重试机制）
+    @MainActor
+    func performEnhancedOCR(completion: @escaping (Bool) -> Void) {
+        let ocrService = OCRService.shared
+
+        ocrService.performOCRWithRetry(on: self, maxRetries: 3, configuration: .default) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let ocrResult):
+                    self.content = ocrResult.text
+                    self.isOCRProcessed = true
+
+                    // 评估OCR质量
+                    let quality = OCRQualityMetrics(
+                        confidence: ocrResult.confidence,
+                        textLength: ocrResult.text.count,
+                        wordCount: ocrResult.text.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count,
+                        lineCount: ocrResult.text.components(separatedBy: .newlines).count,
+                        detectedLanguage: ocrResult.languageDetected,
+                        processingTime: ocrResult.processingTime
+                    )
+                    print("📊 OCR质量评估: \(quality.qualityLevel.rawValue) (分数: \(String(format: "%.2f", quality.qualityScore)))")
+
+                    // 保存到Core Data
+                    if let context = self.managedObjectContext {
+                        do {
+                            try context.save()
+                            completion(true)
+                        } catch {
+                            print("保存OCR结果失败: \(error.localizedDescription)")
+                            completion(false)
+                        }
+                    } else {
+                        completion(false)
+                    }
+
+                case .failure(let error):
+                    print("增强OCR处理失败: \(error.localizedDescription)")
                     completion(false)
                 }
             }

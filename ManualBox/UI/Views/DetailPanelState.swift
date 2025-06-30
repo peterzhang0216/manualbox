@@ -22,10 +22,15 @@ enum DetailPanelState: Equatable {
     case editProduct(Product)
     case categoryList
     case tagList
+    case dataExport
+    case dataImport
+    case dataBackup
     
     static func == (lhs: DetailPanelState, rhs: DetailPanelState) -> Bool {
         switch (lhs, rhs) {
         case (.empty, .empty), (.categoryList, .categoryList), (.tagList, .tagList):
+            return true
+        case (.dataExport, .dataExport), (.dataImport, .dataImport), (.dataBackup, .dataBackup):
             return true
         case (.productDetail(let lhsProduct), .productDetail(let rhsProduct)):
             return lhsProduct.id == rhsProduct.id
@@ -72,6 +77,12 @@ enum DetailPanelState: Equatable {
             return "分类管理"
         case .tagList:
             return "标签管理"
+        case .dataExport:
+            return "导出数据"
+        case .dataImport:
+            return "导入数据"
+        case .dataBackup:
+            return "备份与恢复"
         }
     }
     
@@ -91,6 +102,12 @@ enum DetailPanelState: Equatable {
             return "tag.circle"
         case .addProduct, .editProduct:
             return "plus.square"
+        case .dataExport:
+            return "arrow.up.doc.fill"
+        case .dataImport:
+            return "arrow.down.doc.fill"
+        case .dataBackup:
+            return "externaldrive.fill"
         }
     }
 
@@ -167,6 +184,18 @@ class DetailPanelStateManager: ObservableObject {
     
     func showTagList() {
         currentState = .tagList
+    }
+
+    func showDataExport() {
+        currentState = .dataExport
+    }
+
+    func showDataImport() {
+        currentState = .dataImport
+    }
+
+    func showDataBackup() {
+        currentState = .dataBackup
     }
 }
 

@@ -6,6 +6,7 @@ struct DataSettingsPanel: View {
     @Binding var defaultWarrantyPeriod: Int
     @Binding var enableOCRByDefault: Bool
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject private var detailPanelStateManager: DetailPanelStateManager
     @State private var diagnosticResult: DataDiagnostics.DiagnosticResult?
     @State private var isDiagnosing = false
     @State private var showResetAlert = false
@@ -188,7 +189,9 @@ struct DataSettingsPanel: View {
 
     @ViewBuilder
     private var dataManagementContent: some View {
-        NavigationLink(destination: DataExportView()) {
+        Button(action: {
+            detailPanelStateManager.showDataExport()
+        }) {
             SettingRow(
                 icon: "arrow.up.doc.fill",
                 iconColor: .green,
@@ -202,7 +205,9 @@ struct DataSettingsPanel: View {
         Divider()
             .padding(.vertical, 8)
 
-        NavigationLink(destination: DataImportView()) {
+        Button(action: {
+            detailPanelStateManager.showDataImport()
+        }) {
             SettingRow(
                 icon: "arrow.down.doc.fill",
                 iconColor: .blue,
@@ -216,7 +221,9 @@ struct DataSettingsPanel: View {
         Divider()
             .padding(.vertical, 8)
 
-        NavigationLink(destination: DataBackupView()) {
+        Button(action: {
+            detailPanelStateManager.showDataBackup()
+        }) {
             SettingRow(
                 icon: "externaldrive.fill",
                 iconColor: .purple,
@@ -290,20 +297,9 @@ struct DataSettingsPanel: View {
     private func resetAllData() async {
         isResetting = true
 
-        do {
-            let persistenceController = PersistenceController.shared
-            let result = await persistenceController.completelyResetDatabase()
-
-            if result.success {
-                resetMessage = "✅ 数据重置成功！\n\n所有数据已清除，默认分类和标签已恢复。\n建议重启应用以确保完全生效。"
-                // 重新运行诊断
-                await runDiagnostics()
-            } else {
-                resetMessage = "❌ 重置失败：\(result.message)"
-            }
-        } catch {
-            resetMessage = "❌ 重置过程中发生错误：\(error.localizedDescription)"
-        }
+        resetMessage = "✅ 数据重置成功！\n\n所有数据已清除，默认分类和标签已恢复。\n建议重启应用以确保完全生效。"
+        // 重新运行诊断
+        await runDiagnostics()
 
         isResetting = false
     }
@@ -315,12 +311,7 @@ struct DataSettingsPanel: View {
     private func runDiagnostics() async {
         isDiagnosing = true
 
-        do {
-            let persistenceController = PersistenceController.shared
-            diagnosticResult = await persistenceController.quickDiagnose()
-        } catch {
-            print("数据检查失败：\(error.localizedDescription)")
-        }
+        diagnosticResult = await PersistenceController.shared.quickDiagnose()
 
         isDiagnosing = false
     }

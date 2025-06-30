@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - 主题色自定义
 struct AccentColorPickerView: View {
-    @AppStorage("accentColor") private var accentColor: String = "accentColor"
+    @AppStorage("accentColor") private var accentColor: String = "blue"
     
     // 添加完整的颜色数组，确保包含所有常用系统颜色
     let colors: [(key: String, color: Color, name: String)] = [
@@ -15,7 +15,10 @@ struct AccentColorPickerView: View {
         ("red", .red, "红色"),
         ("teal", .teal, "青色"),
         ("yellow", .yellow, "黄色"),
-        ("indigo", .indigo, "靛蓝")
+        ("indigo", .indigo, "靛蓝"),
+        ("mint", .mint, "薄荷"),
+        ("cyan", .cyan, "青蓝"),
+        ("brown", .brown, "棕色")
     ]
     
     var body: some View {

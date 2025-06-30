@@ -38,9 +38,7 @@ struct NotificationAdvancedSettingsPanel: View {
                             isOn: Binding(
                                 get: { settingsViewModel.enableNotifications },
                                 set: { enabled in
-                                    Task {
-                                        await settingsViewModel.send(.updateEnableNotifications(enabled))
-                                    }
+                                    settingsViewModel.send(.updateEnableNotifications(enabled))
                                 }
                             )
                         )
@@ -73,9 +71,7 @@ struct NotificationAdvancedSettingsPanel: View {
                                     selection: Binding(
                                         get: { settingsViewModel.notificationTime },
                                         set: { time in
-                                            Task {
-                                                await settingsViewModel.send(.updateNotificationTime(time))
-                                            }
+                                            settingsViewModel.send(.updateNotificationTime(time))
                                         }
                                     ),
                                     displayedComponents: .hourAndMinute
@@ -103,9 +99,7 @@ struct NotificationAdvancedSettingsPanel: View {
                             isOn: Binding(
                                 get: { settingsViewModel.enableSilentPeriod },
                                 set: { enabled in
-                                    Task {
-                                        await settingsViewModel.send(.updateSilentPeriod(enabled))
-                                    }
+                                    settingsViewModel.send(.updateSilentPeriod(enabled))
                                 }
                             )
                         )
@@ -139,9 +133,7 @@ struct NotificationAdvancedSettingsPanel: View {
                                         selection: Binding(
                                             get: { Date(timeIntervalSince1970: settingsViewModel.silentStartTime) },
                                             set: { time in
-                                                Task {
-                                                    await settingsViewModel.send(.updateSilentStartTime(time.timeIntervalSince1970))
-                                                }
+                                                settingsViewModel.send(.updateSilentStartTime(time.timeIntervalSince1970))
                                             }
                                         ),
                                         displayedComponents: .hourAndMinute
@@ -173,9 +165,7 @@ struct NotificationAdvancedSettingsPanel: View {
                                         selection: Binding(
                                             get: { Date(timeIntervalSince1970: settingsViewModel.silentEndTime) },
                                             set: { time in
-                                                Task {
-                                                    await settingsViewModel.send(.updateSilentEndTime(time.timeIntervalSince1970))
-                                                }
+                                                settingsViewModel.send(.updateSilentEndTime(time.timeIntervalSince1970))
                                             }
                                         ),
                                         displayedComponents: .hourAndMinute

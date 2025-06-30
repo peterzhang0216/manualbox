@@ -5,28 +5,28 @@ import UniformTypeIdentifiers
 struct PlatformInputHandler {
     
     // MARK: - 键盘快捷键
-    static func keyboardShortcuts() -> [KeyboardShortcut] {
+    static func keyboardShortcuts() -> [SwiftUI.KeyboardShortcut] {
         #if os(macOS)
         return [
-            KeyboardShortcut(.init("n"), modifiers: [.command]), // 新建
-            KeyboardShortcut(.init("f"), modifiers: [.command]), // 搜索
-            KeyboardShortcut(.init("e"), modifiers: [.command]), // 编辑
-            KeyboardShortcut(.delete, modifiers: [.command]), // 删除
-            KeyboardShortcut(.init("r"), modifiers: [.command]), // 刷新
-            KeyboardShortcut(.init("s"), modifiers: [.command]), // 保存
-            KeyboardShortcut(.init("z"), modifiers: [.command]), // 撤销
-            KeyboardShortcut(.init("z"), modifiers: [.command, .shift]), // 重做
-            KeyboardShortcut(.init("a"), modifiers: [.command]), // 全选
-            KeyboardShortcut(.init("c"), modifiers: [.command]), // 复制
-            KeyboardShortcut(.init("v"), modifiers: [.command]), // 粘贴
-            KeyboardShortcut(.init("x"), modifiers: [.command]), // 剪切
-            KeyboardShortcut(.init("w"), modifiers: [.command]), // 关闭
-            KeyboardShortcut(.init("q"), modifiers: [.command]), // 退出
-            KeyboardShortcut(.init(","), modifiers: [.command]), // 偏好设置
-            KeyboardShortcut(.init("1"), modifiers: [.command]), // 切换到第一个标签
-            KeyboardShortcut(.init("2"), modifiers: [.command]), // 切换到第二个标签
-            KeyboardShortcut(.init("3"), modifiers: [.command]), // 切换到第三个标签
-            KeyboardShortcut(.init("4"), modifiers: [.command])  // 切换到第四个标签
+            SwiftUI.KeyboardShortcut(.init("n"), modifiers: [.command]), // 新建
+            SwiftUI.KeyboardShortcut(.init("f"), modifiers: [.command]), // 搜索
+            SwiftUI.KeyboardShortcut(.init("e"), modifiers: [.command]), // 编辑
+            SwiftUI.KeyboardShortcut(.delete, modifiers: [.command]), // 删除
+            SwiftUI.KeyboardShortcut(.init("r"), modifiers: [.command]), // 刷新
+            SwiftUI.KeyboardShortcut(.init("s"), modifiers: [.command]), // 保存
+            SwiftUI.KeyboardShortcut(.init("z"), modifiers: [.command]), // 撤销
+            SwiftUI.KeyboardShortcut(.init("z"), modifiers: [.command, .shift]), // 重做
+            SwiftUI.KeyboardShortcut(.init("a"), modifiers: [.command]), // 全选
+            SwiftUI.KeyboardShortcut(.init("c"), modifiers: [.command]), // 复制
+            SwiftUI.KeyboardShortcut(.init("v"), modifiers: [.command]), // 粘贴
+            SwiftUI.KeyboardShortcut(.init("x"), modifiers: [.command]), // 剪切
+            SwiftUI.KeyboardShortcut(.init("w"), modifiers: [.command]), // 关闭
+            SwiftUI.KeyboardShortcut(.init("q"), modifiers: [.command]), // 退出
+            SwiftUI.KeyboardShortcut(.init(","), modifiers: [.command]), // 偏好设置
+            SwiftUI.KeyboardShortcut(.init("1"), modifiers: [.command]), // 切换到第一个标签
+            SwiftUI.KeyboardShortcut(.init("2"), modifiers: [.command]), // 切换到第二个标签
+            SwiftUI.KeyboardShortcut(.init("3"), modifiers: [.command]), // 切换到第三个标签
+            SwiftUI.KeyboardShortcut(.init("4"), modifiers: [.command])  // 切换到第四个标签
         ]
         #else
         return [] // iOS 主要依靠触摸交互
@@ -55,50 +55,50 @@ struct PlatformInputHandler {
         case tab3 = "3"
         case tab4 = "4"
         
-        var keyboardShortcut: KeyboardShortcut {
+        var keyboardShortcut: SwiftUI.KeyboardShortcut {
             #if os(macOS)
             switch self {
             case .newItem:
-                return KeyboardShortcut(.init("n"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("n"), modifiers: [.command])
             case .search:
-                return KeyboardShortcut(.init("f"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("f"), modifiers: [.command])
             case .edit:
-                return KeyboardShortcut(.init("e"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("e"), modifiers: [.command])
             case .delete:
-                return KeyboardShortcut(.delete, modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.delete, modifiers: [.command])
             case .refresh:
-                return KeyboardShortcut(.init("r"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("r"), modifiers: [.command])
             case .save:
-                return KeyboardShortcut(.init("s"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("s"), modifiers: [.command])
             case .undo:
-                return KeyboardShortcut(.init("z"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("z"), modifiers: [.command])
             case .redo:
-                return KeyboardShortcut(.init("z"), modifiers: [.command, .shift])
+                return SwiftUI.KeyboardShortcut(.init("z"), modifiers: [.command, .shift])
             case .selectAll:
-                return KeyboardShortcut(.init("a"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("a"), modifiers: [.command])
             case .copy:
-                return KeyboardShortcut(.init("c"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("c"), modifiers: [.command])
             case .paste:
-                return KeyboardShortcut(.init("v"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("v"), modifiers: [.command])
             case .cut:
-                return KeyboardShortcut(.init("x"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("x"), modifiers: [.command])
             case .close:
-                return KeyboardShortcut(.init("w"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("w"), modifiers: [.command])
             case .quit:
-                return KeyboardShortcut(.init("q"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("q"), modifiers: [.command])
             case .preferences:
-                return KeyboardShortcut(.init(","), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init(","), modifiers: [.command])
             case .tab1:
-                return KeyboardShortcut(.init("1"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("1"), modifiers: [.command])
             case .tab2:
-                return KeyboardShortcut(.init("2"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("2"), modifiers: [.command])
             case .tab3:
-                return KeyboardShortcut(.init("3"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("3"), modifiers: [.command])
             case .tab4:
-                return KeyboardShortcut(.init("4"), modifiers: [.command])
+                return SwiftUI.KeyboardShortcut(.init("4"), modifiers: [.command])
             }
             #else
-            return KeyboardShortcut(.space) // iOS 占位符
+            return SwiftUI.KeyboardShortcut(.space, modifiers: []) // iOS 占位符
             #endif
         }
         
@@ -223,25 +223,3 @@ struct DocumentPicker: UIViewControllerRepresentable {
 }
 #endif
 
-// MARK: - 平台感知的列表组件
-struct PlatformList<Content: View>: View {
-    let content: () -> Content
-    @State private var hoveredItem: UUID?
-    
-    var body: some View {
-        List {
-            content()
-        }
-        .listStyle(PlatformAdapter.preferredListStyle)
-        #if os(macOS)
-        .alternatingRowBackgrounds()
-        .onHover { isHovering in
-            // macOS 悬停效果
-        }
-        #else
-        .refreshable {
-            // iOS 下拉刷新
-        }
-        #endif
-    }
-}
