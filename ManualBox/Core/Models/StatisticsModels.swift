@@ -7,6 +7,9 @@
 
 import Foundation
 
+// TrendDirection is already defined in PerformanceMonitoringDashboard.swift
+// typealias TrendDirection = ManualBox.TrendDirection
+
 // MARK: - 仪表板统计数据
 struct DashboardStatistics {
     let productStats: ProductStatistics
@@ -536,19 +539,7 @@ struct CategoryStatistic: Identifiable {
     }
 }
 
-// MARK: - 趋势方向
-enum TrendDirection {
-    case increasing
-    case decreasing
-    case stable
-
-    var icon: String {
-        switch self {
-        case .increasing: return "chart.line.uptrend.xyaxis"
-        case .decreasing: return "chart.line.downtrend.xyaxis"
-        case .stable: return "chart.line.flattrend.xyaxis"
-        }
-    }
+// MARK: - 趋势方向 (using the one from PerformanceMonitoringDashboard)
 
     var color: String {
         switch self {
@@ -558,14 +549,7 @@ enum TrendDirection {
         }
     }
 
-    var description: String {
-        switch self {
-        case .increasing: return "上升趋势"
-        case .decreasing: return "下降趋势"
-        case .stable: return "稳定趋势"
-        }
-    }
-}
+
 
 // MARK: - 趋势统计
 struct TrendStatistics {

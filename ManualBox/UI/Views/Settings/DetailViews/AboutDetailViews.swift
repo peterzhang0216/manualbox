@@ -407,25 +407,7 @@ struct SupportOptionRow: View {
 }
 
 // MARK: - InfoRow 组件
-struct InfoRow: View {
-    let label: String
-    let value: String
-    
-    var body: some View {
-        HStack(alignment: .top) {
-            Text(label)
-                .font(.body)
-                .foregroundColor(.secondary)
-                .frame(width: 80, alignment: .leading)
-            
-            Text(value)
-                .font(.body)
-                .foregroundColor(.primary)
-            
-            Spacer()
-        }
-    }
-}
+// InfoRow moved to shared components to avoid conflicts
 
 #Preview {
     NavigationStack {

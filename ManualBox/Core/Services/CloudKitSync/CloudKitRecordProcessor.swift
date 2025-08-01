@@ -55,7 +55,7 @@ class CloudKitRecordProcessor {
     
     private func processProductRecord(_ record: CKRecord) {
         let request: NSFetchRequest<Product> = Product.fetchRequest()
-        request.predicate = NSPredicate(format: "cloudKitRecordID == %@", record.recordID.recordName)
+        request.predicate = NSPredicate(format: "id == %@", UUID(uuidString: record.recordID.recordName) ?? UUID() as UUID)
         
         do {
             let existingProducts = try context.fetch(request)
@@ -66,7 +66,8 @@ class CloudKitRecordProcessor {
                     let localRecord = createCKRecord(from: existingProduct)
                     let resolvedRecord = conflictResolver.resolveConflict(
                         localRecord: localRecord,
-                        serverRecord: record
+                        serverRecord: record,
+                        strategy: .lastModifiedWins
                     )
                     updateProduct(existingProduct, with: resolvedRecord)
                 } else {
@@ -91,17 +92,12 @@ class CloudKitRecordProcessor {
     }
     
     private func updateProduct(_ product: Product, with record: CKRecord) {
-        product.cloudKitRecordID = record.recordID.recordName
+        // 只使用 Core Data 模型中实际存在的属性
         product.name = record["name"] as? String ?? ""
         product.brand = record["brand"] as? String
         product.model = record["model"] as? String
-        product.serialNumber = record["serialNumber"] as? String
-        product.purchaseDate = record["purchaseDate"] as? Date
-        product.warrantyExpiration = record["warrantyExpiration"] as? Date
         product.notes = record["notes"] as? String
-        product.tags = record["tags"] as? [String] ?? []
-        product.lastModified = record.modificationDate ?? Date()
-        product.cloudKitSyncStatus = "synced"
+        product.updatedAt = record.modificationDate ?? Date()
         
         // 处理图片
         if let imageAsset = record["image"] as? CKAsset,
@@ -122,7 +118,7 @@ class CloudKitRecordProcessor {
     
     private func deleteProductRecord(recordID: CKRecord.ID) {
         let request: NSFetchRequest<Product> = Product.fetchRequest()
-        request.predicate = NSPredicate(format: "cloudKitRecordID == %@", recordID.recordName)
+        request.predicate = NSPredicate(format: "id == %@", UUID(uuidString: recordID.recordName) ?? UUID() as UUID)
         
         do {
             let products = try context.fetch(request)
@@ -140,7 +136,7 @@ class CloudKitRecordProcessor {
     
     private func processManualRecord(_ record: CKRecord) {
         let request: NSFetchRequest<Manual> = Manual.fetchRequest()
-        request.predicate = NSPredicate(format: "cloudKitRecordID == %@", record.recordID.recordName)
+        request.predicate = NSPredicate(format: "id == %@", UUID(uuidString: record.recordID.recordName) ?? UUID())
         
         do {
             let existingManuals = try context.fetch(request)
@@ -166,14 +162,10 @@ class CloudKitRecordProcessor {
     }
     
     private func updateManual(_ manual: Manual, with record: CKRecord) {
-        manual.cloudKitRecordID = record.recordID.recordName
-        manual.title = record["title"] as? String ?? ""
+        // 只使用 Core Data 模型中实际存在的属性
         manual.fileName = record["fileName"] as? String
-        manual.fileSize = record["fileSize"] as? Int64 ?? 0
-        manual.mimeType = record["mimeType"] as? String
-        manual.uploadDate = record["uploadDate"] as? Date ?? Date()
-        manual.lastModified = record.modificationDate ?? Date()
-        manual.cloudKitSyncStatus = "synced"
+        manual.fileType = record["fileType"] as? String
+        manual.content = record["content"] as? String
         
         // 处理文件
         if let fileAsset = record["fileData"] as? CKAsset,
@@ -186,7 +178,7 @@ class CloudKitRecordProcessor {
         do {
             let fileData = try Data(contentsOf: fileURL)
             manual.fileData = fileData
-            print("📄 更新手册文件: \(manual.title ?? "未知")")
+            print("📄 更新手册文件: \(manual.fileName ?? "未知")")
         } catch {
             print("❌ 读取手册文件失败: \(error)")
         }
@@ -194,13 +186,13 @@ class CloudKitRecordProcessor {
     
     private func deleteManualRecord(recordID: CKRecord.ID) {
         let request: NSFetchRequest<Manual> = Manual.fetchRequest()
-        request.predicate = NSPredicate(format: "cloudKitRecordID == %@", recordID.recordName)
+        request.predicate = NSPredicate(format: "id == %@", UUID(uuidString: recordID.recordName) ?? UUID() as UUID)
         
         do {
             let manuals = try context.fetch(request)
             for manual in manuals {
                 context.delete(manual)
-                print("🗑️ 删除Manual: \(manual.title ?? recordID.recordName)")
+                print("🗑️ 删除Manual: \(manual.fileName ?? recordID.recordName)")
             }
             try context.save()
         } catch {
@@ -223,33 +215,29 @@ class CloudKitRecordProcessor {
     
     private func hasConflict(existingProduct: Product, cloudRecord: CKRecord) -> Bool {
         // 检查本地修改时间是否晚于云端记录的修改时间
-        guard let localModified = existingProduct.lastModified,
+        guard let localModified = existingProduct.updatedAt,
               let cloudModified = cloudRecord.modificationDate else {
             return false
         }
         
-        // 如果本地修改时间晚于云端，且本地有未同步的更改，则存在冲突
-        return localModified > cloudModified && existingProduct.cloudKitSyncStatus != "synced"
+        // 如果本地修改时间晚于云端，则存在冲突
+        return localModified > cloudModified
     }
     
     // MARK: - 记录创建
     
     private func createCKRecord(from product: Product) -> CKRecord? {
-        guard let recordID = product.cloudKitRecordID else { return nil }
+        guard let productId = product.id else { return nil }
         
         let record = CKRecord(
             recordType: "Product",
-            recordID: CKRecord.ID(recordName: recordID)
+            recordID: CKRecord.ID(recordName: productId.uuidString)
         )
         
         record["name"] = product.name as CKRecordValue?
         record["brand"] = product.brand as CKRecordValue?
         record["model"] = product.model as CKRecordValue?
-        record["serialNumber"] = product.serialNumber as CKRecordValue?
-        record["purchaseDate"] = product.purchaseDate as CKRecordValue?
-        record["warrantyExpiration"] = product.warrantyExpiration as CKRecordValue?
         record["notes"] = product.notes as CKRecordValue?
-        record["tags"] = product.tags as CKRecordValue?
         
         return record
     }

@@ -753,13 +753,7 @@ struct FullBackupData: Codable {
     let metadata: BackupMetadata?
 }
 
-struct CategoryBackupData: Codable {
-    let id: UUID
-    let name: String
-    let icon: String?
-    let createdAt: String
-    let updatedAt: String
-}
+
 
 struct BackupMetadata: Codable {
     let appVersion: String

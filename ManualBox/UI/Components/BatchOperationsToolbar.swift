@@ -364,11 +364,7 @@ struct BatchExportView: View {
     @State private var includeManuals = false
     @State private var isExporting = false
     
-    enum ExportFormat: String, CaseIterable {
-        case csv = "CSV"
-        case json = "JSON"
-        case pdf = "PDF"
-    }
+    // ExportFormat moved to Core/Utils/ExportFormat.swift
     
     var body: some View {
         NavigationStack {

@@ -35,25 +35,7 @@ struct AppGlobalState {
 }
 
 // MARK: - 应用错误类型
-struct AppError: Identifiable, Equatable {
-    let id = UUID()
-    let timestamp: Date
-    let context: String
-    let message: String
-    let severity: ErrorSeverity
-    let underlyingError: String?
-    
-    enum ErrorSeverity: String, CaseIterable {
-        case info = "信息"
-        case warning = "警告"
-        case error = "错误"
-        case critical = "严重错误"
-    }
-    
-    static func == (lhs: AppError, rhs: AppError) -> Bool {
-        lhs.id == rhs.id
-    }
-}
+// AppError is defined in ErrorHandling.swift
 
 // MARK: - 性能指标
 struct PerformanceMetrics: Codable {
@@ -193,26 +175,22 @@ class AppStateManager: ObservableObject {
     // MARK: - 错误管理
     
     func handleError(_ error: Error, context: String, severity: AppError.ErrorSeverity = .error) {
-        let appError = AppError(
-            timestamp: Date(),
-            context: context,
-            message: error.localizedDescription,
-            severity: severity,
-            underlyingError: String(describing: error)
-        )
+        let appError: AppError
+        
+        // 根据错误类型创建相应的 AppError
+        if let networkError = error as? URLError {
+            appError = .network(.requestFailed(networkError.localizedDescription))
+        } else if let persistenceError = error as? NSError, persistenceError.domain == NSCocoaErrorDomain {
+            appError = .persistence(.saveFailed(persistenceError.localizedDescription))
+        } else {
+            appError = .system(.unknown(error.localizedDescription))
+        }
         
         addError(appError)
     }
     
     func handleError(message: String, context: String, severity: AppError.ErrorSeverity = .error) {
-        let appError = AppError(
-            timestamp: Date(),
-            context: context,
-            message: message,
-            severity: severity,
-            underlyingError: nil
-        )
-        
+        let appError = AppError.system(.unknown(message))
         addError(appError)
     }
     
@@ -226,7 +204,7 @@ class AppStateManager: ObservableObject {
         }
         
         // 记录错误日志
-        print("🚨 [AppStateManager] \(error.severity.rawValue): \(error.message) (上下文: \(error.context))")
+        print("🚨 [AppStateManager] \(error.severity.rawValue): \(error.localizedDescription)")
     }
     
     func clearGlobalError() {

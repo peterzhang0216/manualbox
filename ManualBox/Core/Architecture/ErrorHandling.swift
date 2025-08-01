@@ -2,334 +2,387 @@
 //  ErrorHandling.swift
 //  ManualBox
 //
-//  Created by Assistant on 2025/6/21.
+//  Created by Assistant on 2024/12/19.
+//  应用错误处理定义
 //
 
 import Foundation
-import SwiftUI
-import CoreData
-import CloudKit
+import Combine
+import os.log
 
-// MARK: - 错误处理协议
+// 导入共享错误类型以避免重复定义
+// ErrorContext, RecoveryResult, ErrorHandlingResult 现在从 SharedErrorTypes.swift 导入
+
+// MARK: - 日志系统
+private enum Logger {
+    static func error(_ message: String) {
+        os_log(.error, log: OSLog(subsystem: "com.manualbox.app", category: "ErrorHandling"), "%{public}@", message)
+    }
+    
+    static func warning(_ message: String) {
+        os_log(.info, log: OSLog(subsystem: "com.manualbox.app", category: "ErrorHandling"), "%{public}@", message)
+    }
+}
+
+// MARK: - 应用错误类型
+enum AppError: Error, LocalizedError {
+    case network(NetworkError)
+    case persistence(PersistenceError)
+    case system(SystemError)
+    case sync(SyncError)
+    case validation(ValidationError)
+    case business(BusinessError)
+    
+    // MARK: - 便利属性
+    var message: String {
+        return errorDescription ?? "未知错误"
+    }
+    
+    var context: String {
+        return "AppError"
+    }
+    
+    // MARK: - 网络错误
+    enum NetworkError {
+        case noConnection
+        case timeout
+        case requestFailed(String)
+        case invalidResponse
+        case serverError(Int)
+    }
+    
+    // MARK: - 持久化错误
+    enum PersistenceError {
+        case saveFailed(String)
+        case loadFailed(String)
+        case deleteFailed(String)
+        case migrationFailed(String)
+        case corruptedData
+    }
+    
+    // MARK: - 系统错误
+    enum SystemError {
+        case memoryWarning
+        case diskSpaceLow
+        case permissionDenied
+        case systemResourceUnavailable
+        case unknown(String)
+    }
+    
+    // MARK: - 同步错误
+    enum SyncError {
+        case conflictDetected
+        case syncInProgress
+        case cloudKitUnavailable
+        case accountNotAvailable
+    }
+    
+    // MARK: - 验证错误
+    enum ValidationError {
+        case invalidInput(String)
+        case missingRequiredField(String)
+        case formatError(String)
+    }
+    
+    // MARK: - 业务逻辑错误
+    enum BusinessError {
+        case operationNotAllowed
+        case resourceNotFound
+        case duplicateResource
+        case quotaExceeded
+    }
+    
+    // MARK: - 错误严重程度
+    enum ErrorSeverity: String, CaseIterable {
+        case info
+        case warning
+        case error
+        case critical
+        
+        var displayName: String {
+            switch self {
+            case .info: return "信息"
+            case .warning: return "警告"
+            case .error: return "错误"
+            case .critical: return "严重"
+            }
+        }
+    }
+    
+    // MARK: - 错误严重程度属性
+    var severity: ErrorSeverity {
+        switch self {
+        case .network(.noConnection), .network(.timeout):
+            return .warning
+        case .network(.requestFailed), .network(.invalidResponse):
+            return .error
+        case .network(.serverError):
+            return .critical
+        case .persistence(.saveFailed), .persistence(.loadFailed), .persistence(.deleteFailed):
+            return .error
+        case .persistence(.corruptedData), .persistence(.migrationFailed):
+            return .critical
+        case .system(.memoryWarning), .system(.diskSpaceLow):
+            return .warning
+        case .system(.permissionDenied), .system(.systemResourceUnavailable):
+            return .error
+        case .system(.unknown):
+            return .error
+        case .sync(.syncInProgress):
+            return .info
+        case .sync(.conflictDetected), .sync(.cloudKitUnavailable):
+            return .warning
+        case .sync(.accountNotAvailable):
+            return .error
+        case .validation:
+            return .warning
+        case .business(.operationNotAllowed), .business(.resourceNotFound):
+            return .error
+        case .business(.duplicateResource):
+            return .warning
+        case .business(.quotaExceeded):
+            return .critical
+        }
+    }
+    
+    // MARK: - 错误描述
+    var errorDescription: String? {
+        switch self {
+        case .network(let networkError):
+            return networkErrorDescription(networkError)
+        case .persistence(let persistenceError):
+            return persistenceErrorDescription(persistenceError)
+        case .system(let systemError):
+            return systemErrorDescription(systemError)
+        case .sync(let syncError):
+            return syncErrorDescription(syncError)
+        case .validation(let validationError):
+            return validationErrorDescription(validationError)
+        case .business(let businessError):
+            return businessErrorDescription(businessError)
+        }
+    }
+    
+    // MARK: - 私有错误描述方法
+    private func networkErrorDescription(_ error: NetworkError) -> String {
+        switch error {
+        case .noConnection:
+            return "网络连接不可用"
+        case .timeout:
+            return "网络请求超时"
+        case .requestFailed(let message):
+            return "网络请求失败: \(message)"
+        case .invalidResponse:
+            return "服务器响应无效"
+        case .serverError(let code):
+            return "服务器错误 (\(code))"
+        }
+    }
+    
+    private func persistenceErrorDescription(_ error: PersistenceError) -> String {
+        switch error {
+        case .saveFailed(let message):
+            return "保存失败: \(message)"
+        case .loadFailed(let message):
+            return "加载失败: \(message)"
+        case .deleteFailed(let message):
+            return "删除失败: \(message)"
+        case .migrationFailed(let message):
+            return "数据迁移失败: \(message)"
+        case .corruptedData:
+            return "数据已损坏"
+        }
+    }
+    
+    private func systemErrorDescription(_ error: SystemError) -> String {
+        switch error {
+        case .memoryWarning:
+            return "内存不足警告"
+        case .diskSpaceLow:
+            return "磁盘空间不足"
+        case .permissionDenied:
+            return "权限被拒绝"
+        case .systemResourceUnavailable:
+            return "系统资源不可用"
+        case .unknown(let message):
+            return "未知系统错误: \(message)"
+        }
+    }
+    
+    private func syncErrorDescription(_ error: SyncError) -> String {
+        switch error {
+        case .conflictDetected:
+            return "检测到同步冲突"
+        case .syncInProgress:
+            return "同步正在进行中"
+        case .cloudKitUnavailable:
+            return "CloudKit 服务不可用"
+        case .accountNotAvailable:
+            return "iCloud 账户不可用"
+        }
+    }
+    
+    private func validationErrorDescription(_ error: ValidationError) -> String {
+        switch error {
+        case .invalidInput(let field):
+            return "输入无效: \(field)"
+        case .missingRequiredField(let field):
+            return "缺少必填字段: \(field)"
+        case .formatError(let message):
+            return "格式错误: \(message)"
+        }
+    }
+    
+    private func businessErrorDescription(_ error: BusinessError) -> String {
+        switch error {
+        case .operationNotAllowed:
+            return "操作不被允许"
+        case .resourceNotFound:
+            return "资源未找到"
+        case .duplicateResource:
+            return "资源重复"
+        case .quotaExceeded:
+            return "配额已超出"
+        }
+    }
+}
+
+// MARK: - 错误上下文
+// 注意：ErrorContext 已移动到 SharedErrorTypes.swift 以避免重复定义
+
+// MARK: - 错误处理结果
+// 注意：ErrorHandlingResult 已移动到 SharedErrorTypes.swift 以避免重复定义
+
+// MARK: - 统一错误处理器协议
 @MainActor
-protocol ErrorHandling {
-    func handleError(_ error: Error, context: String)
-    func showUserFriendlyError(_ message: String)
+protocol UnifiedErrorHandler {
+    func processError(_ error: Error, context: ErrorContext) -> ErrorHandlingResult
+    func canHandle(_ error: Error) -> Bool
+    func registerErrorHandler(
+        for errorType: Error.Type,
+        handler: @escaping (Error, ErrorContext) -> ErrorHandlingResult
+    )
 }
 
-// MARK: - 错误映射器
-struct ErrorMessageMapper {
+// MARK: - 错误恢复管理器协议
+@MainActor
+protocol ErrorRecoveryManager {
+    func canRecover(from error: Error) -> Bool
+    func recover(from error: Error) async -> RecoveryResult
+    func registerRecoveryStrategy(for errorType: Error.Type, strategy: @escaping (Error) -> RecoveryResult)
+}
+
+// MARK: - 恢复结果
+// 注意：RecoveryResult 已移动到 SharedErrorTypes.swift 以避免重复定义
+
+// MARK: - 统一错误处理器实现
+@MainActor
+class UnifiedErrorHandlerImpl: UnifiedErrorHandler {
+    static let shared = UnifiedErrorHandlerImpl()
     
-    static func map(_ error: Error, context: String) -> String {
-        switch error {
-        // Core Data 错误
-        case let nsError as NSError where nsError.domain == NSCocoaErrorDomain:
-            return mapCoreDataError(nsError, context: context)
-            
-        // CloudKit 错误
-        case let ckError as CKError:
-            return mapCloudKitError(ckError, context: context)
-            
-        // 网络错误
-        case let urlError as URLError:
-            return mapNetworkError(urlError, context: context)
-            
-        // 文件系统错误
-        case let posixError as POSIXError:
-            return mapFileSystemError(posixError, context: context)
-            
-        // 自定义错误
-        case let appError as LocalizedError:
-            return appError.localizedDescription
-            
-        default:
-            return mapGenericError(error, context: context)
-        }
+    private var errorHandlers: [String: (Error, ErrorContext) -> ErrorHandlingResult] = [:]
+    
+    private init() {
+        setupDefaultHandlers()
     }
     
-    private static func mapCoreDataError(_ error: NSError, context: String) -> String {
-        switch error.code {
-        case NSValidationMissingMandatoryPropertyError:
-            return "缺少必填信息，请检查输入内容"
-        case NSValidationRelationshipLacksMinimumCountError:
-            return "关联数据不完整，请检查相关设置"
-        case NSValidationStringTooLongError:
-            return "输入内容过长，请缩短后重试"
-        case NSManagedObjectContextLockingError:
-            return "数据正在处理中，请稍后重试"
-        case NSPersistentStoreIncompatibleVersionHashError:
-            return "数据格式需要更新，请重启应用"
-        case NSMigrationMissingSourceModelError:
-            return "数据迁移失败，可能需要重新安装应用"
-        default:
-            return "数据操作失败：\(error.localizedDescription)"
-        }
-    }
-    
-    private static func mapCloudKitError(_ error: CKError, context: String) -> String {
-        switch error.code {
-        case .networkUnavailable, .networkFailure:
-            return "网络连接不可用，请检查网络设置"
-        case .notAuthenticated:
-            return "请登录 iCloud 账户以同步数据"
-        case .quotaExceeded:
-            return "iCloud 存储空间不足，请清理后重试"
-        case .zoneBusy:
-            return "iCloud 同步繁忙，请稍后重试"
-        case .serviceUnavailable:
-            return "iCloud 服务暂时不可用，请稍后重试"
-        case .requestRateLimited:
-            return "同步请求过于频繁，请稍后重试"
-        case .limitExceeded:
-            return "数据大小超出限制，请减少内容后重试"
-        case .unknownItem:
-            return "数据已被删除或不存在"
-        case .invalidArguments:
-            return "数据格式错误，请检查输入内容"
-        case .permissionFailure:
-            return "没有权限访问 iCloud 数据"
-        default:
-            return "iCloud 同步失败：\(error.localizedDescription)"
-        }
-    }
-    
-    private static func mapNetworkError(_ error: URLError, context: String) -> String {
-        switch error.code {
-        case .notConnectedToInternet:
-            return "网络连接不可用，请检查网络设置"
-        case .timedOut:
-            return "网络请求超时，请重试"
-        case .cannotFindHost:
-            return "无法连接到服务器，请检查网络"
-        case .cannotConnectToHost:
-            return "服务器连接失败，请稍后重试"
-        case .networkConnectionLost:
-            return "网络连接中断，请重新连接"
-        case .dnsLookupFailed:
-            return "域名解析失败，请检查网络设置"
-        case .httpTooManyRedirects:
-            return "服务器响应异常，请稍后重试"
-        case .resourceUnavailable:
-            return "请求的资源不可用"
-        case .notConnectedToInternet:
-            return "设备未连接到互联网"
-        default:
-            return "网络请求失败：\(error.localizedDescription)"
-        }
-    }
-    
-    private static func mapFileSystemError(_ error: POSIXError, context: String) -> String {
-        switch error.code {
-        case .ENOENT:
-            return "文件不存在或已被删除"
-        case .EACCES:
-            return "没有权限访问文件"
-        case .ENOSPC:
-            return "存储空间不足，请清理后重试"
-        case .EROFS:
-            return "文件系统为只读状态"
-        case .EEXIST:
-            return "文件已存在"
-        case .EISDIR:
-            return "目标是文件夹而非文件"
-        case .ENOTDIR:
-            return "路径中包含非文件夹项"
-        default:
-            return "文件操作失败：\(error.localizedDescription)"
-        }
-    }
-    
-    private static func mapGenericError(_ error: Error, context: String) -> String {
-        let description = error.localizedDescription
+    func processError(_ error: Error, context: ErrorContext) -> ErrorHandlingResult {
+        let errorTypeName = String(describing: type(of: error))
         
-        // 根据上下文提供更具体的错误信息
-        switch context.lowercased() {
-        case let ctx where ctx.contains("ocr"):
-            return "文字识别失败：\(description)"
-        case let ctx where ctx.contains("export"):
-            return "数据导出失败：\(description)"
-        case let ctx where ctx.contains("import"):
-            return "数据导入失败：\(description)"
-        case let ctx where ctx.contains("image"):
-            return "图片处理失败：\(description)"
-        case let ctx where ctx.contains("save"):
-            return "保存失败：\(description)"
-        case let ctx where ctx.contains("delete"):
-            return "删除失败：\(description)"
-        case let ctx where ctx.contains("sync"):
-            return "同步失败：\(description)"
-        default:
-            return "操作失败：\(description)"
+        if let handler = errorHandlers[errorTypeName] {
+            return handler(error, context)
         }
-    }
-}
-
-// MARK: - 错误日志记录器
-class ErrorLogger {
-    static let shared = ErrorLogger()
-    
-    private let logQueue = DispatchQueue(label: "com.manualbox.errorlogger", qos: .utility)
-    private let maxLogEntries = 1000
-    private var logEntries: [ErrorLogEntry] = []
-    
-    private init() {}
-    
-    struct ErrorLogEntry {
-        let timestamp: Date
-        let context: String
-        let error: String
-        let severity: AppError.ErrorSeverity
-        let stackTrace: String?
+        
+        // 默认处理逻辑
+        return handleDefaultError(error, context: context)
     }
     
-    func log(_ error: Error, context: String, severity: AppError.ErrorSeverity = .error) {
-        logQueue.async {
-            let entry = ErrorLogEntry(
-                timestamp: Date(),
-                context: context,
-                error: String(describing: error),
-                severity: severity,
-                stackTrace: Thread.callStackSymbols.joined(separator: "\n")
-            )
-            
-            self.logEntries.append(entry)
-            
-            // 限制日志条目数量
-            if self.logEntries.count > self.maxLogEntries {
-                self.logEntries.removeFirst(self.logEntries.count - self.maxLogEntries)
+    func canHandle(_ error: Error) -> Bool {
+        let errorTypeName = String(describing: type(of: error))
+        return errorHandlers[errorTypeName] != nil
+    }
+    
+    func registerErrorHandler(
+        for errorType: Error.Type,
+        handler: @escaping (Error, ErrorContext) -> ErrorHandlingResult
+    ) {
+        let typeName = String(describing: errorType)
+        errorHandlers[typeName] = handler
+    }
+    
+    private func setupDefaultHandlers() {
+        // 网络错误处理
+        registerErrorHandler(for: AppError.self) { error, _ in
+            if let appError = error as? AppError {
+                switch appError {
+                case .network(.noConnection), .network(.timeout):
+                    return .retry(after: 5.0)
+                case .network(.serverError):
+                    return .escalated
+                default:
+                    return .handled
+                }
             }
+            return .handled
+        }
+    }
+    
+    private func handleDefaultError(_ error: Error, context: ErrorContext) -> ErrorHandlingResult {
+        // 使用日志系统替代print语句
+        Logger.error("未处理的错误: \(error.localizedDescription) in \(context.operation)")
+        return .handled
+    }
+}
+
+// MARK: - 错误恢复管理器实现
+@MainActor
+class ManualBoxErrorRecoveryManager: ErrorRecoveryManager {
+    static let shared = ManualBoxErrorRecoveryManager()
+    
+    private var recoveryStrategies: [String: (Error) async -> RecoveryResult] = [:]
+    
+    private init() {
+        setupDefaultStrategies()
+    }
+    
+    func canRecover(from error: Error) -> Bool {
+        let errorTypeName = String(describing: type(of: error))
+        return recoveryStrategies[errorTypeName] != nil
+    }
+    
+    func recover(from error: Error) async -> RecoveryResult {
+        let errorTypeName = String(describing: type(of: error))
+        
+        if let strategy = recoveryStrategies[errorTypeName] {
+            return await strategy(error)
+        }
+        
+        return .failed(AppError.system(.unknown("无可用的恢复策略")))
+    }
+    
+    func registerRecoveryStrategy(for errorType: Error.Type, strategy: @escaping (Error) -> RecoveryResult) {
+        let typeName = String(describing: errorType)
+        recoveryStrategies[typeName] = { await strategy($0) }
+    }
+    
+    private func setupDefaultStrategies() {
+        // 网络错误恢复策略
+        registerRecoveryStrategy(for: AppError.self) { [weak self] error in
+            guard self != nil else { return .failed(error) }
             
-            // 打印到控制台
-            print("🚨 [ErrorLogger] [\(severity.rawValue)] \(context): \(error)")
-            
-            // 在调试模式下打印堆栈跟踪
-            #if DEBUG
-            if severity == .critical {
-                print("Stack trace:\n\(entry.stackTrace ?? "N/A")")
+            if let appError = error as? AppError {
+                switch appError {
+                case .network(.noConnection):
+                    // 等待网络恢复
+                    return .retryLater(10.0)
+                case .sync(.conflictDetected):
+                    // 同步冲突需要用户干预
+                    return .userInterventionRequired("检测到同步冲突，请选择解决方案")
+                default:
+                    return .failed(appError)
+                }
             }
-            #endif
+            return .failed(error)
         }
-    }
-    
-    func getRecentLogs(limit: Int = 50) -> [ErrorLogEntry] {
-        return logQueue.sync {
-            return Array(logEntries.suffix(limit))
-        }
-    }
-    
-    func clearLogs() {
-        logQueue.async {
-            self.logEntries.removeAll()
-        }
-    }
-    
-    func exportLogs() -> String {
-        return logQueue.sync {
-            return logEntries.map { entry in
-                "[\(entry.timestamp)] [\(entry.severity.rawValue)] \(entry.context): \(entry.error)"
-            }.joined(separator: "\n")
-        }
-    }
-}
-
-// MARK: - BaseViewModel 错误处理扩展
-extension BaseViewModel: ErrorHandling {
-    func handleError(_ error: Error, context: String) {
-        let userMessage = ErrorMessageMapper.map(error, context: context)
-        setError(userMessage)
-        
-        // 记录错误日志
-        ErrorLogger.shared.log(error, context: context)
-        
-        // 发布错误事件
-        EventBus.shared.publishError(error, context: context)
-        
-        // 更新全局状态
-        AppStateManager.shared.handleError(error, context: context)
-    }
-    
-    func showUserFriendlyError(_ message: String) {
-        setError(message)
-        
-        // 发布用户友好错误事件
-        let customError = NSError(domain: "UserFriendlyError", code: 0, userInfo: [NSLocalizedDescriptionKey: message])
-        EventBus.shared.publishError(customError, context: "用户界面")
-    }
-}
-
-// MARK: - 错误恢复策略
-enum ErrorRecoveryStrategy {
-    case retry
-    case fallback
-    case userIntervention
-    case ignore
-    case restart
-}
-
-struct ErrorRecoveryAction {
-    let strategy: ErrorRecoveryStrategy
-    let description: String
-    let action: () async -> Void
-}
-
-class ErrorRecoveryManager {
-    static let shared = ErrorRecoveryManager()
-    
-    private init() {}
-    
-    func getRecoveryActions(for error: Error, context: String) -> [ErrorRecoveryAction] {
-        var actions: [ErrorRecoveryAction] = []
-        
-        switch error {
-        case let ckError as CKError:
-            actions.append(contentsOf: getCloudKitRecoveryActions(ckError))
-        case let urlError as URLError:
-            actions.append(contentsOf: getNetworkRecoveryActions(urlError))
-        default:
-            actions.append(getGenericRecoveryAction())
-        }
-        
-        return actions
-    }
-    
-    private func getCloudKitRecoveryActions(_ error: CKError) -> [ErrorRecoveryAction] {
-        switch error.code {
-        case .networkUnavailable, .networkFailure:
-            return [
-                ErrorRecoveryAction(
-                    strategy: .retry,
-                    description: "重试同步",
-                    action: { /* 重试同步逻辑 */ }
-                )
-            ]
-        case .quotaExceeded:
-            return [
-                ErrorRecoveryAction(
-                    strategy: .userIntervention,
-                    description: "清理 iCloud 存储空间",
-                    action: { /* 打开设置页面 */ }
-                )
-            ]
-        default:
-            return []
-        }
-    }
-    
-    private func getNetworkRecoveryActions(_ error: URLError) -> [ErrorRecoveryAction] {
-        return [
-            ErrorRecoveryAction(
-                strategy: .retry,
-                description: "重试网络请求",
-                action: { /* 重试网络请求 */ }
-            )
-        ]
-    }
-    
-    private func getGenericRecoveryAction() -> ErrorRecoveryAction {
-        return ErrorRecoveryAction(
-            strategy: .retry,
-            description: "重试操作",
-            action: { /* 通用重试逻辑 */ }
-        )
     }
 }

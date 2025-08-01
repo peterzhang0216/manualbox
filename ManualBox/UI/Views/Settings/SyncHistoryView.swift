@@ -1,5 +1,8 @@
 import SwiftUI
 
+// 导入共享UI组件以使用统一的同步历史行组件
+// 注意：SyncHistoryRow 现在从 SharedUIComponents 导入
+
 // MARK: - 同步历史视图
 struct SyncHistoryView: View {
     @StateObject private var syncService = CloudKitSyncService.shared
@@ -205,116 +208,8 @@ struct SyncHistoryView: View {
     }
 }
 
-// MARK: - 同步历史行组件
-struct SyncHistoryRow: View {
-    let item: SyncHistoryItem
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 8) {
-                // 头部信息
-                HStack {
-                    statusIcon
-                    
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(item.syncType.description)
-                            .font(.headline)
-                            .fontWeight(.medium)
-                        
-                        Text(formatDate(item.timestamp))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    if let duration = item.duration {
-                        Text(formatDuration(duration))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
-                // 详细信息
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.description)
-                        .font(.body)
-                        .foregroundColor(.primary)
-                        .lineLimit(2)
-                    
-                    HStack {
-                        if item.recordCount > 0 {
-                            Label("\(item.recordCount) 记录", systemImage: "doc")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        if item.conflictCount > 0 {
-                            Label("\(item.conflictCount) 冲突", systemImage: "exclamationmark.triangle")
-                                .font(.caption)
-                                .foregroundColor(.orange)
-                        }
-                        
-                        if item.errorCount > 0 {
-                            Label("\(item.errorCount) 错误", systemImage: "xmark.circle")
-                                .font(.caption)
-                                .foregroundColor(.red)
-                        }
-                        
-                        Spacer()
-                    }
-                }
-            }
-            .padding()
-            .background(ModernColors.System.gray6)
-            .cornerRadius(12)
-            .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
-        }
-        .buttonStyle(.plain)
-    }
-    
-    private var statusIcon: some View {
-        Group {
-            switch item.status {
-            case .completed:
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
-            case .failed:
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(.red)
-            case .syncing:
-                Image(systemName: "arrow.triangle.2.circlepath")
-                    .foregroundColor(.blue)
-            case .paused:
-                Image(systemName: "pause.circle.fill")
-                    .foregroundColor(.orange)
-            case .idle:
-                Image(systemName: "circle")
-                    .foregroundColor(.gray)
-            }
-        }
-        .font(.title2)
-    }
-    
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .medium
-        return formatter.string(from: date)
-    }
-    
-    private func formatDuration(_ duration: TimeInterval) -> String {
-        let minutes = Int(duration) / 60
-        let seconds = Int(duration) % 60
-        
-        if minutes > 0 {
-            return "\(minutes)分\(seconds)秒"
-        } else {
-            return "\(seconds)秒"
-        }
-    }
-}
+// MARK: - 筛选器芯片
+// 注意：SyncHistoryRow 已移动到 SharedUIComponents.swift 以避免重复定义
 
 // MARK: - 筛选器芯片
 struct FilterChip: View {

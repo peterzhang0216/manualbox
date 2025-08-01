@@ -2,7 +2,8 @@ import SwiftUI
 import Combine
 
 // MARK: - 性能指标类型
-enum MetricType: String {
+enum MetricType: String, CaseIterable {
+    case all = "all"
     case timing = "timing"
     case counter = "counter"
     case gauge = "gauge"

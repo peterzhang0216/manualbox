@@ -206,6 +206,19 @@ class PersistenceController {
         configurePlatformSpecificCaching()
     }
     
+    // MARK: - 数据诊断
+    
+    /// 执行快速数据诊断
+    @MainActor
+    func quickDiagnose() async -> DataDiagnostics.DiagnosticResult {
+        let diagnosticsService = UnifiedDataDiagnosticsService.shared
+        let quickResult = await diagnosticsService.performQuickDiagnosis()
+        
+        // 创建兼容的诊断结果
+        let dataDiagnostics = DataDiagnostics(context: container.viewContext)
+        return DataDiagnostics.DiagnosticResult(from: quickResult)
+    }
+    
     // MARK: - Repository 工厂方法
     
     /// 创建后台上下文的 Repository 实例

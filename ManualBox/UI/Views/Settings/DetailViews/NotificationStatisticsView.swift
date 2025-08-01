@@ -121,28 +121,28 @@ struct OverviewCards: View {
                 GridItem(.flexible()),
                 GridItem(.flexible())
             ], spacing: 12) {
-                StatCard(
+                NotificationStatCard(
                     title: "总通知数",
                     value: "\(statistics.totalNotifications)",
                     icon: "bell.fill",
                     color: .blue
                 )
                 
-                StatCard(
+                NotificationStatCard(
                     title: "已发送",
                     value: "\(statistics.sentNotifications)",
                     icon: "checkmark.circle.fill",
                     color: .green
                 )
                 
-                StatCard(
+                NotificationStatCard(
                     title: "待发送",
                     value: "\(statistics.scheduledNotifications)",
                     icon: "clock.fill",
                     color: .orange
                 )
                 
-                StatCard(
+                NotificationStatCard(
                     title: "已取消",
                     value: "\(statistics.cancelledNotifications)",
                     icon: "xmark.circle.fill",
@@ -154,7 +154,7 @@ struct OverviewCards: View {
 }
 
 // MARK: - 统计卡片
-struct StatCard: View {
+struct NotificationStatCard: View {
     let title: String
     let value: String
     let icon: String

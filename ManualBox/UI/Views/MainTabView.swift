@@ -11,11 +11,11 @@ import Foundation
 import Combine
 
 struct MainTabView: View {
-    @AppStorage("appTheme") private var appTheme: String = "system"
-    @AppStorage("accentColor") private var accentColorKey: String = "accentColor"
-    @Environment(\.managedObjectContext) private var viewContext
+    @AppStorage("appTheme") var appTheme: String = "system"
+    @AppStorage("accentColor") var accentColorKey: String = "accentColor"
+    @Environment(\.managedObjectContext) var viewContext
     @EnvironmentObject private var notificationManager: AppNotificationManager
-    @StateObject private var notificationObserver = NotificationObserver()
+    @StateObject var notificationObserver = NotificationObserver()
     
     @State var selectedTab: SelectionValue? = .main(0)
     @State var selectedProduct: Product? = nil
@@ -28,10 +28,10 @@ struct MainTabView: View {
     @StateObject var settingsViewModel: SettingsViewModel
     
     // 产品选择管理器
-    @StateObject private var productSelectionManager: ProductSelectionManager
+    @StateObject var productSelectionManager: ProductSelectionManager
     
     // 详情面板状态管理器
-    @StateObject private var detailPanelStateManager = DetailPanelStateManager()
+    @StateObject var detailPanelStateManager = DetailPanelStateManager()
     
     // 初始化器
     init() {
@@ -216,7 +216,106 @@ struct MainTabView: View {
     }
     
     // 用于存储Combine订阅
-    @State private var cancellables = Set<AnyCancellable>()
+    @State var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Helper Methods
+    
+    private func getThemeColorScheme() -> ColorScheme? {
+        switch appTheme {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+    
+    private func getAccentColor() -> Color {
+        switch accentColorKey {
+        case "blue": return .blue
+        case "green": return .green
+        case "orange": return .orange
+        case "red": return .red
+        case "purple": return .purple
+        case "pink": return .pink
+        case "yellow": return .yellow
+        case "indigo": return .indigo
+        case "teal": return .teal
+        case "mint": return .mint
+        case "cyan": return .cyan
+        default: return .accentColor
+        }
+    }
+    
+    private func getPreferredColorScheme() -> ColorScheme? {
+        switch appTheme {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+    
+    private func getAccentColorForTheme() -> Color {
+        switch accentColorKey {
+        case "blue": return .blue
+        case "green": return .green
+        case "orange": return .orange
+        case "red": return .red
+        case "purple": return .purple
+        case "pink": return .pink
+        case "yellow": return .yellow
+        case "indigo": return .indigo
+        case "teal": return .teal
+        case "mint": return .mint
+        case "cyan": return .cyan
+        default: return .accentColor
+        }
+    }
+    
+    private func deleteProducts(offsets: IndexSet, filteredProducts: [Product]) {
+        withAnimation {
+            offsets.map { filteredProducts[$0] }.forEach(viewContext.delete)
+            
+            do {
+                try viewContext.save()
+            } catch {
+                print("删除产品失败: \(error)")
+            }
+        }
+    }
+    
+    private func setupNotificationObservers() {
+        notificationObserver.observe(.showProduct) { object in
+            if let product = object as? Product {
+                selectedProduct = product
+                selectedTab = .main(0)
+            }
+        }
+        
+        notificationObserver.observe(.showCategory) { object in
+            if let category = object as? Category {
+                selectedTab = .categories
+            }
+        }
+        
+        notificationObserver.observe(.showTag) { object in
+            if let tag = object as? Tag {
+                selectedTab = .tags
+            }
+        }
+    }
+    
+    private func setupProductSelectionObserver() {
+        productSelectionManager.$currentProduct
+            .receive(on: DispatchQueue.main)
+            .sink { newProduct in
+                selectedProduct = newProduct
+                if let product = newProduct {
+                    detailPanelStateManager.showProductDetail(product)
+                } else {
+                    detailPanelStateManager.reset()
+                }
+            }
+            .store(in: &cancellables)
+    }
 }
 
 struct MainTabView_Previews: PreviewProvider {

@@ -162,48 +162,7 @@ struct UnifiedSearchFilters {
     }
 }
 
-// MARK: - 搜索建议
-struct SearchSuggestion: Identifiable, Hashable {
-    let id = UUID()
-    let text: String
-    let type: SuggestionType
-    let score: Double
-    
-    enum SuggestionType: String, CaseIterable {
-        case product = "product"
-        case manual = "manual"
-        case category = "category"
-        case tag = "tag"
-        case history = "history"
-        case autocomplete = "autocomplete"
-        
-        var iconName: String {
-            switch self {
-            case .product:
-                return "cube.box"
-            case .manual:
-                return "doc.text"
-            case .category:
-                return "folder"
-            case .tag:
-                return "tag"
-            case .history:
-                return "clock"
-            case .autocomplete:
-                return "magnifyingglass"
-            }
-        }
-    }
-    
-    // Hashable 实现
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    static func == (lhs: SearchSuggestion, rhs: SearchSuggestion) -> Bool {
-        lhs.id == rhs.id
-    }
-}
+// MARK: - 搜索建议 (using the one from AdvancedSearchService)
 
 // MARK: - 保存的搜索
 struct SavedSearch: Identifiable, Codable, Hashable {
@@ -319,6 +278,72 @@ struct SearchPerformanceMetrics {
                 return "red"
             }
         }
+    }
+}
+
+// MARK: - 搜索建议
+struct SearchSuggestion: Identifiable, Hashable {
+    let id = UUID()
+    let text: String
+    let type: SuggestionType
+    let score: Double
+    
+    enum SuggestionType: String, CaseIterable {
+        case history = "history"
+        case product = "product"
+        case category = "category"
+        case tag = "tag"
+        case manual = "manual"
+        case autocomplete = "autocomplete"
+        
+        var displayName: String {
+            switch self {
+            case .history:
+                return "历史搜索"
+            case .product:
+                return "产品"
+            case .category:
+                return "分类"
+            case .tag:
+                return "标签"
+            case .manual:
+                return "说明书"
+            case .autocomplete:
+                return "自动完成"
+            }
+        }
+        
+        var iconName: String {
+            switch self {
+            case .history:
+                return "clock"
+            case .product:
+                return "cube.box"
+            case .category:
+                return "folder"
+            case .tag:
+                return "tag"
+            case .manual:
+                return "doc.text"
+            case .autocomplete:
+                return "magnifyingglass"
+            }
+        }
+    }
+    
+    init(text: String, type: SuggestionType, score: Double = 0.5) {
+        self.text = text
+        self.type = type
+        self.score = score
+    }
+    
+    // Hashable 实现
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: SearchSuggestion, rhs: SearchSuggestion) -> Bool {
+        lhs.id == rhs.id
     }
 }
 

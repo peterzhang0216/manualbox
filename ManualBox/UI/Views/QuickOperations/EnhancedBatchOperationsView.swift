@@ -2,553 +2,518 @@
 //  EnhancedBatchOperationsView.swift
 //  ManualBox
 //
-//  Created by Assistant on 2025/6/24.
+//  Created by Assistant on 2024/12/19.
+//  增强的批量操作视图 - 支持批量编辑、导出等操作
 //
 
 import SwiftUI
 import CoreData
 
-// MARK: - 增强批量操作视图
 struct EnhancedBatchOperationsView: View {
-    @Binding var selectedProducts: Set<Product>
+    @StateObject private var batchManager = BatchOperationManager.shared
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.dismiss) private var dismiss
     
-    @State private var selectedOperation: QuickBatchOperation = .edit
-    @State private var isProcessing = false
-    @State private var progress: Double = 0
+    // 选中的项目
+    let selectedItems: [NSManagedObject]
+    let onDismiss: () -> Void
+    
+    // 状态管理
+    @State private var selectedOperation: BatchOperationType = .export
+    @State private var showingOperationSheet = false
+    @State private var showingProgressView = false
+    @State private var showingHistoryView = false
     @State private var showingConfirmation = false
-    @State private var operationResult: BatchOperationResult?
+    
+    // 操作参数
+    @State private var exportFormat: ExportFormat = .csv
+    @State private var selectedCategory: Category?
+    @State private var selectedTags: [Tag] = []
+    @State private var editFields: [String: Any] = [:]
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // 操作选择器
-                operationSelector
+                // 顶部信息栏
+                topInfoSection
                 
-                // 操作配置区域
-                ScrollView {
-                    VStack(spacing: 20) {
-                        // 选中产品概览
-                        selectedProductsOverview
-                        
-                        // 操作配置
-                        operationConfiguration
-                        
-                        // 预览区域
-                        if selectedOperation.hasPreview {
-                            operationPreview
-                        }
-                    }
-                    .padding()
-                }
+                // 操作选择区域
+                operationSelectionSection
                 
-                // 底部操作栏
-                bottomActionBar
+                // 操作参数配置
+                operationParametersSection
+                
+                Spacer()
+                
+                // 底部操作按钮
+                bottomActionSection
             }
             .navigationTitle("批量操作")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                SwiftUI.ToolbarItem(placement: .topBarTrailing) {
-                    Button("关闭") {
-                        dismiss()
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("取消") {
+                        onDismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingHistoryView = true
+                    }) {
+                        Image(systemName: "clock.arrow.circlepath")
                     }
                 }
             }
-            .overlay {
-                if isProcessing {
-                    processingOverlay
-                }
+            .sheet(isPresented: $showingProgressView) {
+                BatchOperationProgressView()
             }
-            .alert("操作完成", isPresented: .constant(operationResult != nil)) {
-                Button("确定") {
-                    operationResult = nil
-                    if operationResult?.isSuccess == true {
-                        dismiss()
-                    }
+            .sheet(isPresented: $showingHistoryView) {
+                BatchOperationHistoryView()
+            }
+            .alert("确认操作", isPresented: $showingConfirmation) {
+                Button("取消", role: .cancel) { }
+                Button("确认", role: .destructive) {
+                    performSelectedOperation()
                 }
             } message: {
-                if let result = operationResult {
-                    Text(result.message)
-                }
+                Text(confirmationMessage)
             }
         }
     }
     
-    // MARK: - 操作选择器
+    // MARK: - 顶部信息栏
     
-    private var operationSelector: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(BatchOperation.allCases, id: \.self) { operation in
-                    Button(action: {
-                        selectedOperation = operation
-                    }) {
-                        VStack(spacing: 4) {
-                            Image(systemName: operation.icon)
-                                .font(.title2)
-                            
-                            Text(operation.title)
-                                .font(.caption)
-                                .fontWeight(.medium)
-                        }
-                        .foregroundColor(selectedOperation == operation ? .white : .primary)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(selectedOperation == operation ? operation.color : Color(.systemGray6))
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-            }
-            .padding(.horizontal)
-        }
-        .padding(.vertical, 8)
-        .background(Color(.systemBackground))
-    }
-    
-    // MARK: - 选中产品概览
-    
-    private var selectedProductsOverview: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("选中的产品")
-                .font(.headline)
-                .fontWeight(.semibold)
-            
+    private var topInfoSection: some View {
+        VStack(spacing: 12) {
             HStack {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
+                    .foregroundColor(.blue)
                 
-                Text("已选择 \(selectedProducts.count) 个产品")
-                    .font(.subheadline)
+                Text("已选择 \(selectedItems.count) 个项目")
+                    .font(.headline)
                 
                 Spacer()
                 
-                Button("查看详情") {
-                    // 显示选中产品详情
-                }
-                .font(.caption)
-                .foregroundColor(.blue)
-            }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(8)
-        }
-    }
-    
-    // MARK: - 操作配置
-    
-    @ViewBuilder
-    private var operationConfiguration: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("操作配置")
-                .font(.headline)
-                .fontWeight(.semibold)
-            
-            switch selectedOperation {
-            case .edit:
-                batchEditConfiguration
-            case .delete:
-                batchDeleteConfiguration
-            case .export:
-                batchExportConfiguration
-            case .categorize:
-                batchCategorizeConfiguration
-            case .tag:
-                batchTagConfiguration
-            case .archive:
-                batchArchiveConfiguration
-            }
-        }
-    }
-    
-    // MARK: - 批量编辑配置
-    
-    private var batchEditConfiguration: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("选择要批量修改的字段")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            VStack(spacing: 12) {
-                BatchEditOption(title: "品牌", icon: "building.2", isEnabled: .constant(false))
-                BatchEditOption(title: "型号", icon: "number", isEnabled: .constant(false))
-                BatchEditOption(title: "备注", icon: "note.text", isEnabled: .constant(false))
-                BatchEditOption(title: "保修期", icon: "shield", isEnabled: .constant(false))
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 1)
-    }
-    
-    // MARK: - 批量删除配置
-    
-    private var batchDeleteConfiguration: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundColor(.red)
-                
-                Text("危险操作")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.red)
-            }
-            
-            Text("此操作将永久删除选中的 \(selectedProducts.count) 个产品及其相关数据，包括说明书、维修记录等。")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text("删除选项:")
-                    .font(.caption)
-                    .fontWeight(.medium)
-                
-                Toggle("同时删除说明书文件", isOn: .constant(true))
-                Toggle("同时删除维修记录", isOn: .constant(true))
-                Toggle("同时删除订单信息", isOn: .constant(true))
-            }
-            .font(.caption)
-        }
-        .padding()
-        .background(Color.red.opacity(0.1))
-        .cornerRadius(12)
-    }
-    
-    // MARK: - 批量导出配置
-    
-    private var batchExportConfiguration: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("导出格式和选项")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            VStack(spacing: 12) {
-                Picker("导出格式", selection: .constant(ExportFormat.json)) {
-                    ForEach(ExportFormat.allCases, id: \.self) { format in
-                        Text(format.rawValue).tag(format)
-                    }
-                }
-                .pickerStyle(.segmented)
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("包含内容:")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                    
-                    Toggle("产品图片", isOn: .constant(false))
-                    Toggle("说明书文件", isOn: .constant(false))
-                    Toggle("维修记录", isOn: .constant(true))
-                    Toggle("订单信息", isOn: .constant(true))
-                }
-                .font(.caption)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 1)
-    }
-    
-    // MARK: - 批量分类配置
-    
-    private var batchCategorizeConfiguration: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("选择目标分类")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            // 这里应该显示分类选择器
-            Text("分类选择器将在此显示")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 1)
-    }
-    
-    // MARK: - 批量标签配置
-    
-    private var batchTagConfiguration: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("标签操作")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            Picker("操作类型", selection: .constant(TagOperationMode.add)) {
-                ForEach(TagOperationMode.allCases, id: \.self) { mode in
-                    Text(mode.rawValue).tag(mode)
+                if batchManager.operationStatus.isRunning {
+                    ProgressView()
+                        .scaleEffect(0.8)
                 }
             }
-            .pickerStyle(.segmented)
             
-            // 这里应该显示标签选择器
-            Text("标签选择器将在此显示")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 1)
-    }
-    
-    // MARK: - 批量归档配置
-    
-    private var batchArchiveConfiguration: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("归档选项")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Toggle("创建归档备份", isOn: .constant(true))
-                Toggle("保留原始数据", isOn: .constant(false))
-                Toggle("添加归档标签", isOn: .constant(true))
+            // 选中项目类型统计
+            if !selectedItems.isEmpty {
+                itemTypeStatistics
             }
-            .font(.caption)
         }
         .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 1)
+        .background(Color(.secondarySystemBackground))
     }
     
-    // MARK: - 操作预览
-    
-    private var operationPreview: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("操作预览")
-                .font(.headline)
-                .fontWeight(.semibold)
-            
-            Text("预览功能将在此显示")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-        }
-    }
-    
-    // MARK: - 底部操作栏
-    
-    private var bottomActionBar: some View {
+    private var itemTypeStatistics: some View {
         HStack {
-            Button("取消") {
-                dismiss()
+            ForEach(itemTypeCounts.keys.sorted(), id: \.self) { type in
+                HStack(spacing: 4) {
+                    Image(systemName: iconForItemType(type))
+                        .foregroundColor(.secondary)
+                    
+                    Text("\(itemTypeCounts[type] ?? 0)")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
-            .foregroundColor(.secondary)
             
             Spacer()
+        }
+    }
+    
+    // MARK: - 操作选择区域
+    
+    private var operationSelectionSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("选择操作")
+                .font(.headline)
+                .padding(.horizontal)
             
-            Button("执行操作") {
-                showingConfirmation = true
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(BatchOperationType.allCases, id: \.self) { operation in
+                        OperationButton(
+                            operation: operation,
+                            isSelected: selectedOperation == operation,
+                            isEnabled: isOperationEnabled(operation)
+                        ) {
+                            selectedOperation = operation
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+        .padding(.vertical)
+    }
+    
+    // MARK: - 操作参数配置
+    
+    private var operationParametersSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            if needsParameterConfiguration {
+                Text("操作设置")
+                    .font(.headline)
+                    .padding(.horizontal)
+                
+                Group {
+                    switch selectedOperation {
+                    case .export:
+                        exportParametersView
+                    case .edit:
+                        editParametersView
+                    case .categorize:
+                        categorizeParametersView
+                    case .tag:
+                        tagParametersView
+                    default:
+                        EmptyView()
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+    
+    private var exportParametersView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("导出格式")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            Picker("格式", selection: $exportFormat) {
+                ForEach(ExportFormat.allCases, id: \.self) { format in
+                    Text(format.displayName)
+                        .tag(format)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+        }
+    }
+    
+    private var editParametersView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("编辑字段")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            // 这里应该根据选中项目的类型显示可编辑的字段
+            Text("选择要批量修改的字段...")
+                .foregroundColor(.secondary)
+                .italic()
+        }
+    }
+    
+    private var categorizeParametersView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("目标分类")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            // 分类选择器
+            Text("选择分类...")
+                .foregroundColor(.secondary)
+                .italic()
+        }
+    }
+    
+    private var tagParametersView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("标签")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            // 标签选择器
+            Text("选择标签...")
+                .foregroundColor(.secondary)
+                .italic()
+        }
+    }
+    
+    // MARK: - 底部操作按钮
+    
+    private var bottomActionSection: some View {
+        VStack(spacing: 12) {
+            // 操作预览
+            if !batchManager.operationStatus.isRunning {
+                operationPreview
+            }
+            
+            // 执行按钮
+            Button(action: {
+                if selectedOperation == .delete {
+                    showingConfirmation = true
+                } else {
+                    performSelectedOperation()
+                }
+            }) {
+                HStack {
+                    Image(systemName: selectedOperation.icon)
+                    Text("执行\(selectedOperation.displayName)")
+                }
+                .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .disabled(selectedProducts.isEmpty)
+            .disabled(!canPerformOperation || batchManager.operationStatus.isRunning)
+            
+            // 取消按钮（仅在操作进行中显示）
+            if batchManager.operationStatus.isRunning {
+                Button("取消操作") {
+                    batchManager.cancelCurrentOperation()
+                }
+                .buttonStyle(.bordered)
+            }
         }
         .padding()
         .background(Color(.systemBackground))
-        .shadow(radius: 1)
-        .confirmationDialog(
-            "确认执行操作",
-            isPresented: $showingConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("确认执行") {
-                executeOperation()
-            }
-            Button("取消", role: .cancel) { }
-        } message: {
-            Text("将对 \(selectedProducts.count) 个产品执行\(selectedOperation.title)操作")
-        }
     }
     
-    // MARK: - 处理中覆盖层
-    
-    private var processingOverlay: some View {
-        VStack(spacing: 16) {
-            ProgressView(value: progress, total: 1.0)
-                .progressViewStyle(LinearProgressViewStyle())
-                .frame(width: 200)
-            
-            Text("正在处理... \(Int(progress * 100))%")
-                .font(.caption)
+    private var operationPreview: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("操作预览")
+                .font(.subheadline)
                 .foregroundColor(.secondary)
+            
+            Text(operationDescription)
+                .font(.body)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(8)
         }
-        .padding(20)
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 4)
     }
     
-    // MARK: - 操作执行
+    // MARK: - 计算属性
     
-    private func executeOperation() {
-        isProcessing = true
-        progress = 0
+    private var itemTypeCounts: [String: Int] {
+        Dictionary(grouping: selectedItems) { item in
+            String(describing: type(of: item))
+        }.mapValues { $0.count }
+    }
+    
+    private var needsParameterConfiguration: Bool {
+        switch selectedOperation {
+        case .export, .edit, .categorize, .tag:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    private var canPerformOperation: Bool {
+        guard !selectedItems.isEmpty else { return false }
+        
+        switch selectedOperation {
+        case .export:
+            return true
+        case .edit:
+            return !editFields.isEmpty
+        case .categorize:
+            return selectedCategory != nil
+        case .tag:
+            return !selectedTags.isEmpty
+        default:
+            return true
+        }
+    }
+    
+    private var operationDescription: String {
+        switch selectedOperation {
+        case .export:
+            return "将 \(selectedItems.count) 个项目导出为 \(exportFormat.displayName) 格式"
+        case .edit:
+            return "批量编辑 \(selectedItems.count) 个项目的指定字段"
+        case .delete:
+            return "永久删除 \(selectedItems.count) 个项目"
+        case .duplicate:
+            return "复制 \(selectedItems.count) 个项目"
+        case .categorize:
+            return "将 \(selectedItems.count) 个项目移动到指定分类"
+        case .tag:
+            return "为 \(selectedItems.count) 个项目添加标签"
+        }
+    }
+    
+    private var confirmationMessage: String {
+        switch selectedOperation {
+        case .delete:
+            return "确定要删除这 \(selectedItems.count) 个项目吗？此操作无法撤销。"
+        default:
+            return "确定要执行此批量操作吗？"
+        }
+    }
+    
+    // MARK: - 辅助方法
+    
+    private func isOperationEnabled(_ operation: BatchOperationType) -> Bool {
+        // 根据选中项目类型判断操作是否可用
+        return true
+    }
+    
+    private func iconForItemType(_ type: String) -> String {
+        switch type {
+        case "Product":
+            return "cube.box"
+        case "Manual":
+            return "doc.text"
+        case "Category":
+            return "folder"
+        case "Tag":
+            return "tag"
+        default:
+            return "doc"
+        }
+    }
+    
+    private func performSelectedOperation() {
+        showingProgressView = true
         
         Task {
             do {
-                let result = try await performBatchOperation()
-                await MainActor.run {
-                    isProcessing = false
-                    operationResult = result
-                }
-            } catch {
-                await MainActor.run {
-                    isProcessing = false
-                    operationResult = BatchOperationResult(
-                        isSuccess: false,
-                        message: "操作失败: \(error.localizedDescription)",
-                        processedCount: 0,
-                        totalCount: selectedProducts.count
+                switch selectedOperation {
+                case .export:
+                    _ = try await batchManager.performBatchExport(
+                        items: selectedItems,
+                        format: exportFormat,
+                        destination: getExportDestination()
                     )
+                case .edit:
+                    _ = try await batchManager.performBatchEdit(
+                        items: selectedItems
+                    ) { item in
+                        // 应用编辑操作
+                        applyEditFields(to: item)
+                    }
+                case .delete:
+                    _ = try await batchManager.performBatchDelete(
+                        items: selectedItems,
+                        context: viewContext
+                    )
+                    try viewContext.save()
+                case .duplicate:
+                    _ = try await batchManager.performBatchDuplicate(
+                        items: selectedItems,
+                        context: viewContext
+                    ) { item, context in
+                        return try duplicateItem(item, in: context)
+                    }
+                    try viewContext.save()
+                case .categorize:
+                    if let category = selectedCategory {
+                        _ = try await batchManager.performBatchCategorize(
+                            items: selectedItems,
+                            category: category
+                        ) { item, category in
+                            assignCategory(category, to: item)
+                        }
+                        try viewContext.save()
+                    }
+                case .tag:
+                    _ = try await batchManager.performBatchTag(
+                        items: selectedItems,
+                        tags: selectedTags
+                    ) { item, tags in
+                        assignTags(tags, to: item)
+                    }
+                    try viewContext.save()
                 }
+                
+                // 操作完成后关闭视图
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    onDismiss()
+                }
+                
+            } catch {
+                print("批量操作失败: \(error.localizedDescription)")
             }
         }
     }
     
-    private func performBatchOperation() async throws -> BatchOperationResult {
-        let totalCount = selectedProducts.count
-        var processedCount = 0
-        
-        for (index, product) in selectedProducts.enumerated() {
-            // 模拟处理进度
-            await MainActor.run {
-                progress = Double(index) / Double(totalCount)
-            }
-            
-            // 执行具体操作
-            try await performOperationOnProduct(product)
-            processedCount += 1
-            
-            // 模拟处理时间
-            try await Task.sleep(nanoseconds: 100_000_000) // 0.1秒
-        }
-        
-        await MainActor.run {
-            progress = 1.0
-        }
-        
-        return BatchOperationResult(
-            isSuccess: true,
-            message: "成功处理了 \(processedCount) 个产品",
-            processedCount: processedCount,
-            totalCount: totalCount
-        )
+    private func getExportDestination() -> URL {
+        // 返回导出目标URL
+        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        return documentsPath.appendingPathComponent("batch_export.\(exportFormat.fileExtension)")
     }
     
-    private func performOperationOnProduct(_ product: Product) async throws {
-        // 根据选择的操作类型执行相应的处理
-        switch selectedOperation {
-        case .edit:
-            // 批量编辑逻辑
-            break
-        case .delete:
-            // 批量删除逻辑
-            viewContext.delete(product)
-        case .export:
-            // 批量导出逻辑
-            break
-        case .categorize:
-            // 批量分类逻辑
-            break
-        case .tag:
-            // 批量标签逻辑
-            break
-        case .archive:
-            // 批量归档逻辑
-            break
+    private func applyEditFields(to item: NSManagedObject) {
+        // 应用编辑字段到项目
+        for (key, value) in editFields {
+            item.setValue(value, forKey: key)
+        }
+    }
+    
+    private func duplicateItem(_ item: NSManagedObject, in context: NSManagedObjectContext) throws -> NSManagedObject {
+        // 复制项目的实现
+        // 这里应该根据具体的数据模型实现复制逻辑
+        let entityName = item.entity.name!
+        let newItem = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context)
+        
+        // 复制属性
+        for (key, value) in item.dictionaryWithValues(forKeys: Array(item.entity.attributesByName.keys)) {
+            if key != "id" && key != "createdAt" { // 跳过唯一标识符和时间戳
+                newItem.setValue(value, forKey: key)
+            }
+        }
+        
+        return newItem
+    }
+    
+    private func assignCategory(_ category: Category, to item: NSManagedObject) {
+        // 分配分类到项目
+        if let product = item as? Product {
+            product.category = category
+        }
+    }
+    
+    private func assignTags(_ tags: [Tag], to item: NSManagedObject) {
+        // 分配标签到项目
+        if let product = item as? Product {
+            for tag in tags {
+                product.addToTags(tag)
+            }
         }
     }
 }
 
-// MARK: - 批量编辑选项组件
-struct BatchEditOption: View {
-    let title: String
-    let icon: String
-    @Binding var isEnabled: Bool
+// MARK: - 操作按钮
+struct OperationButton: View {
+    let operation: BatchOperationType
+    let isSelected: Bool
+    let isEnabled: Bool
+    let action: () -> Void
     
     var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(.blue)
-                .frame(width: 20)
-            
-            Text(title)
-                .font(.subheadline)
-            
-            Spacer()
-            
-            Toggle("", isOn: $isEnabled)
-                .labelsHidden()
+        Button(action: action) {
+            VStack(spacing: 8) {
+                Image(systemName: operation.icon)
+                    .font(.title2)
+                
+                Text(operation.displayName)
+                    .font(.caption)
+            }
+            .frame(width: 80, height: 80)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? Color.blue : Color(.secondarySystemBackground))
+            )
+            .foregroundColor(isSelected ? .white : (isEnabled ? .primary : .secondary))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
+            )
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Color(.systemGray6))
-        .cornerRadius(8)
+        .disabled(!isEnabled)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
-// MARK: - 批量操作枚举
-enum QuickBatchOperation: String, CaseIterable {
-    case edit = "编辑"
-    case delete = "删除"
-    case export = "导出"
-    case categorize = "分类"
-    case tag = "标签"
-    case archive = "归档"
-    
-    var title: String { rawValue }
-    
-    var icon: String {
-        switch self {
-        case .edit: return "pencil"
-        case .delete: return "trash"
-        case .export: return "square.and.arrow.up"
-        case .categorize: return "folder"
-        case .tag: return "tag"
-        case .archive: return "archivebox"
-        }
-    }
-    
-    var color: Color {
-        switch self {
-        case .edit: return .blue
-        case .delete: return .red
-        case .export: return .green
-        case .categorize: return .orange
-        case .tag: return .purple
-        case .archive: return .gray
-        }
-    }
-    
-    var hasPreview: Bool {
-        switch self {
-        case .edit, .categorize, .tag: return true
-        default: return false
-        }
-    }
-}
-
-// MARK: - 批量操作结果
-struct BatchOperationResult {
-    let isSuccess: Bool
-    let message: String
-    let processedCount: Int
-    let totalCount: Int
+#Preview {
+    EnhancedBatchOperationsView(
+        selectedItems: [],
+        onDismiss: {}
+    )
 }

@@ -317,78 +317,7 @@ struct EnhancedSearchView: View {
     }
 }
 
-// MARK: - 搜索结果行
-struct SearchResultRow: View {
-    let result: EnhancedSearchResult
-    let searchOptions: SearchOptions
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // 头部信息
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(result.manual.fileName ?? "未知文件")
-                        .font(.headline)
-                        .lineLimit(1)
-                    
-                    if let productName = result.manual.product?.name {
-                        Text(productName)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
-                }
-                
-                Spacer()
-                
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text("相关度: \(String(format: "%.2f", result.relevanceScore))")
-                        .font(.caption)
-                        .foregroundColor(.blue)
-                    
-                    Text("TF-IDF: \(String(format: "%.2f", result.tfIdfScore))")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-            }
-            
-            // 匹配的词汇
-            if !result.matchedTerms.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        ForEach(result.matchedTerms.prefix(5), id: \.term) { term in
-                            Text(term.term)
-                                .font(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.green.opacity(0.2))
-                                .foregroundColor(.green)
-                                .cornerRadius(8)
-                        }
-                    }
-                    .padding(.horizontal, 1)
-                }
-            }
-            
-            // 高亮片段
-            if searchOptions.includeSnippets && !result.highlightedSnippets.isEmpty {
-                VStack(alignment: .leading, spacing: 6) {
-                    ForEach(result.highlightedSnippets.prefix(2), id: \.text) { snippet in
-                        Text(snippet.text)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(3)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                    }
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-}
+
 
 // MARK: - 预览
 struct EnhancedSearchView_Previews: PreviewProvider {

@@ -38,6 +38,9 @@ struct SearchPerformanceDashboard: View {
                         optimizationRecommendationsSection(analysis)
                     }
                     
+                    // 高级搜索统计
+                    advancedSearchStatisticsSection
+                    
                     // 实时监控
                     realTimeMonitoringSection
                 }
@@ -268,6 +271,93 @@ struct SearchPerformanceDashboard: View {
         }
     }
     
+    // MARK: - 高级搜索统计
+    private var advancedSearchStatisticsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("高级搜索统计")
+                .font(.headline)
+            
+            LazyVGrid(columns: [
+                GridItem(.flexible()),
+                GridItem(.flexible())
+            ], spacing: 12) {
+                AdvancedSearchStatCard(
+                    title: "搜索历史",
+                    value: "\(AdvancedSearchService.shared.searchHistory.count)",
+                    icon: "clock.fill",
+                    color: Color.blue
+                )
+                
+                AdvancedSearchStatCard(
+                    title: "保存的搜索",
+                    value: "\(AdvancedSearchService.shared.savedSearches.count)",
+                    icon: "bookmark.fill",
+                    color: Color.green
+                )
+                
+                AdvancedSearchStatCard(
+                    title: "最近搜索",
+                    value: "\(AdvancedSearchService.shared.recentSearches.count)",
+                    icon: "magnifyingglass.circle.fill",
+                    color: Color.orange
+                )
+                
+                AdvancedSearchStatCard(
+                    title: "热门搜索",
+                    value: "\(AdvancedSearchService.shared.popularSearches.count)",
+                    icon: "flame.fill",
+                    color: Color.red
+                )
+            }
+            
+            // 搜索类型分布
+            if !AdvancedSearchService.shared.searchHistory.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("搜索类型分布")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    
+                    let scopeStats = calculateSearchScopeStatistics()
+                    ForEach(Array(scopeStats.keys.sorted()), id: \.self) { scope in
+                        if let count = scopeStats[scope] {
+                            HStack {
+                                Text(scope.displayName)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                
+                                Spacer()
+                                
+                                Text("\(count)")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                
+                                Text("(\(String(format: "%.1f", Double(count) / Double(AdvancedSearchService.shared.searchHistory.count) * 100))%)")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+            }
+        }
+    }
+    
+    // MARK: - 计算搜索范围统计
+    private func calculateSearchScopeStatistics() -> [AdvancedSearchScope: Int] {
+        var stats: [AdvancedSearchScope: Int] = [:]
+        
+        for historyItem in AdvancedSearchService.shared.searchHistory {
+            for scope in historyItem.filters.searchScopes {
+                stats[scope, default: 0] += 1
+            }
+        }
+        
+        return stats
+    }
+    
     // MARK: - 数据加载
     private func loadPerformanceAnalysis() async {
         await MainActor.run {
@@ -386,52 +476,8 @@ struct BottleneckRow: View {
     }
 }
 
-// MARK: - 建议行
-struct RecommendationRow: View {
-    let recommendation: OptimizationRecommendation
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(recommendation.title)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                
-                Spacer()
-                
-                Text(recommendation.priority.displayName)
-                    .font(.caption)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(priorityColor(recommendation.priority).opacity(0.2))
-                    .foregroundColor(priorityColor(recommendation.priority))
-                    .cornerRadius(4)
-            }
-            
-            Text(recommendation.description)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(3)
-            
-            Text("预期改善: \(recommendation.estimatedImprovement)")
-                .font(.caption2)
-                .foregroundColor(.blue)
-        }
-        .padding()
-        .background(ModernColors.System.gray6)
-        .cornerRadius(8)
-    }
-    
-    private func priorityColor(_ priority: BottleneckSeverity) -> Color {
-        switch priority {
-        case .low: return .green
-        case .medium: return .orange
-        case .high: return .red
-        }
-    }
-}
-
 // MARK: - 详细分析视图
+// 注意：RecommendationRow 已移动到 SharedUIComponents.swift 以避免重复定义
 struct DetailedPerformanceAnalysisView: View {
     let analysis: SearchPerformanceAnalysis?
     @Environment(\.dismiss) private var dismiss
@@ -513,7 +559,7 @@ struct DetailedPerformanceAnalysisView: View {
                 .font(.headline)
             
             VStack(spacing: 8) {
-                ForEach(analysis.recommendations, id: \.title) { recommendation in
+                ForEach(analysis.recommendations, id: \OptimizationRecommendation.title) { recommendation in
                     RecommendationRow(recommendation: recommendation)
                 }
             }
@@ -521,26 +567,7 @@ struct DetailedPerformanceAnalysisView: View {
     }
 }
 
-// MARK: - 统计行
-struct StatisticRow: View {
-    let title: String
-    let value: String
-    
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            Spacer()
-            
-            Text(value)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(.primary)
-        }
-    }
-}
+// MARK: - 统计行组件已移至InfoRow.swift
 
 #Preview {
     SearchPerformanceDashboard()

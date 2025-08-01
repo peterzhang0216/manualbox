@@ -95,11 +95,31 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
         updateState { state in
             state.errorMessage = error?.localizedDescription
         }
+        
+        // 使用统一错误处理系统
+        if let error = error {
+            let context = ErrorContext(functionName: String(describing: type(of: self)))
+            Task {
+                let _ = await ManualBoxErrorHandlingService.shared.handleError {
+                    throw error
+                }
+            }
+        }
     }
 
     func setError(_ errorMessage: String?) {
         updateState { state in
             state.errorMessage = errorMessage
+        }
+        
+        // 如果有错误消息，创建自定义错误并处理
+        if let errorMessage = errorMessage {
+            let customError = NSError(domain: "ViewModelError", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+            Task {
+                let _ = await ManualBoxErrorHandlingService.shared.handleError {
+                    throw customError
+                }
+            }
         }
     }
 
@@ -113,7 +133,7 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
             setError(nil as String?)
             return result
         } catch {
-            handleError(error, context: String(describing: type(of: self)))
+            setError(error)
             return nil
         }
     }
@@ -127,7 +147,7 @@ class BaseViewModel<State: StateProtocol, Action: ActionProtocol>: ViewModelProt
             setError(nil as String?)
             return .success(result)
         } catch {
-            handleError(error, context: String(describing: type(of: self)))
+            setError(error)
             return .failure(error)
         }
     }

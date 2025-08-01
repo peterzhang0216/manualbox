@@ -392,12 +392,7 @@ enum OptimizationAction: String, CaseIterable, Codable {
     case optimizeDatabase = "优化数据库"
 }
 
-struct PerformanceReport: Codable {
-    let timestamp: Date
-    let metrics: OptimizationPerformanceMetrics
-    let suggestions: [OptimizationSuggestion]
-    let optimizationHistory: [OptimizationRecord]
-}
+// PerformanceReport is defined in PerformanceMonitoringService.swift
 
 struct OptimizationRecord: Identifiable, Codable {
     let id: UUID

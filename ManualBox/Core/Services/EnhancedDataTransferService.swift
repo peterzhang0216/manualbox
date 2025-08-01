@@ -129,11 +129,7 @@ struct ExportOptions: Codable {
     }
 }
 
-enum ExportFormat: String, CaseIterable, Codable {
-    case json = "json"
-    case csv = "csv"
-    case xml = "xml"
-}
+// ExportFormat moved to Core/Utils/ExportFormat.swift
 
 enum TransferType {
     case `import`

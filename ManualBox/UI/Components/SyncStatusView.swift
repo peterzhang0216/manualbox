@@ -334,9 +334,11 @@ struct SyncStatusView: View {
                 .padding()
             }
             .navigationTitle("同步详情")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar(content: {
-                SwiftUI.ToolbarItem(placement: .navigationBarTrailing) {
+                SwiftUI.ToolbarItem(placement: .primaryAction) {
                     Button("完成") {
                         showingDetails = false
                     }
@@ -350,13 +352,13 @@ struct SyncStatusView: View {
             Text("同步信息")
                 .font(.headline)
             
-            DetailRow(title: "同步类型", value: details.syncType == .full ? "完整同步" : "增量同步")
-            DetailRow(title: "当前阶段", value: details.phase.description)
-            DetailRow(title: "开始时间", value: formatFullTime(details.startTime))
+            SyncDetailRow(title: "同步类型", value: details.syncType == .full ? "完整同步" : "增量同步")
+            SyncDetailRow(title: "当前阶段", value: details.phase.description)
+            SyncDetailRow(title: "开始时间", value: formatFullTime(details.startTime))
             
             if let endTime = details.endTime {
-                DetailRow(title: "结束时间", value: formatFullTime(endTime))
-                DetailRow(title: "总耗时", value: formatDuration(endTime.timeIntervalSince(details.startTime)))
+                SyncDetailRow(title: "结束时间", value: formatFullTime(endTime))
+                SyncDetailRow(title: "总耗时", value: formatDuration(endTime.timeIntervalSince(details.startTime)))
             }
             
             Divider()
@@ -364,13 +366,13 @@ struct SyncStatusView: View {
             Text("处理统计")
                 .font(.headline)
             
-            DetailRow(title: "总记录数", value: "\(details.totalRecords)")
-            DetailRow(title: "已处理", value: "\(details.processedRecords)")
-            DetailRow(title: "失败记录", value: "\(details.failedRecords)")
-            DetailRow(title: "冲突记录", value: "\(details.conflictedRecords)")
+            SyncDetailRow(title: "总记录数", value: "\(details.totalRecords)")
+            SyncDetailRow(title: "已处理", value: "\(details.processedRecords)")
+            SyncDetailRow(title: "失败记录", value: "\(details.failedRecords)")
+            SyncDetailRow(title: "冲突记录", value: "\(details.conflictedRecords)")
             
             if details.totalRecords > 0 {
-                DetailRow(title: "成功率", value: String(format: "%.1f%%", Double(details.processedRecords - details.failedRecords) / Double(details.totalRecords) * 100))
+                SyncDetailRow(title: "成功率", value: String(format: "%.1f%%", Double(details.processedRecords - details.failedRecords) / Double(details.totalRecords) * 100))
             }
         }
     }
@@ -380,9 +382,11 @@ struct SyncStatusView: View {
         NavigationView {
             Text("冲突解决界面")
                 .navigationTitle("解决冲突")
+                #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+                #endif
                 .toolbar(content: {
-                    SwiftUI.ToolbarItem(placement: .navigationBarTrailing) {
+                    SwiftUI.ToolbarItem(placement: .primaryAction) {
                         Button("完成") {
                             showingConflictResolution = false
                         }
@@ -419,7 +423,7 @@ struct SyncStatusView: View {
 }
 
 // MARK: - 详情行组件
-struct DetailRow: View {
+struct SyncDetailRow: View {
     let title: String
     let value: String
     

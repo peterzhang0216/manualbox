@@ -137,28 +137,24 @@ struct CategoryDetailSheet: View {
                 StatCard(
                     title: "直接产品",
                     value: "\(category.productCount)",
-                    icon: "cube.box",
                     color: .blue
                 )
                 
                 StatCard(
                     title: "总产品数",
                     value: "\(category.totalProductCount)",
-                    icon: "cube.box.fill",
                     color: .green
                 )
                 
                 StatCard(
                     title: "子分类数",
                     value: "\(category.childCategories.count)",
-                    icon: "folder",
                     color: .orange
                 )
                 
                 StatCard(
                     title: "层级深度",
                     value: "\(category.level + 1)",
-                    icon: "arrow.down.to.line",
                     color: .purple
                 )
             }

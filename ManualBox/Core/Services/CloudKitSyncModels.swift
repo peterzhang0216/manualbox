@@ -53,15 +53,7 @@ struct SyncDetails: Sendable {
 
 // MARK: - 同步冲突和冲突解决策略已移至CloudKitSyncTypes.swift和CloudKitConflictResolver.swift
 
-// MARK: - 冲突解决结果
-enum ConflictResolution {
-    case useLocal
-    case useServer
-    case useLatest
-    case merged(CKRecord)
-    case skip
-    case retry
-}
+// ConflictResolution is defined in CloudKitConflictResolver.swift
 
 // MARK: - ChangeTokenStore 已移至 CloudKitChangeTokenStore.swift
 

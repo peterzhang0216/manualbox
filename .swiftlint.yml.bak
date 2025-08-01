@@ -1,0 +1,362 @@
+# SwiftLint 配置文件
+# ManualBox 项目代码质量检查配置
+
+#   - legacy_random                   # 使用现代随机API
+  - trailing_closure                # 尾随闭包风格
+  - multiple_closures_with_trailing_closure  # 多闭包时避免使用尾随闭包件路径
+included:
+  - ManualBox
+  - ManualBoxTests
+  - ManualBoxUITests
+
+# 排除的文件路径
+excluded:
+  - Pods
+  - ManualBox.xcodeproj
+  - .build
+  - docs
+  - scripts
+
+# 禁用的规则
+disabled_rules:
+  - trailing_whitespace  # 允许行尾空格（暂时）
+  - file_length         # 文件长度检查（暂时禁用）
+  - type_body_length    # 类型主体长度检查（暂时禁用）
+
+# 启用的可选规则
+opt_in_rules:
+  # 基础规则
+  - empty_count                    # 使用 isEmpty 而不是 count == 0
+  - force_unwrapping              # 避免强制解包
+  - closure_spacing               # 闭包间距
+  - redundant_nil_coalescing      # 冗余 nil 合并
+  - empty_string                  # 使用 isEmpty 而不是 == ""
+  - fatal_error_message           # fatalError 需要有消息
+  - first_where                   # 使用 first(where:) 而不是 filter().first
+  - object_literal                # 使用对象字面量
+  - number_separator              # 数字分隔符
+  - operator_usage_whitespace     # 操作符使用空格
+  - overridden_super_call         # 重写方法调用 super
+  - redundant_type_annotation     # 冗余类型注解
+  - sorted_first_last             # 使用 min()/max() 而不是 sorted().first/last
+  - unneeded_parentheses_in_closure_argument  # 闭包参数不需要括号
+  - vertical_parameter_alignment_on_call      # 调用时垂直参数对齐
+  
+  # Swift 6 兼容性规则
+  - legacy_multiple_closure_syntax  # 多闭包参数语法兼容性 
+  - legacy_random                   # 使用现代随机API
+  - trailing_closure                # 尾随闭包风格
+  - multiple_closures_with_trailing_closure  # 多闭包时避免使用尾随闭包
+  - private_over_fileprivate        # 优先使用private
+  - convenience_type                # 检查便利类型使用
+  - redundant_discardable_let       # 避免冗余的let _声明
+  - trailing_newline                # 文件结尾要有新行
+  - for_where                       # 使用for where语法代替内部if
+  - weak_delegate                   # 代理应该声明为weak
+
+# 规则配置
+line_length:
+  warning: 120
+  error: 150
+  ignores_urls: true
+  ignores_comments: true
+  ignores_interpolated_strings: true
+
+function_body_length:
+  warning: 50
+  error: 100
+
+# 添加对文件头注释的要求
+file_header:
+  required_pattern: |
+                    \/\/
+                    \/\/  .*?\.swift
+                    \/\/  ManualBox
+                    \/\/
+                    \/\/  Created by .*? on \d{4}\/\d{1,2}\/\d{1,2}\.
+                    \/\/  .*
+                    \/\/
+
+# 类似函数的结构的长度限制
+large_tuple:
+  warning: 3
+  error: 5
+
+function_parameter_count:
+  warning: 5
+  error: 8
+
+# 类型名称规则
+type_name:
+  min_length: 3
+  max_length:
+    warning: 40
+    error: 50
+  validates_start_with_lowercase: false
+  excluded:
+    - iPhone
+    - iPad
+    - API
+    - URL
+    - ID
+    - UI
+    - VM
+
+# 变量名规则
+identifier_name:
+  min_length: 2
+  max_length:
+    warning: 40
+    error: 50
+  excluded:
+    - id
+    - db
+    - to
+    - in
+    - at
+    - by
+    - on
+    - up
+    - go
+    - x
+    - y
+    - i
+    - j
+    - k
+    - vm
+    - ui
+    - ID
+    - UI
+    - OCR
+
+# 循环复杂度限制
+cyclomatic_complexity:
+  warning: 10
+  error: 15
+
+nesting:
+  type_level:
+    warning: 2
+    error: 3
+  # 移除无效的statement_level配置
+  # Swift 5.7+中nesting规则仅支持type_level
+
+# 自定义规则
+custom_rules:
+  # 基础编码规则
+  no_print:
+    name: "No Print Statements"
+    regex: "print\\("
+    message: "使用日志系统而不是 print 语句"
+    severity: warning
+    
+  use_self:
+    name: "Use Self"
+    regex: "\\b(ManualBox|Category|Product|Tag|Manual|Order|RepairRecord)\\."
+    message: "使用 Self 而不是具体的类名"
+    severity: warning
+    
+  avoid_force_cast:
+    name: "Avoid Force Cast"
+    regex: "as!"
+    message: "避免使用强制类型转换，使用可选绑定"
+    severity: error
+    
+  todo_fixme_message:
+    name: "TODO/FIXME Message"
+    regex: "(TODO|FIXME)(?!.*:)"
+    message: "TODO 和 FIXME 需要包含具体说明"
+    severity: warning
+    
+  # 架构相关规则
+  mark_architecture_boundaries:
+    name: "Architecture Boundaries"
+    regex: "(Model|View|ViewModel)\\s+\\{[^\\{\\}]*[^\\{\\}]*[^\\{\\}]*\\}"
+    match_kinds: typeenclosurestart
+    message: "添加 // MARK: - 架构边界注释来清晰分隔架构组件"
+    severity: warning
+    
+  proper_dependency_injection:
+    name: "Dependency Injection"
+    regex: "var\\s+\\w+:\\s+\\w+Service\\s+=\\s+\\w+Service\\(\\)"
+    message: "使用依赖注入而不是直接实例化服务"
+    severity: warning
+    
+  repository_access_in_view:
+    name: "Repository Access in View"
+    regex: "@.*View[\\s\\S]*\\b(\\w+Repository|\\w+Service)\\."
+    message: "视图不应直接访问仓库或服务，应通过ViewModel"
+    severity: warning
+    
+  document_public_api:
+    name: "Document Public API"
+    regex: "public\\s+(?:func|var|let)\\s+\\w+[^/\\*]*$"
+    message: "公共API应有文档注释"
+    severity: warning
+    
+  file_organization:
+    name: "File Organization"
+    regex: "import\\s+.*\\n\\s*(?!import|\/\/|\/\\*|@|public|private|internal|open|fileprivate|\\s*$)"
+    message: "文件应有空行分隔import语句与类型声明"
+    severity: warning
+    
+  # SwiftUI特定规则
+  swiftui_state_name:
+    name: "SwiftUI State Name"
+    regex: "@State\\s+var\\s+(?!is|has|should)[a-z]"
+    message: "SwiftUI @State变量建议使用is/has/should前缀"
+    severity: warning
+    
+  binding_naming:
+    name: "SwiftUI Binding Naming"
+    regex: "@Binding\\s+var\\s+[^_]\\w+"
+    message: "Binding属性建议使用下划线前缀，如_value"
+    severity: warning
+    
+  environmentobject_in_init:
+    name: "EnvironmentObject in init"
+    regex: "init\\([^)]*\\)\\s*\\{[^}]*@EnvironmentObject"
+    message: "不应在init中使用@EnvironmentObject，它由环境注入"
+    severity: error
+    
+  swiftui_view_modifier_chain:
+    name: "SwiftUI View Modifier Chain"
+    regex: "\\.(background|foregroundColor|padding|frame|offset)\\([^)]*\\)\\.(background|foregroundColor|padding|frame|offset)"
+    message: "SwiftUI修饰符链应按照布局→尺寸→外观的顺序"
+    severity: warning
+    
+  swiftui_extracted_views:
+    name: "SwiftUI Extracted Views"
+    regex: "var\\s+body:\\s+some\\s+View\\s+\\{[\\s\\S]{300,}\\}"
+    message: "复杂的SwiftUI视图体应提取为多个组件"
+    severity: warning
+    
+  swiftui_preview_missing:
+    name: "SwiftUI Preview Missing"
+    regex: "struct\\s+\\w+:\\s+View[\\s\\S]*?\\}\\s*$"
+    message: "SwiftUI视图应提供预览结构"
+    severity: warning
+  
+  # Combine特定规则
+  combine_memory_leak:
+    name: "Combine Memory Leak"
+    regex: "\\.sink\\([^{]*\\{[^}]*self\\."
+    message: "使用sink时注意避免循环引用，使用[weak self]"
+    severity: warning
+    
+  combine_cancellable_storage:
+    name: "Combine Cancellable Storage"
+    regex: "AnyCancellable\\(\\)"
+    message: "Combine订阅应存储在cancellables集合中避免提前取消"
+    severity: warning
+    
+  combine_operator_chain:
+    name: "Combine Operator Chain"
+    regex: "\\.\\w+\\([^)]*\\)\\s*\\.\\w+\\([^)]*\\)\\s*\\.\\w+\\([^)]*\\)\\s*\\.\\w+\\([^)]*\\)\\s*\\.\\w+\\("
+    message: "过长的Combine操作符链难以阅读，考虑拆分或添加注释"
+    severity: warning
+    
+  combine_subject_exposure:
+    name: "Combine Subject Exposure"
+    regex: "public\\s+let\\s+\\w+\\s*=\\s*(PassthroughSubject|CurrentValueSubject)<"
+    message: "避免直接暴露Combine的Subject，应提供只读Publisher接口"
+    severity: warning
+    
+  # Swift 6迁移准备
+  mainactor_sendable_check:
+    name: "MainActor & Sendable Check"
+    regex: "@MainActor\\s+(?:class|struct|enum).*?:\\s*(?!.*Sendable)"
+    message: "MainActor类型应该考虑实现Sendable协议"
+    severity: warning
+    
+  # 测试代码质量规则
+  test_assertion_message:
+    name: "Test Assertion Message"
+    regex: "XCTAssert\\(.*\\)$"
+    message: "测试断言应包含失败信息"
+    severity: warning
+    
+  test_method_naming:
+    name: "Test Method Naming"
+    regex: "func\\s+test(?!\\w+When\\w+Then\\w+)\\w+\\("
+    message: "测试方法命名应遵循test[Feature]When[Condition]Then[ExpectedResult]模式"
+    severity: warning
+    
+  test_mock_validation:
+    name: "Test Mock Validation"
+    regex: "class\\s+Mock\\w+:\\s+\\w+\\s*\\{[^}]*\\bvar\\s+\\w+Calls\\b"
+    message: "测试Mock应验证方法调用次数和参数"
+    severity: warning
+    
+  test_single_responsibility:
+    name: "Test Single Responsibility"
+    regex: "func\\s+test\\w+\\([^)]*\\)\\s*\\{[\\s\\S]{500,}\\}"
+    message: "测试方法过长，应拆分为多个单一职责的测试"
+    severity: warning
+
+# 文档和注释规则
+trailing_closure:
+  only_single_muted_parameter: true
+
+block_based_kvo:
+  severity: warning
+
+comment_spacing:
+  severity: warning
+
+orphaned_doc_comment:
+  severity: warning
+
+empty_enum_arguments:
+  severity: warning
+
+# 性能规则
+contains_over_filter_is_empty:
+  severity: warning
+
+contains_over_filter_count:
+  severity: warning
+
+empty_collection_literal:
+  severity: warning
+
+empty_count:
+  severity: warning
+
+reduce_into:
+  severity: warning
+
+sorted_first_last:
+  severity: warning
+
+# 安全相关规则
+array_init:
+  severity: warning
+
+fallthrough:
+  severity: warning
+
+force_unwrapping:
+  severity: error
+
+force_try:
+  severity: error
+
+# 报告格式
+reporter: "xcode"
+
+# 严格模式（将警告视为错误）
+strict: false
+
+# 分析器规则
+analyzer_rules:
+  - unused_declaration
+  - unused_import
+  - capture_variable
+  - explicit_self
+  - unused_import_swift_doc
+
+# 版本信息
+# SwiftLint 配置版本: 1.2.0
+# 最后更新日期: 2025-07-30
+# 适用于 Swift 5.9+ 和 SwiftUI/Combine

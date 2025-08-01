@@ -60,6 +60,21 @@ enum SettingsPanel: String, CaseIterable, Hashable {
             return .gray
         }
     }
+    
+    var description: String {
+        switch self {
+        case .notification:
+            return "管理应用通知和提醒设置"
+        case .appearance:
+            return "自定义应用外观和主题"
+        case .appSettings:
+            return "配置应用功能和默认参数"
+        case .dataManagement:
+            return "管理数据备份、同步和导入导出"
+        case .about:
+            return "查看应用信息和获取帮助支持"
+        }
+    }
 }
 
 // MARK: - 设置子面板枚举

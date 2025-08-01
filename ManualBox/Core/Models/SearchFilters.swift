@@ -29,7 +29,39 @@ enum ProductSearchSort: String, CaseIterable {
     }
 }
 
-
+// MARK: - 搜索排序选项
+struct SearchSortOptions {
+    var primarySort: SortType = .relevance
+    var ascending: Bool = false
+    
+    enum SortType: String, CaseIterable {
+        case relevance = "relevance"
+        case name = "name"
+        case date = "date"
+        case fileSize = "fileSize"
+        case category = "category"
+        
+        var displayName: String {
+            switch self {
+            case .relevance: return "相关性"
+            case .name: return "名称"
+            case .date: return "日期"
+            case .fileSize: return "文件大小"
+            case .category: return "分类"
+            }
+        }
+        
+        var icon: String {
+            switch self {
+            case .relevance: return "star.fill"
+            case .name: return "textformat.abc"
+            case .date: return "calendar"
+            case .fileSize: return "doc.fill"
+            case .category: return "folder.fill"
+            }
+        }
+    }
+}
 
 // MARK: - 产品搜索过滤器
 struct ProductSearchFilters {
@@ -84,7 +116,7 @@ struct ProductSearchFilters {
     init() {}
 }
 
-struct SearchFilters {
+struct SearchFilters: Codable {
     // 搜索范围
     var searchInName: Bool = true
     var searchInBrand: Bool = true

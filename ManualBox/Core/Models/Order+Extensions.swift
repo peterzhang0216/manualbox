@@ -31,6 +31,11 @@ extension Order {
         set { warrantyEndDate = newValue }
     }
     
+    var totalPrice: Double? {
+        get { price }
+        set { price = newValue ?? 0.0 }
+    }
+    
     var displayRepairRecords: [RepairRecord] {
         let records = repairRecords as? Set<RepairRecord> ?? []
         return Array(records).sorted { $0.date ?? Date() > $1.date ?? Date() }

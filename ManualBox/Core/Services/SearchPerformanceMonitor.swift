@@ -1,370 +1,76 @@
+//
+//  SearchPerformanceMonitor.swift
+//  ManualBox
+//
+//  Created by Assistant on 2024/12/19.
+//
+
 import Foundation
-import os.log
-
-// MARK: - 搜索性能监控服务
-@MainActor
-class SearchPerformanceMonitor: ObservableObject {
-    static let shared = SearchPerformanceMonitor()
-    
-    @Published var performanceMetrics: SearchPerformanceMonitorMetrics = SearchPerformanceMonitorMetrics()
-    @Published var isMonitoring = false
-    
-    private let logger = Logger(subsystem: "com.manualbox.search", category: "performance")
-    private var searchSessions: [SearchSession] = []
-    private var currentSession: SearchSession?
-    
-    private init() {
-        loadPerformanceHistory()
-    }
-    
-    // MARK: - 搜索会话管理
-    
-    /// 开始新的搜索会话
-    func startSearchSession(query: String, filters: AdvancedSearchFilters? = nil) {
-        let session = SearchSession(
-            id: UUID(),
-            query: query,
-            filters: filters,
-            startTime: Date(),
-            metrics: SessionMetrics()
-        )
-        
-        currentSession = session
-        isMonitoring = true
-        
-        logger.info("开始搜索会话: \(query)")
-    }
-    
-    /// 记录搜索阶段
-    func recordSearchPhase(_ phase: SearchPhase, duration: TimeInterval) {
-        guard var session = currentSession else { return }
-        
-        session.metrics.phases[phase] = duration
-        currentSession = session
-        
-        logger.debug("搜索阶段 \(phase.rawValue) 耗时: \(duration)ms")
-    }
-    
-    /// 记录搜索结果
-    func recordSearchResults(count: Int, relevanceScores: [Float]) {
-        guard var session = currentSession else { return }
-        
-        session.resultCount = count
-        session.averageRelevance = relevanceScores.isEmpty ? 0 : relevanceScores.reduce(0, +) / Float(relevanceScores.count)
-        session.metrics.resultProcessingTime = Date().timeIntervalSince(session.startTime)
-        
-        currentSession = session
-        
-        logger.info("搜索结果: \(count) 个，平均相关性: \(session.averageRelevance)")
-    }
-    
-    /// 结束搜索会话
-    func endSearchSession(success: Bool = true) {
-        guard var session = currentSession else { return }
-        
-        session.endTime = Date()
-        session.totalDuration = session.endTime!.timeIntervalSince(session.startTime)
-        session.success = success
-        
-        // 添加到历史记录
-        searchSessions.append(session)
-        
-        // 更新性能指标
-        updatePerformanceMetrics()
-        
-        // 保存历史记录
-        savePerformanceHistory()
-        
-        currentSession = nil
-        isMonitoring = false
-        
-        logger.info("搜索会话结束，总耗时: \(session.totalDuration)ms，成功: \(success)")
-    }
-    
-    // MARK: - 性能分析
-    
-    /// 分析搜索性能
-    func analyzePerformance() -> SearchPerformanceAnalysis {
-        let recentSessions = searchSessions.suffix(100) // 分析最近100次搜索
-        
-        let totalSessions = recentSessions.count
-        let successfulSessions = recentSessions.filter { $0.success }.count
-        let averageDuration = recentSessions.map { $0.totalDuration }.reduce(0, +) / Double(totalSessions)
-        let averageResultCount = recentSessions.map { Double($0.resultCount) }.reduce(0, +) / Double(totalSessions)
-        let averageRelevance = recentSessions.map { Double($0.averageRelevance) }.reduce(0, +) / Double(totalSessions)
-        
-        // 分析性能瓶颈
-        let bottlenecks = identifyPerformanceBottlenecks(sessions: Array(recentSessions))
-        
-        // 生成优化建议
-        let recommendations = generateOptimizationRecommendations(analysis: bottlenecks)
-        
-        return SearchPerformanceAnalysis(
-            totalSessions: totalSessions,
-            successRate: Double(successfulSessions) / Double(totalSessions),
-            averageDuration: averageDuration,
-            averageResultCount: averageResultCount,
-            averageRelevance: averageRelevance,
-            bottlenecks: bottlenecks,
-            recommendations: recommendations
-        )
-    }
-    
-    private func identifyPerformanceBottlenecks(sessions: [SearchSession]) -> [PerformanceBottleneck] {
-        var bottlenecks: [PerformanceBottleneck] = []
-        
-        // 分析各个阶段的平均耗时
-        var phaseAverages: [SearchPhase: TimeInterval] = [:]
-        
-        for phase in SearchPhase.allCases {
-            let phaseTimes = sessions.compactMap { $0.metrics.phases[phase] }
-            if !phaseTimes.isEmpty {
-                phaseAverages[phase] = phaseTimes.reduce(0, +) / Double(phaseTimes.count)
-            }
-        }
-        
-        // 识别耗时过长的阶段
-        for (phase, averageTime) in phaseAverages {
-            if averageTime > phase.expectedDuration {
-                let severity: BottleneckSeverity = averageTime > phase.expectedDuration * 2 ? .high : .medium
-                
-                bottlenecks.append(PerformanceBottleneck(
-                    phase: phase,
-                    averageDuration: averageTime,
-                    expectedDuration: phase.expectedDuration,
-                    severity: severity,
-                    description: "阶段 \(phase.displayName) 平均耗时 \(String(format: "%.2f", averageTime))ms，超出预期 \(String(format: "%.2f", phase.expectedDuration))ms"
-                ))
-            }
-        }
-        
-        // 分析查询复杂度
-        let complexQueries = sessions.filter { $0.query.count > 50 || $0.query.components(separatedBy: " ").count > 10 }
-        if Double(complexQueries.count) / Double(sessions.count) > 0.3 {
-            bottlenecks.append(PerformanceBottleneck(
-                phase: .queryProcessing,
-                averageDuration: 0,
-                expectedDuration: 0,
-                severity: .medium,
-                description: "复杂查询占比过高（\(complexQueries.count)/\(sessions.count)），建议优化查询处理逻辑"
-            ))
-        }
-        
-        return bottlenecks.sorted { $0.severity.rawValue > $1.severity.rawValue }
-    }
-    
-    private func generateOptimizationRecommendations(analysis: [PerformanceBottleneck]) -> [OptimizationRecommendation] {
-        var recommendations: [OptimizationRecommendation] = []
-        
-        for bottleneck in analysis {
-            switch bottleneck.phase {
-            case .indexLoading:
-                recommendations.append(OptimizationRecommendation(
-                    title: "优化索引加载",
-                    description: "考虑使用增量索引加载或缓存机制",
-                    priority: bottleneck.severity,
-                    estimatedImprovement: "减少 30-50% 的索引加载时间"
-                ))
-                
-            case .queryProcessing:
-                recommendations.append(OptimizationRecommendation(
-                    title: "优化查询处理",
-                    description: "实现查询预处理和缓存，优化复杂查询的解析",
-                    priority: bottleneck.severity,
-                    estimatedImprovement: "减少 20-40% 的查询处理时间"
-                ))
-                
-            case .indexSearching:
-                recommendations.append(OptimizationRecommendation(
-                    title: "优化索引搜索",
-                    description: "使用更高效的搜索算法或并行搜索",
-                    priority: bottleneck.severity,
-                    estimatedImprovement: "减少 25-45% 的搜索时间"
-                ))
-                
-            case .resultRanking:
-                recommendations.append(OptimizationRecommendation(
-                    title: "优化结果排序",
-                    description: "简化相关性计算或使用预计算的权重",
-                    priority: bottleneck.severity,
-                    estimatedImprovement: "减少 15-30% 的排序时间"
-                ))
-                
-            case .resultFormatting:
-                recommendations.append(OptimizationRecommendation(
-                    title: "优化结果格式化",
-                    description: "延迟加载详细信息或使用更高效的格式化方法",
-                    priority: bottleneck.severity,
-                    estimatedImprovement: "减少 10-25% 的格式化时间"
-                ))
-            }
-        }
-        
-        // 通用优化建议
-        if analysis.count > 3 {
-            recommendations.append(OptimizationRecommendation(
-                title: "整体性能优化",
-                description: "考虑重构搜索架构，使用更高效的数据结构和算法",
-                priority: .high,
-                estimatedImprovement: "整体性能提升 40-60%"
-            ))
-        }
-        
-        return recommendations.sorted { $0.priority.rawValue > $1.priority.rawValue }
-    }
-    
-    // MARK: - 性能指标更新
-    
-    private func updatePerformanceMetrics() {
-        let recentSessions = searchSessions.suffix(50)
-        
-        performanceMetrics.totalSearches = searchSessions.count
-        performanceMetrics.averageSearchTime = recentSessions.map { $0.totalDuration }.reduce(0, +) / Double(recentSessions.count)
-        performanceMetrics.successRate = Double(recentSessions.filter { $0.success }.count) / Double(recentSessions.count)
-        performanceMetrics.averageResultCount = recentSessions.map { Double($0.resultCount) }.reduce(0, +) / Double(recentSessions.count)
-        performanceMetrics.lastUpdated = Date()
-        
-        // 计算性能趋势
-        if searchSessions.count >= 20 {
-            let recent10 = searchSessions.suffix(10)
-            let previous10 = searchSessions.dropLast(10).suffix(10)
-            
-            let recentAvg = recent10.map { $0.totalDuration }.reduce(0, +) / Double(recent10.count)
-            let previousAvg = previous10.map { $0.totalDuration }.reduce(0, +) / Double(previous10.count)
-            
-            performanceMetrics.performanceTrend = recentAvg < previousAvg ? .improving : .declining
-        }
-    }
-    
-    // MARK: - 数据持久化
-    
-    private func savePerformanceHistory() {
-        // 只保存最近1000次搜索记录
-        let recentSessions = searchSessions.suffix(1000)
-        
-        if let data = try? JSONEncoder().encode(Array(recentSessions)) {
-            UserDefaults.standard.set(data, forKey: "SearchPerformanceHistory")
-        }
-        
-        if let metricsData = try? JSONEncoder().encode(performanceMetrics) {
-            UserDefaults.standard.set(metricsData, forKey: "SearchPerformanceMetrics")
-        }
-    }
-    
-    private func loadPerformanceHistory() {
-        if let data = UserDefaults.standard.data(forKey: "SearchPerformanceHistory"),
-           let sessions = try? JSONDecoder().decode([SearchSession].self, from: data) {
-            searchSessions = sessions
-        }
-        
-        if let data = UserDefaults.standard.data(forKey: "SearchPerformanceMetrics"),
-           let metrics = try? JSONDecoder().decode(SearchPerformanceMonitorMetrics.self, from: data) {
-            performanceMetrics = metrics
-        }
-    }
-    
-    // MARK: - 实时监控
-    
-    /// 获取当前搜索会话的实时指标
-    func getCurrentSessionMetrics() -> SessionMetrics? {
-        return currentSession?.metrics
-    }
-    
-    /// 清除性能历史记录
-    func clearPerformanceHistory() {
-        searchSessions.removeAll()
-        performanceMetrics = SearchPerformanceMonitorMetrics()
-        savePerformanceHistory()
-        
-        logger.info("性能历史记录已清除")
-    }
-}
-
-// MARK: - 搜索会话模型
-struct SearchSession: Codable {
-    let id: UUID
-    let query: String
-    let filters: AdvancedSearchFilters?
-    let startTime: Date
-    var endTime: Date?
-    var totalDuration: TimeInterval = 0
-    var resultCount: Int = 0
-    var averageRelevance: Float = 0
-    var success: Bool = true
-    var metrics: SessionMetrics
-}
-
-// MARK: - 会话指标
-struct SessionMetrics: Codable {
-    var phases: [SearchPhase: TimeInterval] = [:]
-    var resultProcessingTime: TimeInterval = 0
-    var memoryUsage: Int64 = 0
-    var cacheHitRate: Double = 0
-}
+import Combine
 
 // MARK: - 搜索阶段
-enum SearchPhase: String, CaseIterable, Codable {
-    case indexLoading = "index_loading"
-    case queryProcessing = "query_processing"
-    case indexSearching = "index_searching"
-    case resultRanking = "result_ranking"
-    case resultFormatting = "result_formatting"
+enum SearchPhase: String, CaseIterable {
+    case indexing = "indexing"
+    case querying = "querying"
+    case filtering = "filtering"
+    case ranking = "ranking"
+    case rendering = "rendering"
     
     var displayName: String {
         switch self {
-        case .indexLoading: return "索引加载"
-        case .queryProcessing: return "查询处理"
-        case .indexSearching: return "索引搜索"
-        case .resultRanking: return "结果排序"
-        case .resultFormatting: return "结果格式化"
+        case .indexing: return "索引构建"
+        case .querying: return "查询执行"
+        case .filtering: return "结果过滤"
+        case .ranking: return "相关性排序"
+        case .rendering: return "结果渲染"
         }
     }
-    
-    var expectedDuration: TimeInterval {
-        switch self {
-        case .indexLoading: return 50.0 // 50ms
-        case .queryProcessing: return 10.0 // 10ms
-        case .indexSearching: return 100.0 // 100ms
-        case .resultRanking: return 30.0 // 30ms
-        case .resultFormatting: return 20.0 // 20ms
-        }
-    }
-}
-
-// MARK: - 性能指标
-struct SearchPerformanceMonitorMetrics: Codable {
-    var totalSearches: Int = 0
-    var averageSearchTime: TimeInterval = 0
-    var successRate: Double = 1.0
-    var averageResultCount: Double = 0
-    var performanceTrend: PerformanceTrend = .stable
-    var lastUpdated: Date = Date()
 }
 
 // MARK: - 性能趋势
-enum PerformanceTrend: String, Codable {
-    case improving = "improving"
-    case stable = "stable"
-    case declining = "declining"
-    
-    var displayName: String {
-        switch self {
-        case .improving: return "改善中"
-        case .stable: return "稳定"
-        case .declining: return "下降中"
-        }
-    }
-    
-    var color: String {
-        switch self {
-        case .improving: return "green"
-        case .stable: return "blue"
-        case .declining: return "red"
-        }
-    }
+enum PerformanceTrend {
+    case improving
+    case stable
+    case declining
 }
 
-// MARK: - 性能分析结果
+
+
+// MARK: - 性能瓶颈
+struct PerformanceBottleneck {
+    let phase: SearchPhase
+    let severity: BottleneckSeverity
+    let description: String
+    let impact: Double // 0.0 - 1.0
+    let suggestedFix: String
+}
+
+// MARK: - 性能建议
+// PerformanceRecommendation 已在 PerformanceMonitoringService.swift 中定义
+
+// MARK: - 搜索会话指标
+struct SearchSessionMetrics {
+    let sessionId: UUID
+    let startTime: Date
+    let endTime: Date?
+    let phases: [SearchPhase: TimeInterval]
+    let totalDuration: TimeInterval
+    let resultCount: Int
+    let success: Bool
+    let errorMessage: String?
+}
+
+// MARK: - 聚合性能指标
+struct AggregatedPerformanceMetrics {
+    let totalSearches: Int
+    let averageSearchTime: TimeInterval
+    let successRate: Double
+    let averageResultCount: Double
+    let performanceTrend: PerformanceTrend?
+    let phaseBreakdown: [SearchPhase: TimeInterval]
+}
+
+// MARK: - 搜索性能分析
 struct SearchPerformanceAnalysis {
     let totalSessions: Int
     let successRate: Double
@@ -372,45 +78,382 @@ struct SearchPerformanceAnalysis {
     let averageResultCount: Double
     let averageRelevance: Double
     let bottlenecks: [PerformanceBottleneck]
-    let recommendations: [OptimizationRecommendation]
+    let recommendations: [PerformanceRecommendation]
+    let phaseAnalysis: [SearchPhase: PhaseAnalysis]
 }
 
-// MARK: - 性能瓶颈
-struct PerformanceBottleneck {
-    let phase: SearchPhase
+// MARK: - 阶段分析
+struct PhaseAnalysis {
     let averageDuration: TimeInterval
-    let expectedDuration: TimeInterval
-    let severity: BottleneckSeverity
-    let description: String
+    let maxDuration: TimeInterval
+    let minDuration: TimeInterval
+    let trend: PerformanceTrend
+    let bottleneckCount: Int
 }
 
-// MARK: - 瓶颈严重程度
-enum BottleneckSeverity: Int {
-    case low = 1
-    case medium = 2
-    case high = 3
+// MARK: - 搜索性能监控器
+@MainActor
+class SearchPerformanceMonitor: ObservableObject {
+    static let shared = SearchPerformanceMonitor()
     
-    var displayName: String {
-        switch self {
-        case .low: return "轻微"
-        case .medium: return "中等"
-        case .high: return "严重"
+    // MARK: - Published Properties
+    @Published var isMonitoring: Bool = false
+    @Published var performanceMetrics: AggregatedPerformanceMetrics
+    @Published var currentSession: SearchSessionMetrics?
+    @Published var recentSessions: [SearchSessionMetrics] = []
+    
+    // MARK: - Private Properties
+    private var sessionHistory: [SearchSessionMetrics] = []
+    private var currentSessionStartTime: Date?
+    private var currentSessionPhases: [SearchPhase: TimeInterval] = [:]
+    private var currentPhaseStartTime: Date?
+    private var currentPhase: SearchPhase?
+    
+    private let maxHistoryCount = 1000
+    
+    private init() {
+        self.performanceMetrics = AggregatedPerformanceMetrics(
+            totalSearches: 0,
+            averageSearchTime: 0,
+            successRate: 1.0,
+            averageResultCount: 0,
+            performanceTrend: nil,
+            phaseBreakdown: [:]
+        )
+        
+        startMonitoring()
+    }
+    
+    // MARK: - Public Methods
+    
+    func startMonitoring() {
+        isMonitoring = true
+        print("🔍 搜索性能监控已启动")
+    }
+    
+    func stopMonitoring() {
+        isMonitoring = false
+        print("🔍 搜索性能监控已停止")
+    }
+    
+    func startSearchSession() -> UUID {
+        let sessionId = UUID()
+        currentSessionStartTime = Date()
+        currentSessionPhases = [:]
+        currentPhase = nil
+        currentPhaseStartTime = nil
+        
+        print("🔍 开始搜索会话: \(sessionId)")
+        return sessionId
+    }
+    
+    func startPhase(_ phase: SearchPhase) {
+        // 结束当前阶段
+        if let currentPhase = currentPhase,
+           let startTime = currentPhaseStartTime {
+            let duration = Date().timeIntervalSince(startTime)
+            currentSessionPhases[currentPhase] = duration
+        }
+        
+        // 开始新阶段
+        currentPhase = phase
+        currentPhaseStartTime = Date()
+        
+        print("🔍 开始阶段: \(phase.displayName)")
+    }
+    
+    func endSearchSession(
+        sessionId: UUID,
+        resultCount: Int,
+        success: Bool,
+        errorMessage: String? = nil
+    ) {
+        guard let startTime = currentSessionStartTime else { return }
+        
+        // 结束最后一个阶段
+        if let currentPhase = currentPhase,
+           let phaseStartTime = currentPhaseStartTime {
+            let duration = Date().timeIntervalSince(phaseStartTime)
+            currentSessionPhases[currentPhase] = duration
+        }
+        
+        let endTime = Date()
+        let totalDuration = endTime.timeIntervalSince(startTime)
+        
+        let session = SearchSessionMetrics(
+            sessionId: sessionId,
+            startTime: startTime,
+            endTime: endTime,
+            phases: currentSessionPhases,
+            totalDuration: totalDuration,
+            resultCount: resultCount,
+            success: success,
+            errorMessage: errorMessage
+        )
+        
+        addSession(session)
+        updateAggregatedMetrics()
+        
+        // 重置当前会话
+        currentSession = nil
+        currentSessionStartTime = nil
+        currentSessionPhases = [:]
+        currentPhase = nil
+        currentPhaseStartTime = nil
+        
+        print("🔍 结束搜索会话: \(sessionId), 耗时: \(String(format: "%.3f", totalDuration))s")
+    }
+    
+    func getCurrentSessionMetrics() -> SearchSessionMetrics? {
+        guard let startTime = currentSessionStartTime else { return nil }
+        
+        let currentTime = Date()
+        let totalDuration = currentTime.timeIntervalSince(startTime)
+        
+        var phases = currentSessionPhases
+        if let currentPhase = currentPhase,
+           let phaseStartTime = currentPhaseStartTime {
+            let phaseDuration = currentTime.timeIntervalSince(phaseStartTime)
+            phases[currentPhase] = phaseDuration
+        }
+        
+        return SearchSessionMetrics(
+            sessionId: UUID(),
+            startTime: startTime,
+            endTime: nil,
+            phases: phases,
+            totalDuration: totalDuration,
+            resultCount: 0,
+            success: true,
+            errorMessage: nil
+        )
+    }
+    
+    func analyzePerformance() -> SearchPerformanceAnalysis {
+        let recentSessions = getRecentSessions()
+        
+        let totalSessions = recentSessions.count
+        let successfulSessions = recentSessions.filter { $0.success }
+        let successRate = totalSessions > 0 ? Double(successfulSessions.count) / Double(totalSessions) : 1.0
+        
+        let averageDuration = successfulSessions.isEmpty ? 0 :
+            successfulSessions.map { $0.totalDuration }.reduce(0, +) / Double(successfulSessions.count)
+        
+        let averageResultCount = successfulSessions.isEmpty ? 0 :
+            successfulSessions.map { Double($0.resultCount) }.reduce(0, +) / Double(successfulSessions.count)
+        
+        let bottlenecks = identifyBottlenecks(from: recentSessions)
+        let recommendations = generateRecommendations(from: bottlenecks)
+        let phaseAnalysis = analyzePhases(from: recentSessions)
+        
+        return SearchPerformanceAnalysis(
+            totalSessions: totalSessions,
+            successRate: successRate,
+            averageDuration: averageDuration,
+            averageResultCount: averageResultCount,
+            averageRelevance: 0.85, // 模拟值
+            bottlenecks: bottlenecks,
+            recommendations: recommendations,
+            phaseAnalysis: phaseAnalysis
+        )
+    }
+    
+    // MARK: - Private Methods
+    
+    private func addSession(_ session: SearchSessionMetrics) {
+        sessionHistory.append(session)
+        recentSessions.append(session)
+        
+        // 限制历史记录数量
+        if sessionHistory.count > maxHistoryCount {
+            sessionHistory.removeFirst(sessionHistory.count - maxHistoryCount)
+        }
+        
+        if recentSessions.count > 50 {
+            recentSessions.removeFirst(recentSessions.count - 50)
         }
     }
     
-    var color: String {
-        switch self {
-        case .low: return "yellow"
-        case .medium: return "orange"
-        case .high: return "red"
+    private func updateAggregatedMetrics() {
+        let recentSessions = getRecentSessions()
+        
+        let totalSearches = recentSessions.count
+        let successfulSessions = recentSessions.filter { $0.success }
+        
+        let averageSearchTime = successfulSessions.isEmpty ? 0 :
+            successfulSessions.map { $0.totalDuration }.reduce(0, +) / Double(successfulSessions.count)
+        
+        let successRate = totalSearches > 0 ? Double(successfulSessions.count) / Double(totalSearches) : 1.0
+        
+        let averageResultCount = successfulSessions.isEmpty ? 0 :
+            successfulSessions.map { Double($0.resultCount) }.reduce(0, +) / Double(successfulSessions.count)
+        
+        let trend = calculatePerformanceTrend()
+        let phaseBreakdown = calculatePhaseBreakdown(from: successfulSessions)
+        
+        performanceMetrics = AggregatedPerformanceMetrics(
+            totalSearches: totalSearches,
+            averageSearchTime: averageSearchTime,
+            successRate: successRate,
+            averageResultCount: averageResultCount,
+            performanceTrend: trend,
+            phaseBreakdown: phaseBreakdown
+        )
+    }
+    
+    private func getRecentSessions() -> [SearchSessionMetrics] {
+        let cutoffDate = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) ?? Date()
+        return sessionHistory.filter { $0.startTime >= cutoffDate }
+    }
+    
+    private func calculatePerformanceTrend() -> PerformanceTrend? {
+        let recentSessions = getRecentSessions()
+        guard recentSessions.count >= 10 else { return nil }
+        
+        let halfPoint = recentSessions.count / 2
+        let firstHalf = Array(recentSessions.prefix(halfPoint))
+        let secondHalf = Array(recentSessions.suffix(halfPoint))
+        
+        let firstAverage = firstHalf.map { $0.totalDuration }.reduce(0, +) / Double(firstHalf.count)
+        let secondAverage = secondHalf.map { $0.totalDuration }.reduce(0, +) / Double(secondHalf.count)
+        
+        let change = (secondAverage - firstAverage) / firstAverage
+        
+        if abs(change) < 0.05 {
+            return .stable
+        } else if change < 0 {
+            return .improving
+        } else {
+            return .declining
         }
     }
-}
-
-// MARK: - 优化建议
-struct OptimizationRecommendation {
-    let title: String
-    let description: String
-    let priority: BottleneckSeverity
-    let estimatedImprovement: String
+    
+    private func calculatePhaseBreakdown(from sessions: [SearchSessionMetrics]) -> [SearchPhase: TimeInterval] {
+        var breakdown: [SearchPhase: TimeInterval] = [:]
+        
+        for phase in SearchPhase.allCases {
+            let phaseDurations = sessions.compactMap { $0.phases[phase] }
+            if !phaseDurations.isEmpty {
+                breakdown[phase] = phaseDurations.reduce(0, +) / Double(phaseDurations.count)
+            }
+        }
+        
+        return breakdown
+    }
+    
+    private func identifyBottlenecks(from sessions: [SearchSessionMetrics]) -> [PerformanceBottleneck] {
+        var bottlenecks: [PerformanceBottleneck] = []
+        
+        // 分析每个阶段的性能
+        for phase in SearchPhase.allCases {
+            let phaseDurations = sessions.compactMap { $0.phases[phase] }
+            guard !phaseDurations.isEmpty else { continue }
+            
+            let averageDuration = phaseDurations.reduce(0, +) / Double(phaseDurations.count)
+            let maxDuration = phaseDurations.max() ?? 0
+            
+            // 如果平均耗时超过阈值，认为是瓶颈
+            let threshold: TimeInterval
+            switch phase {
+            case .indexing: threshold = 0.1
+            case .querying: threshold = 0.05
+            case .filtering: threshold = 0.02
+            case .ranking: threshold = 0.03
+            case .rendering: threshold = 0.01
+            }
+            
+            if averageDuration > threshold {
+                let severity: BottleneckSeverity
+                if averageDuration > threshold * 3 {
+                    severity = .high
+                } else if averageDuration > threshold * 2 {
+                    severity = .medium
+                } else {
+                    severity = .low
+                }
+                
+                let bottleneck = PerformanceBottleneck(
+                    phase: phase,
+                    severity: severity,
+                    description: "\(phase.displayName)阶段平均耗时\(String(format: "%.3f", averageDuration))秒，超过建议阈值",
+                    impact: min(1.0, averageDuration / threshold - 1.0),
+                    suggestedFix: getSuggestedFix(for: phase)
+                )
+                
+                bottlenecks.append(bottleneck)
+            }
+        }
+        
+        return bottlenecks.sorted { $0.impact > $1.impact }
+    }
+    
+    private func getSuggestedFix(for phase: SearchPhase) -> String {
+        switch phase {
+        case .indexing:
+            return "优化索引构建算法，考虑增量索引"
+        case .querying:
+            return "优化查询语句，添加适当的索引"
+        case .filtering:
+            return "优化过滤条件，减少不必要的计算"
+        case .ranking:
+            return "简化相关性算法，使用缓存"
+        case .rendering:
+            return "优化UI渲染，使用虚拟化列表"
+        }
+    }
+    
+    private func generateRecommendations(from bottlenecks: [PerformanceBottleneck]) -> [PerformanceRecommendation] {
+        var recommendations: [PerformanceRecommendation] = []
+        
+        // 基于瓶颈生成建议
+        for bottleneck in bottlenecks.prefix(3) {
+            let recommendation = PerformanceRecommendation(
+                title: "优化\(bottleneck.phase.displayName)",
+                description: bottleneck.suggestedFix,
+                priority: bottleneck.severity == .high ? 1 : (bottleneck.severity == .medium ? 2 : 3),
+                estimatedImpact: "预计可提升\(Int(bottleneck.impact * 100))%性能",
+                implementationEffort: bottleneck.severity == .high ? "高" : "中"
+            )
+            recommendations.append(recommendation)
+        }
+        
+        // 添加通用建议
+        if recommendations.isEmpty {
+            recommendations.append(PerformanceRecommendation(
+                title: "启用搜索缓存",
+                description: "为常见搜索查询启用缓存机制",
+                priority: 2,
+                estimatedImpact: "预计可提升20-30%性能",
+                implementationEffort: "低"
+            ))
+        }
+        
+        return recommendations
+    }
+    
+    private func analyzePhases(from sessions: [SearchSessionMetrics]) -> [SearchPhase: PhaseAnalysis] {
+        var analysis: [SearchPhase: PhaseAnalysis] = [:]
+        
+        for phase in SearchPhase.allCases {
+            let phaseDurations = sessions.compactMap { $0.phases[phase] }
+            guard !phaseDurations.isEmpty else { continue }
+            
+            let averageDuration = phaseDurations.reduce(0, +) / Double(phaseDurations.count)
+            let maxDuration = phaseDurations.max() ?? 0
+            let minDuration = phaseDurations.min() ?? 0
+            
+            // 简化的趋势计算
+            let trend: PerformanceTrend = .stable
+            
+            analysis[phase] = PhaseAnalysis(
+                averageDuration: averageDuration,
+                maxDuration: maxDuration,
+                minDuration: minDuration,
+                trend: trend,
+                bottleneckCount: 0
+            )
+        }
+        
+        return analysis
+    }
 }

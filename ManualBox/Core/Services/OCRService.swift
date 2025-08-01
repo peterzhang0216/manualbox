@@ -8,6 +8,9 @@ import PDFKit
 import SwiftUI
 import NaturalLanguage
 
+// MARK: - 类型别名
+typealias OCRImageProcessor = ImagePreprocessor
+
 // MARK: - OCR协调器服务 (重构后的主服务)
 @MainActor
 class OCRService: ObservableObject {

@@ -12,7 +12,7 @@ struct BatchOperationsSheet: View {
     @State private var newColor: String = "blue"
     @State private var isProcessing = false
     @State private var showingConfirmation = false
-    @State private var operationResult: BatchOperationResult?
+    @State private var operationResult: CategoryBatchOperationResult?
     
     var body: some View {
         NavigationView {
@@ -39,21 +39,21 @@ struct BatchOperationsSheet: View {
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
-            .toolbar(content: {
+            .toolbar {
                 #if os(iOS)
-                SwiftUI.ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button("取消") {
                         dismiss()
                     }
                 }
                 #else
-                SwiftUI.ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("取消") {
                         dismiss()
                     }
                 }
                 #endif
-            })
+            }
         }
         .alert("确认操作", isPresented: $showingConfirmation) {
             Button("确认", role: .destructive) {
@@ -384,12 +384,10 @@ struct BatchOperationsSheet: View {
                 case .move:
                     try await categoryService.moveCategories(selectedCategories, to: targetCategory)
                     await MainActor.run {
-                        operationResult = BatchOperationResult(
-                            isSuccess: true,
-                            message: "成功移动了 \(selectedCategories.count) 个分类",
-                            processedCount: selectedCategories.count,
-                            totalCount: selectedCategories.count
-                        )
+                        operationResult = CategoryBatchOperationResult(
+                        isSuccess: true,
+                        message: "成功移动了 \(selectedCategories.count) 个分类"
+                    )
                     }
                     
                 case .changeIcon:
@@ -397,11 +395,9 @@ struct BatchOperationsSheet: View {
                         try await categoryService.updateCategory(category, icon: newIcon)
                     }
                     await MainActor.run {
-                        operationResult = BatchOperationResult(
+                        operationResult = CategoryBatchOperationResult(
                             isSuccess: true,
-                            message: "成功更新了 \(selectedCategories.count) 个分类的图标",
-                            processedCount: selectedCategories.count,
-                            totalCount: selectedCategories.count
+                            message: "成功更新了 \(selectedCategories.count) 个分类的图标"
                         )
                     }
                     
@@ -410,22 +406,18 @@ struct BatchOperationsSheet: View {
                         try await categoryService.updateCategory(category, color: newColor)
                     }
                     await MainActor.run {
-                        operationResult = BatchOperationResult(
+                        operationResult = CategoryBatchOperationResult(
                             isSuccess: true,
-                            message: "成功更新了 \(selectedCategories.count) 个分类的颜色",
-                            processedCount: selectedCategories.count,
-                            totalCount: selectedCategories.count
+                            message: "成功更新了 \(selectedCategories.count) 个分类的颜色"
                         )
                     }
                     
                 case .delete:
                     try await categoryService.deleteCategories(selectedCategories)
                     await MainActor.run {
-                        operationResult = BatchOperationResult(
+                        operationResult = CategoryBatchOperationResult(
                             isSuccess: true,
-                            message: "成功删除了 \(selectedCategories.count) 个分类",
-                            processedCount: selectedCategories.count,
-                            totalCount: selectedCategories.count
+                            message: "成功删除了 \(selectedCategories.count) 个分类"
                         )
                     }
                 }

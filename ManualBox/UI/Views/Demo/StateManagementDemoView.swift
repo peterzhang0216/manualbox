@@ -130,7 +130,7 @@ struct EventSystemSection: View {
                 
                 Button("发布同步事件") {
                     // 同步事件发布功能已移至CloudKit服务中
-                    eventBus.publishPerformance(metricName: "sync_demo", value: 1.0, unit: "count")
+                    eventBus.publishPerformanceMetric(name: "sync_demo", value: 1.0, unit: "count")
                 }
                 .buttonStyle(.bordered)
             }

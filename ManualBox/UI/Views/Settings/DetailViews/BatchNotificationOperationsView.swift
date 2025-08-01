@@ -77,6 +77,8 @@ struct BatchNotificationOperationsView: View {
                 Color(UIColor.systemBackground)
                 #elseif os(macOS)
                 Color(NSColor.windowBackgroundColor)
+                #else
+                Color.clear
                 #endif
             )
             
@@ -99,6 +101,8 @@ struct BatchNotificationOperationsView: View {
                     Color(UIColor.systemGroupedBackground)
                     #elseif os(macOS)
                     Color(NSColor.windowBackgroundColor)
+                    #else
+                    Color.clear
                     #endif
                 )
             } else {

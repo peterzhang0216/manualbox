@@ -101,16 +101,7 @@ extension FullBackupData {
     }
 }
 
-extension CategoryBackupData {
-    init(from category: Category) {
-        self.id = category.id ?? UUID()
-        self.name = category.categoryName
-        self.icon = category.categoryIcon
-        let formatter = ISO8601DateFormatter()
-        self.createdAt = formatter.string(from: category.createdAt ?? Date())
-        self.updatedAt = formatter.string(from: category.updatedAt ?? Date())
-    }
-}
+// CategoryBackupData extension removed - defined in BackupManager.swift
 
 extension ProductImportData {
     init(from product: Product) {
@@ -145,4 +136,4 @@ extension OrderImportData {
             self.warrantyPeriod = nil
         }
     }
-} 
+}

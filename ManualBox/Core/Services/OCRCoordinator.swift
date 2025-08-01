@@ -28,6 +28,9 @@ class OCRCoordinator: ObservableObject {
         let startTime = Date()
         let requestId = UUID()
         
+        // 开始性能监控
+        performanceMonitor.startMonitoring(for: requestId)
+        
         // 步骤1: 图像提取和预处理 (30%)
         progressCallback(0.1)
         guard let image = await getOptimizedImage(from: manual) else {
@@ -47,7 +50,7 @@ class OCRCoordinator: ObservableObject {
         
         // 步骤3: 文本后处理 (80%)
         progressCallback(0.8)
-        let processedText = textProcessor.enhance(ocrResult.text)
+        let processedText = textProcessor.processText(ocrResult.text)
         
         // 步骤4: 完成处理 (100%)
         progressCallback(1.0)
@@ -55,11 +58,7 @@ class OCRCoordinator: ObservableObject {
         let processingTime = Date().timeIntervalSince(startTime)
         
         // 记录性能指标
-        await performanceMonitor.recordProcessing(
-            duration: processingTime,
-            textLength: processedText.count,
-            confidence: ocrResult.confidence
-        )
+        performanceMonitor.stopMonitoring(for: requestId, success: true)
         
         return OCRResult(
             text: processedText,
